@@ -50,9 +50,10 @@ namespace EnhancedDisastersMod
                 byte scaled_intensity = scaleIntensityByPopulation(intensity);
 
                 startDisaster(scaled_intensity);
-                afterDisasterStarted(intensity);
 
                 cooldownCounter = (int)framesPerDay * CooldownDays;
+
+                afterDisasterStarted(intensity);
             }
         }
 
