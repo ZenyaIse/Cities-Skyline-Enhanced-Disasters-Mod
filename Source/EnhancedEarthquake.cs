@@ -2,6 +2,7 @@
 using ColossalFramework;
 using ColossalFramework.IO;
 using UnityEngine;
+using System;
 
 namespace EnhancedDisastersMod
 {
@@ -15,7 +16,7 @@ namespace EnhancedDisastersMod
                 s.WriteInt32(d.cooldownCounter);
                 s.WriteFloat(d.strainEnergy);
                 s.WriteInt8(d.aftershocksCount);
-                s.WriteInt8(d.mainShockIntensity);
+                s.WriteInt8(d.aftershockMaxIntensity);
             }
 
             public void Deserialize(DataSerializer s)
@@ -24,7 +25,7 @@ namespace EnhancedDisastersMod
                 d.cooldownCounter = s.ReadInt32();
                 d.strainEnergy = s.ReadFloat();
                 d.aftershocksCount = (byte)s.ReadInt8();
-                d.mainShockIntensity = (byte)s.ReadInt8();
+                d.aftershockMaxIntensity = (byte)s.ReadInt8();
 
                 Debug.Log(">>> EnhancedDisastersMod: Earthquake data loaded.");
             }
@@ -38,15 +39,15 @@ namespace EnhancedDisastersMod
         public float StrainThreshold = 700; // Days
         private float strainEnergy = 0; // Days
         private byte aftershocksCount = 0;
-        private byte mainShockIntensity = 0;
+        private byte aftershockMaxIntensity = 0;
 
         public EnhancedEarthquake()
         {
-            Type = DisasterType.Earthquake;
+            DType = DisasterType.Earthquake;
             CanOccurEverywhere = false;
             OccurrencePerYear = 0.5f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
-            CooldownDays = 1;
+            CooldownDays = 10;
         }
 
         protected override void onSimulationFrame_local()
@@ -64,42 +65,44 @@ namespace EnhancedDisastersMod
             return base.getCurrentProbabilityPerFrame() * strainEnergy / StrainThreshold;
         }
 
-        protected override void afterDisasterStarted(byte intensity)
+        public override void OnDisasterCreated(byte intensity)
         {
-            if (intensity > 100) intensity = 100;
-
-            float strainEnergy_old = strainEnergy;
-
-            strainEnergy *= (100 - intensity) / 100f;
-
             if (aftershocksCount == 0)
             {
-                mainShockIntensity = intensity;
+                aftershockMaxIntensity = (byte)(10 + (intensity - 10) * 3 / 4);
                 aftershocksCount = (byte)Singleton<SimulationManager>.instance.m_randomizer.Int32((uint)intensity / 10);
             }
             else
             {
                 aftershocksCount--;
+                aftershockMaxIntensity = (byte)(10 + (aftershockMaxIntensity - 10) * 3 / 4);
             }
 
-            if (aftershocksCount > 0)
-            {
-                cooldownCounter = 0;
-            }
+            Debug.Log(string.Format(">>> EnhancedDisastersMod: {0} aftershocks are still going to happen.", aftershocksCount));
+        }
 
-            Debug.Log(string.Format(">>> EnhancedDisastersMod: Strain energy changed from {0} to {1}. Aftershock count is {2}.", strainEnergy_old, strainEnergy, aftershocksCount));
+        public override void OnDisasterStarted(byte intensity)
+        {
+            float strainEnergy_old = strainEnergy;
+            strainEnergy = strainEnergy * (1 - intensity / 100f);
+            Debug.Log(string.Format(">>> EnhancedDisastersMod: Strain energy changed from {0} to {1}.", strainEnergy_old, strainEnergy));
         }
 
         protected override byte getRandomIntensity()
         {
             if (aftershocksCount > 0)
             {
-                return (byte)Singleton<SimulationManager>.instance.m_randomizer.Int32(10, mainShockIntensity);
+                return (byte)Singleton<SimulationManager>.instance.m_randomizer.Int32(10, aftershockMaxIntensity);
             }
             else
             {
                 return base.getRandomIntensity();
             }
+        }
+
+        public override bool CheckDisasterAIType(object disasterAI)
+        {
+            return disasterAI as EarthquakeAI != null;
         }
     }
 }

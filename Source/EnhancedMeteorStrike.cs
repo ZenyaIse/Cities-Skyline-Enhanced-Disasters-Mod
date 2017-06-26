@@ -2,6 +2,7 @@
 using ColossalFramework;
 using ColossalFramework.IO;
 using UnityEngine;
+using System;
 
 namespace EnhancedDisastersMod
 {
@@ -22,7 +23,7 @@ namespace EnhancedDisastersMod
                 d.cooldownCounter = s.ReadInt32();
                 d.meteorsCount = (byte)s.ReadInt8();
 
-                Debug.Log(">>> EnhancedDisastersMod: Tornado data loaded.");
+                Debug.Log(">>> EnhancedDisastersMod: Meteor strike data loaded.");
             }
 
             public void AfterDeserialize(DataSerializer s)
@@ -35,9 +36,9 @@ namespace EnhancedDisastersMod
 
         public EnhancedMeteorStrike()
         {
-            Type = DisasterType.MeteorStrike;
+            DType = DisasterType.MeteorStrike;
             CanOccurEverywhere = false;
-            OccurrencePerYear = 0.5f;
+            OccurrencePerYear = 0.25f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
             CooldownDays = 60;
         }
@@ -46,19 +47,19 @@ namespace EnhancedDisastersMod
         {
             if (meteorsCount > 0)
             {
-                return base.getCurrentProbabilityPerFrame() * 100;
+                return base.getCurrentProbabilityPerFrame() * 50;
             }
 
             return base.getCurrentProbabilityPerFrame();
         }
 
-        protected override void afterDisasterStarted(byte intensity)
+        public override void OnDisasterCreated(byte intensity)
         {
-            if (intensity > 100) intensity = 100;
-
             if (meteorsCount == 0)
             {
                 meteorsCount = (byte)Singleton<SimulationManager>.instance.m_randomizer.Int32(3);
+
+                Debug.Log(string.Format(">>> EnhancedDisastersMod: Group of {0} meteors was created.", meteorsCount + 1));
             }
             else
             {
@@ -69,8 +70,11 @@ namespace EnhancedDisastersMod
             {
                 cooldownCounter = 0;
             }
+        }
 
-            Debug.Log(string.Format(">>> EnhancedDisastersMod: Group of {0} meteors was created.", meteorsCount + 1));
+        public override bool CheckDisasterAIType(object disasterAI)
+        {
+            return disasterAI as MeteorStrikeAI != null;
         }
     }
 }

@@ -53,6 +53,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DisasterExtension.cs" />
     <Compile Include="EnhancedDisaster.cs" />
     <Compile Include="EnhancedDisastersManager.cs" />
     <Compile Include="EnhancedEarthquake.cs" />

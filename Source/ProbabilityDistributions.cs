@@ -2,7 +2,7 @@
 {
     public enum ProbabilityDistributions
     {
-        Linear,
-        PowerLow // See Gutenberg–Richter law
+        Uniform,
+        PowerLow // Gutenberg–Richter law
     }
 }

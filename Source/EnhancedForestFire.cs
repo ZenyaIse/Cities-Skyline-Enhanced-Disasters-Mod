@@ -37,10 +37,10 @@ namespace EnhancedDisastersMod
 
         public EnhancedForestFire()
         {
-            Type = DisasterType.ForestFire;
+            DType = DisasterType.ForestFire;
             CanOccurEverywhere = true;
-            OccurrencePerYear = 4.0f; // In case of dry weather
-            ProbabilityDistribution = ProbabilityDistributions.Linear;
+            OccurrencePerYear = 10.0f; // In case of dry weather
+            ProbabilityDistribution = ProbabilityDistributions.Uniform;
             CooldownDays = 1;
         }
 
@@ -62,6 +62,11 @@ namespace EnhancedDisastersMod
             float daysWithoutRain = noRainFramesCount / framesPerDay;
 
             return base.getCurrentProbabilityPerFrame() * Math.Min(1f, daysWithoutRain / WarmupDays);
+        }
+
+        public override bool CheckDisasterAIType(object disasterAI)
+        {
+            return disasterAI as ForestFireAI != null;
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using ICities;
+﻿using System.Text;
+using System.Collections.Generic;
+using ICities;
 using ColossalFramework;
 using UnityEngine;
 
@@ -10,50 +12,63 @@ namespace EnhancedDisastersMod
 
         public EnhancedForestFire ForestFire;
         public EnhancedThunderstorm Thunderstorm;
-        public EnhancedEarthquake Earthquake;
-        public EnhancedMeteorStrike MeteorStrike;
         public EnhancedTornado Tornado;
+        public EnhancedEarthquake Earthquake;
         public EnhancedTsunami Tsunami;
         public EnhancedSinkhole Sinkhole;
+        public EnhancedMeteorStrike MeteorStrike;
+        private List<EnhancedDisaster> allDisasters = new List<EnhancedDisaster>();
 
         private int framesCount = 0;
 
         public EnhancedDisastersManager()
         {
-            ForestFire = new EnhancedForestFire();
-            Thunderstorm = new EnhancedThunderstorm();
-            Tornado = new EnhancedTornado();
-            MeteorStrike = new EnhancedMeteorStrike();
-            Earthquake = new EnhancedEarthquake();
-            Tsunami = new EnhancedTsunami();
-            Sinkhole = new EnhancedSinkhole();
-
-            //Tsunami.Enabled = false;
-            //Earthquake.Enabled = false;
+            allDisasters.Add(ForestFire = new EnhancedForestFire());
+            allDisasters.Add(Thunderstorm = new EnhancedThunderstorm());
+            allDisasters.Add(Tornado = new EnhancedTornado());
+            allDisasters.Add(MeteorStrike = new EnhancedMeteorStrike());
+            allDisasters.Add(Earthquake = new EnhancedEarthquake());
+            allDisasters.Add(Tsunami = new EnhancedTsunami());
+            allDisasters.Add(Sinkhole = new EnhancedSinkhole());
         }
 
         public void OnSimulationFrame()
         {
-            ForestFire.OnSimulationFrame();
-            Thunderstorm.OnSimulationFrame();
-            Tornado.OnSimulationFrame();
-            MeteorStrike.OnSimulationFrame();
-            Earthquake.OnSimulationFrame();
-            Tsunami.OnSimulationFrame();
-            Sinkhole.OnSimulationFrame();
+            allDisasters.ForEach(x => x.OnSimulationFrame());
 
             if (--framesCount <= 0)
             {
-                framesCount = 5000;
-                Debug.Log(">>> EnhancedDisastersMod: " + Singleton<SimulationManager>.instance.m_currentGameTime.ToShortDateString()
-                     + "\nForestFire: " + ForestFire.GetCurrentOccurrencePerYear().ToString()
-                     + "\nThunderstorm: " + Thunderstorm.GetCurrentOccurrencePerYear().ToString()
-                     + "\nTornado: " + Tornado.GetCurrentOccurrencePerYear().ToString()
-                     + "\nMeteorStrike: " + MeteorStrike.GetCurrentOccurrencePerYear().ToString()
-                     + "\nEarthquake: " + Earthquake.GetCurrentOccurrencePerYear().ToString()
-                     + "\nTsunami: " + Tsunami.GetCurrentOccurrencePerYear().ToString()
-                     + "\nSinkhole: " + Sinkhole.GetCurrentOccurrencePerYear().ToString()
-                    );
+                framesCount = 4096; // One week
+
+                StringBuilder sb = new StringBuilder();
+                sb.Append(">>> EnhancedDisastersMod: " + Singleton<SimulationManager>.instance.m_currentGameTime.ToShortDateString());
+                allDisasters.ForEach(x => sb.Append("\n" + x.GetType().Name + ": " + x.GetCurrentOccurrencePerYear().ToString()));
+
+                Debug.Log(sb.ToString());
+            }
+        }
+
+        public void OnDisasterCreated(DisasterAI dai, byte intensity)
+        {
+            foreach (EnhancedDisaster ed in allDisasters)
+            {
+                if (ed.CheckDisasterAIType(dai))
+                {
+                    ed.OnDisasterCreated(intensity);
+                    return;
+                }
+            }
+        }
+
+        public void OnDisasterStarted(DisasterAI dai, byte intensity)
+        {
+            foreach (EnhancedDisaster ed in allDisasters)
+            {
+                if (ed.CheckDisasterAIType(dai))
+                {
+                    ed.OnDisasterStarted(intensity);
+                    return;
+                }
             }
         }
 

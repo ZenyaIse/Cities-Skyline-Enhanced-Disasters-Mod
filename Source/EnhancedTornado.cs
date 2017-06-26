@@ -2,6 +2,7 @@
 using ColossalFramework;
 using ColossalFramework.IO;
 using UnityEngine;
+using System;
 
 namespace EnhancedDisastersMod
 {
@@ -35,9 +36,9 @@ namespace EnhancedDisastersMod
 
         public EnhancedTornado()
         {
-            Type = DisasterType.Tornado;
+            DType = DisasterType.Tornado;
             CanOccurEverywhere = false;
-            OccurrencePerYear = 0.5f;
+            OccurrencePerYear = 0.4f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
             CooldownDays = 15;
         }
@@ -46,19 +47,19 @@ namespace EnhancedDisastersMod
         {
             if (tornadosCount > 0)
             {
-                return base.getCurrentProbabilityPerFrame() * 1000;
+                return base.getCurrentProbabilityPerFrame() * 100;
             }
 
             return base.getCurrentProbabilityPerFrame();
         }
 
-        protected override void afterDisasterStarted(byte intensity)
+        public override void OnDisasterCreated(byte intensity)
         {
-            if (intensity > 100) intensity = 100;
-
             if (tornadosCount == 0)
             {
                 tornadosCount = (byte)Singleton<SimulationManager>.instance.m_randomizer.Int32(3);
+
+                Debug.Log(string.Format(">>> EnhancedDisastersMod: Group of {0} tornados was created.", tornadosCount + 1));
             }
             else
             {
@@ -69,8 +70,11 @@ namespace EnhancedDisastersMod
             {
                 cooldownCounter = 0;
             }
+        }
 
-            Debug.Log(string.Format(">>> EnhancedDisastersMod: Group of {0} tornados was created.", tornadosCount + 1));
+        public override bool CheckDisasterAIType(object disasterAI)
+        {
+            return disasterAI as TornadoAI != null;
         }
     }
 }

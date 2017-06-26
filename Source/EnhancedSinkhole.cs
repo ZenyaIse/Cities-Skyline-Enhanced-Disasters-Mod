@@ -2,6 +2,7 @@
 using ColossalFramework;
 using ColossalFramework.IO;
 using UnityEngine;
+using System;
 
 namespace EnhancedDisastersMod
 {
@@ -31,15 +32,15 @@ namespace EnhancedDisastersMod
             }
         }
 
-        public float GroundwaterCapacity = 180; // Rainy days
+        public float GroundwaterCapacity = 360; // Rainy days
         private float groundwater = 0; // Rainy days count
 
         public EnhancedSinkhole()
         {
-            Type = DisasterType.Sinkhole;
+            DType = DisasterType.Sinkhole;
             CanOccurEverywhere = false;
             OccurrencePerYear = 1.0f; // When groundwater is full
-            ProbabilityDistribution = ProbabilityDistributions.Linear;
+            ProbabilityDistribution = ProbabilityDistributions.Uniform;
             CooldownDays = 1;
         }
 
@@ -57,15 +58,16 @@ namespace EnhancedDisastersMod
             return base.getCurrentProbabilityPerFrame() * groundwater / GroundwaterCapacity;
         }
 
-        protected override void afterDisasterStarted(byte intensity)
+        public override void OnDisasterStarted(byte intensity)
         {
-            if (intensity > 100) intensity = 100;
-
             float groundwater_old = groundwater;
-
             groundwater *= (100 - intensity) / 100f;
-
             Debug.Log(string.Format(">>> EnhancedDisastersMod: Groundwater changed from {0} to {1}", groundwater_old, groundwater));
+        }
+
+        public override bool CheckDisasterAIType(object disasterAI)
+        {
+            return disasterAI as SinkholeAI != null;
         }
     }
 }

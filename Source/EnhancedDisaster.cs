@@ -13,11 +13,11 @@ namespace EnhancedDisastersMod
 
         protected int cooldownCounter = (int)framesPerDay * 7; // Init value for a new game
 
-        public DisasterType Type = DisasterType.Empty;
+        public DisasterType DType = DisasterType.Empty;
         public bool Enabled = true;
         public bool CanOccurEverywhere = false;
         public float OccurrencePerYear = 1.0f;
-        public ProbabilityDistributions ProbabilityDistribution = ProbabilityDistributions.Linear;
+        public ProbabilityDistributions ProbabilityDistribution = ProbabilityDistributions.Uniform;
         public int IntensityPopulationThreshold = 20000;
         public int CooldownDays = 7;
 
@@ -43,6 +43,8 @@ namespace EnhancedDisastersMod
                 return;
             }
 
+            //probability *= 5;
+
             SimulationManager sm = Singleton<SimulationManager>.instance;
             if (sm.m_randomizer.Int32(randomizerRange) < (uint)(randomizerRange * probability))
             {
@@ -53,7 +55,7 @@ namespace EnhancedDisastersMod
 
                 cooldownCounter = (int)framesPerDay * CooldownDays;
 
-                afterDisasterStarted(intensity);
+                //afterDisasterStarted(intensity);
             }
         }
 
@@ -72,14 +74,26 @@ namespace EnhancedDisastersMod
             return getCurrentProbabilityPerFrame() * framesPerYear;
         }
 
-        protected virtual void afterDisasterStarted(byte intensity)
+        public virtual void OnDisasterCreated(byte intensity)
+        {
+            // Empty
+        }
+
+        public virtual void OnDisasterStarted(byte intensity)
+        {
+            // Empty
+        }
+
+        protected virtual void disasterStarting(DisasterInfo disasterInfo)
         {
 
         }
 
+        public abstract bool CheckDisasterAIType(object disasterAI);
+
         protected void startDisaster(byte intensity)
         {
-            DisasterInfo disasterInfo = EnhancedDisastersManager.GetDisasterInfo(Type);
+            DisasterInfo disasterInfo = EnhancedDisastersManager.GetDisasterInfo(DType);
 
             if (disasterInfo == null)
             {
@@ -120,6 +134,8 @@ namespace EnhancedDisastersMod
                 return;
             }
 
+            disasterStarting(disasterInfo);
+
             dm.m_disasters.m_buffer[(int)disasterIndex].m_targetPosition = targetPosition;
             dm.m_disasters.m_buffer[(int)disasterIndex].m_angle = angle;
             dm.m_disasters.m_buffer[(int)disasterIndex].m_intensity = intensity;
@@ -136,7 +152,7 @@ namespace EnhancedDisastersMod
 
         protected string getDebugStr()
         {
-            return ">>> EnhancedDisastersMod: " + Type.ToString() + ", " + Singleton<SimulationManager>.instance.m_currentGameTime.ToShortDateString() + ", ";
+            return ">>> EnhancedDisastersMod: " + DType.ToString() + ", " + Singleton<SimulationManager>.instance.m_currentGameTime.ToShortDateString() + ", ";
         }
 
         private bool findRandomTarget(out Vector3 target, out float angle)

@@ -2,6 +2,7 @@
 using ColossalFramework;
 using ColossalFramework.IO;
 using UnityEngine;
+using System;
 
 namespace EnhancedDisastersMod
 {
@@ -36,7 +37,7 @@ namespace EnhancedDisastersMod
 
         public EnhancedTsunami()
         {
-            Type = DisasterType.Tsunami;
+            DType = DisasterType.Tsunami;
             CanOccurEverywhere = false;
             OccurrencePerYear = 0.5f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
@@ -53,15 +54,16 @@ namespace EnhancedDisastersMod
             return base.getCurrentProbabilityPerFrame() * hiddenEnergy / HiddenEnergyThreshold;
         }
 
-        protected override void afterDisasterStarted(byte intensity)
+        public override void OnDisasterStarted(byte intensity)
         {
-            if (intensity > 100) intensity = 100;
-
             float strainEnergy_old = hiddenEnergy;
-
-            hiddenEnergy *= (100 - intensity) / 100f;
-
+            hiddenEnergy = hiddenEnergy * (1 - intensity / 100f);
             Debug.Log(string.Format(">>> EnhancedDisastersMod: Tsunami hidden energy changed from {0} to {1}.", strainEnergy_old, hiddenEnergy));
+        }
+
+        public override bool CheckDisasterAIType(object disasterAI)
+        {
+            return disasterAI as TsunamiAI != null;
         }
     }
 }

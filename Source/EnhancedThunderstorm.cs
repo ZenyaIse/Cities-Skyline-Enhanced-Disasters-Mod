@@ -30,16 +30,16 @@ namespace EnhancedDisastersMod
             }
         }
 
-        public float RainFactor = 2.0f;
+        public float RainFactor = 3.0f;
         public int MaxProbabilityMonth = 7;
 
         public EnhancedThunderstorm()
         {
-            Type = DisasterType.ThunderStorm;
+            DType = DisasterType.ThunderStorm;
             CanOccurEverywhere = true;
             OccurrencePerYear = 1.0f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
-            CooldownDays = 7;
+            CooldownDays = 30;
         }
 
         protected override float getCurrentProbabilityPerFrame()
@@ -57,6 +57,11 @@ namespace EnhancedDisastersMod
             }
 
             return probability;
+        }
+
+        public override bool CheckDisasterAIType(object disasterAI)
+        {
+            return disasterAI as ThunderStormAI != null;
         }
     }
 }
