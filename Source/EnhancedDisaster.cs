@@ -12,14 +12,14 @@ namespace EnhancedDisastersMod
         protected const uint randomizerRange = 67108864u;
 
         protected int cooldownCounter = (int)framesPerDay * 7; // Init value for a new game
+        protected int cooldownDays = 7;
 
         public DisasterType DType = DisasterType.Empty;
         public bool Enabled = true;
         public bool CanOccurEverywhere = false;
         public float OccurrencePerYear = 1.0f;
         public ProbabilityDistributions ProbabilityDistribution = ProbabilityDistributions.Uniform;
-        public int IntensityPopulationThreshold = 20000;
-        public int CooldownDays = 7;
+        public int FullIntensityDisasterPopulation = 20000;
 
         public void OnSimulationFrame()
         {
@@ -53,11 +53,13 @@ namespace EnhancedDisastersMod
 
                 startDisaster(scaled_intensity);
 
-                cooldownCounter = (int)framesPerDay * CooldownDays;
+                cooldownCounter = (int)framesPerDay * cooldownDays;
 
                 //afterDisasterStarted(intensity);
             }
         }
+
+        public abstract string GetName();
 
         protected virtual void onSimulationFrame_local()
         {
@@ -335,9 +337,9 @@ namespace EnhancedDisastersMod
         {
             int population = getPopulation();
 
-            if (population < IntensityPopulationThreshold)
+            if (population < FullIntensityDisasterPopulation)
             {
-                intensity = (byte)(10 + (intensity - 10) * population / IntensityPopulationThreshold);
+                intensity = (byte)(10 + (intensity - 10) * population / FullIntensityDisasterPopulation);
             }
 
             return intensity;
@@ -351,5 +353,7 @@ namespace EnhancedDisastersMod
             }
             return 0;
         }
+
+        public abstract float GetMaximumOccurrencePerYear();
     }
 }

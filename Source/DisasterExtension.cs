@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using ColossalFramework;
 using ICities;
 
@@ -14,23 +13,11 @@ namespace EnhancedDisastersMod
             Singleton<EnhancedDisastersManager>.instance.OnDisasterCreated(disasterData.Info.m_disasterAI, disasterData.m_intensity);
         }
 
-        //public override void OnDisasterActivated(ushort disasterID)
-        //{
-        //    DisasterData disasterData = Singleton<DisasterManager>.instance.m_disasters.m_buffer[disasterID];
-        //    Debug.Log(">>> EnhancedDisastersMod (OnDisasterActivated): " + disasterData.Info.GetAI().name);
-        //}
-
         public override void OnDisasterStarted(ushort disasterID)
         {
             DisasterData disasterData = Singleton<DisasterManager>.instance.m_disasters.m_buffer[disasterID];
             Debug.Log(">>> EnhancedDisastersMod (OnDisasterStarted): " + disasterData.Info.GetAI().name + ", " + Singleton<SimulationManager>.instance.m_currentGameTime.ToShortDateString());
             Singleton<EnhancedDisastersManager>.instance.OnDisasterStarted(disasterData.Info.m_disasterAI, disasterData.m_intensity);
         }
-
-        //public override void OnDisasterDetected(ushort disasterID)
-        //{
-        //    DisasterData disasterData = Singleton<DisasterManager>.instance.m_disasters.m_buffer[disasterID];
-        //    Debug.Log(">>> EnhancedDisastersMod (OnDisasterDetected): " + disasterData.Info.GetAI().name);
-        //}
     }
 }

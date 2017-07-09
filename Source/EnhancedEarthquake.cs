@@ -47,7 +47,7 @@ namespace EnhancedDisastersMod
             CanOccurEverywhere = false;
             OccurrencePerYear = 0.5f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
-            CooldownDays = 10;
+            cooldownDays = 10;
         }
 
         protected override void onSimulationFrame_local()
@@ -59,7 +59,7 @@ namespace EnhancedDisastersMod
         {
             if (aftershocksCount > 0)
             {
-                return base.getCurrentProbabilityPerFrame() * 20 * aftershocksCount;
+                return 12 * aftershocksCount / framesPerYear;
             }
 
             return base.getCurrentProbabilityPerFrame() * strainEnergy / StrainThreshold;
@@ -103,6 +103,16 @@ namespace EnhancedDisastersMod
         public override bool CheckDisasterAIType(object disasterAI)
         {
             return disasterAI as EarthquakeAI != null;
+        }
+
+        public override float GetMaximumOccurrencePerYear()
+        {
+            return OccurrencePerYear * 3;
+        }
+
+        public override string GetName()
+        {
+            return "Earthquake";
         }
     }
 }

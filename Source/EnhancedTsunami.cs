@@ -41,7 +41,7 @@ namespace EnhancedDisastersMod
             CanOccurEverywhere = false;
             OccurrencePerYear = 0.5f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
-            CooldownDays = 60;
+            cooldownDays = 60;
         }
 
         protected override void onSimulationFrame_local()
@@ -64,6 +64,16 @@ namespace EnhancedDisastersMod
         public override bool CheckDisasterAIType(object disasterAI)
         {
             return disasterAI as TsunamiAI != null;
+        }
+
+        public override float GetMaximumOccurrencePerYear()
+        {
+            return OccurrencePerYear * 3;
+        }
+
+        public override string GetName()
+        {
+            return "Tsunami";
         }
     }
 }

@@ -41,7 +41,7 @@ namespace EnhancedDisastersMod
             CanOccurEverywhere = false;
             OccurrencePerYear = 1.0f; // When groundwater is full
             ProbabilityDistribution = ProbabilityDistributions.Uniform;
-            CooldownDays = 1;
+            cooldownDays = 1;
         }
 
         protected override void onSimulationFrame_local()
@@ -68,6 +68,16 @@ namespace EnhancedDisastersMod
         public override bool CheckDisasterAIType(object disasterAI)
         {
             return disasterAI as SinkholeAI != null;
+        }
+
+        public override float GetMaximumOccurrencePerYear()
+        {
+            return OccurrencePerYear * 2;
+        }
+
+        public override string GetName()
+        {
+            return "Sinkhole";
         }
     }
 }

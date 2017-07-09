@@ -11,7 +11,7 @@ namespace EnhancedDisastersMod
 
         public string Description
         {
-            get { return "More natural behavior of natural disasters. (2017/06/26)"; }
+            get { return "More natural behavior of natural disasters. (Ver. 2017/07/09)"; }
         }
     }
 }

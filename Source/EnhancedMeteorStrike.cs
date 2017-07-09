@@ -38,16 +38,16 @@ namespace EnhancedDisastersMod
         {
             DType = DisasterType.MeteorStrike;
             CanOccurEverywhere = false;
-            OccurrencePerYear = 0.25f;
+            OccurrencePerYear = 0.2f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
-            CooldownDays = 60;
+            cooldownDays = 60;
         }
 
         protected override float getCurrentProbabilityPerFrame()
         {
             if (meteorsCount > 0)
             {
-                return base.getCurrentProbabilityPerFrame() * 50;
+                return 50 / framesPerYear; // Every 7 days
             }
 
             return base.getCurrentProbabilityPerFrame();
@@ -75,6 +75,16 @@ namespace EnhancedDisastersMod
         public override bool CheckDisasterAIType(object disasterAI)
         {
             return disasterAI as MeteorStrikeAI != null;
+        }
+
+        public override float GetMaximumOccurrencePerYear()
+        {
+            return OccurrencePerYear * 5;
+        }
+
+        public override string GetName()
+        {
+            return "Meteor Strike";
         }
     }
 }

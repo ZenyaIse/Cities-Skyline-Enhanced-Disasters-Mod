@@ -63,8 +63,8 @@
     <Compile Include="EnhancedThunderstorm.cs" />
     <Compile Include="EnhancedTornado.cs" />
     <Compile Include="EnhancedTsunami.cs" />
+    <Compile Include="ExtendedDisastersPanel.cs" />
     <Compile Include="LoadingExtension.cs" />
-    <Compile Include="ModOptions.cs" />
     <Compile Include="ProbabilityDistributions.cs" />
     <Compile Include="SerializableDataExtension.cs" />
     <Compile Include="Threading.cs" />

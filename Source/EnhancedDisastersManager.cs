@@ -17,40 +17,42 @@ namespace EnhancedDisastersMod
         public EnhancedTsunami Tsunami;
         public EnhancedSinkhole Sinkhole;
         public EnhancedMeteorStrike MeteorStrike;
-        private List<EnhancedDisaster> allDisasters = new List<EnhancedDisaster>();
-
+        public List<EnhancedDisaster> AllDisasters = new List<EnhancedDisaster>();
+#if DEBUG
         private int framesCount = 0;
+#endif
 
         public EnhancedDisastersManager()
         {
-            allDisasters.Add(ForestFire = new EnhancedForestFire());
-            allDisasters.Add(Thunderstorm = new EnhancedThunderstorm());
-            allDisasters.Add(Tornado = new EnhancedTornado());
-            allDisasters.Add(MeteorStrike = new EnhancedMeteorStrike());
-            allDisasters.Add(Earthquake = new EnhancedEarthquake());
-            allDisasters.Add(Tsunami = new EnhancedTsunami());
-            allDisasters.Add(Sinkhole = new EnhancedSinkhole());
+            AllDisasters.Add(ForestFire = new EnhancedForestFire());
+            AllDisasters.Add(Thunderstorm = new EnhancedThunderstorm());
+            AllDisasters.Add(Tornado = new EnhancedTornado());
+            AllDisasters.Add(Earthquake = new EnhancedEarthquake());
+            AllDisasters.Add(Tsunami = new EnhancedTsunami());
+            AllDisasters.Add(Sinkhole = new EnhancedSinkhole());
+            AllDisasters.Add(MeteorStrike = new EnhancedMeteorStrike());
         }
 
         public void OnSimulationFrame()
         {
-            allDisasters.ForEach(x => x.OnSimulationFrame());
-
+            AllDisasters.ForEach(x => x.OnSimulationFrame());
+#if DEBUG
             if (--framesCount <= 0)
             {
                 framesCount = 4096; // One week
 
                 StringBuilder sb = new StringBuilder();
                 sb.Append(">>> EnhancedDisastersMod: " + Singleton<SimulationManager>.instance.m_currentGameTime.ToShortDateString());
-                allDisasters.ForEach(x => sb.Append("\n" + x.GetType().Name + ": " + x.GetCurrentOccurrencePerYear().ToString()));
+                AllDisasters.ForEach(x => sb.Append("\n" + x.GetType().Name + ": " + x.GetCurrentOccurrencePerYear().ToString()));
 
                 Debug.Log(sb.ToString());
             }
+#endif
         }
 
         public void OnDisasterCreated(DisasterAI dai, byte intensity)
         {
-            foreach (EnhancedDisaster ed in allDisasters)
+            foreach (EnhancedDisaster ed in AllDisasters)
             {
                 if (ed.CheckDisasterAIType(dai))
                 {
@@ -62,7 +64,7 @@ namespace EnhancedDisastersMod
 
         public void OnDisasterStarted(DisasterAI dai, byte intensity)
         {
-            foreach (EnhancedDisaster ed in allDisasters)
+            foreach (EnhancedDisaster ed in AllDisasters)
             {
                 if (ed.CheckDisasterAIType(dai))
                 {

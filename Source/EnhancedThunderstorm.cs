@@ -39,7 +39,7 @@ namespace EnhancedDisastersMod
             CanOccurEverywhere = true;
             OccurrencePerYear = 1.0f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
-            CooldownDays = 30;
+            cooldownDays = 30;
         }
 
         protected override float getCurrentProbabilityPerFrame()
@@ -62,6 +62,16 @@ namespace EnhancedDisastersMod
         public override bool CheckDisasterAIType(object disasterAI)
         {
             return disasterAI as ThunderStormAI != null;
+        }
+
+        public override float GetMaximumOccurrencePerYear()
+        {
+            return OccurrencePerYear * RainFactor;
+        }
+
+        public override string GetName()
+        {
+            return "Thunderstorm";
         }
     }
 }

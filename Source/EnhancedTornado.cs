@@ -40,14 +40,14 @@ namespace EnhancedDisastersMod
             CanOccurEverywhere = false;
             OccurrencePerYear = 0.4f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
-            CooldownDays = 15;
+            cooldownDays = 15;
         }
 
         protected override float getCurrentProbabilityPerFrame()
         {
             if (tornadosCount > 0)
             {
-                return base.getCurrentProbabilityPerFrame() * 100;
+                return 100 / framesPerYear; // Every 3 days
             }
 
             return base.getCurrentProbabilityPerFrame();
@@ -75,6 +75,16 @@ namespace EnhancedDisastersMod
         public override bool CheckDisasterAIType(object disasterAI)
         {
             return disasterAI as TornadoAI != null;
+        }
+
+        public override float GetMaximumOccurrencePerYear()
+        {
+            return OccurrencePerYear * 2;
+        }
+
+        public override string GetName()
+        {
+            return "Tornado";
         }
     }
 }

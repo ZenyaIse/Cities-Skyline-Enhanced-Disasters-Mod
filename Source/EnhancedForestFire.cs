@@ -41,7 +41,7 @@ namespace EnhancedDisastersMod
             CanOccurEverywhere = true;
             OccurrencePerYear = 10.0f; // In case of dry weather
             ProbabilityDistribution = ProbabilityDistributions.Uniform;
-            CooldownDays = 1;
+            cooldownDays = 1;
         }
 
         protected override void onSimulationFrame_local()
@@ -67,6 +67,16 @@ namespace EnhancedDisastersMod
         public override bool CheckDisasterAIType(object disasterAI)
         {
             return disasterAI as ForestFireAI != null;
+        }
+
+        public override float GetMaximumOccurrencePerYear()
+        {
+            return OccurrencePerYear;
+        }
+
+        public override string GetName()
+        {
+            return "Forest Fire";
         }
     }
 }
