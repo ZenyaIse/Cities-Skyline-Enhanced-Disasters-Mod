@@ -8,36 +8,36 @@ namespace EnhancedDisastersMod
 {
     public class EnhancedMeteorStrike : EnhancedDisaster
     {
-        public class Data : IDataContainer
-        {
-            public void Serialize(DataSerializer s)
-            {
-                EnhancedMeteorStrike d = Singleton<EnhancedDisastersManager>.instance.MeteorStrike;
-                s.WriteInt32(d.cooldownCounter);
-                s.WriteInt8(d.meteorsCount);
-            }
+        //public class Data : IDataContainer
+        //{
+        //    public void Serialize(DataSerializer s)
+        //    {
+        //        EnhancedMeteorStrike d = Singleton<EnhancedDisastersManager>.instance.MeteorStrike;
+        //        s.WriteInt32(d.CooldownCounter);
+        //        s.WriteInt8(d.meteorsCount);
+        //    }
 
-            public void Deserialize(DataSerializer s)
-            {
-                EnhancedMeteorStrike d = Singleton<EnhancedDisastersManager>.instance.MeteorStrike;
-                d.cooldownCounter = s.ReadInt32();
-                d.meteorsCount = (byte)s.ReadInt8();
+        //    public void Deserialize(DataSerializer s)
+        //    {
+        //        EnhancedMeteorStrike d = Singleton<EnhancedDisastersManager>.instance.MeteorStrike;
+        //        d.CooldownCounter = s.ReadInt32();
+        //        d.meteorsCount = (byte)s.ReadInt8();
 
-                Debug.Log(">>> EnhancedDisastersMod: Meteor strike data loaded.");
-            }
+        //        Debug.Log(">>> EnhancedDisastersMod: Meteor strike data loaded.");
+        //    }
 
-            public void AfterDeserialize(DataSerializer s)
-            {
-                // Empty
-            }
-        }
+        //    public void AfterDeserialize(DataSerializer s)
+        //    {
+        //        // Empty
+        //    }
+        //}
 
         private byte meteorsCount = 0;
 
         public EnhancedMeteorStrike()
         {
             DType = DisasterType.MeteorStrike;
-            CanOccurEverywhere = false;
+            OccurrenceAfterUnlock = OccurrenceAreas.InnerArea;
             OccurrencePerYear = 0.2f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
             cooldownDays = 60;
@@ -68,7 +68,7 @@ namespace EnhancedDisastersMod
 
             if (meteorsCount > 0)
             {
-                cooldownCounter = 0;
+                CooldownCounter = 0;
             }
         }
 

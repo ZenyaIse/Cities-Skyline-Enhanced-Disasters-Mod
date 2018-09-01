@@ -8,29 +8,29 @@ namespace EnhancedDisastersMod
 {
     public class EnhancedTsunami : EnhancedDisaster
     {
-        public class Data : IDataContainer
-        {
-            public void Serialize(DataSerializer s)
-            {
-                EnhancedTsunami d = Singleton<EnhancedDisastersManager>.instance.Tsunami;
-                s.WriteInt32(d.cooldownCounter);
-                s.WriteFloat(d.hiddenEnergy);
-            }
+        //public class Data : IDataContainer
+        //{
+        //    public void Serialize(DataSerializer s)
+        //    {
+        //        EnhancedTsunami d = Singleton<EnhancedDisastersManager>.instance.Tsunami;
+        //        s.WriteInt32(d.CooldownCounter);
+        //        s.WriteFloat(d.hiddenEnergy);
+        //    }
 
-            public void Deserialize(DataSerializer s)
-            {
-                EnhancedTsunami d = Singleton<EnhancedDisastersManager>.instance.Tsunami;
-                d.cooldownCounter = s.ReadInt32();
-                d.hiddenEnergy = s.ReadFloat();
+        //    public void Deserialize(DataSerializer s)
+        //    {
+        //        EnhancedTsunami d = Singleton<EnhancedDisastersManager>.instance.Tsunami;
+        //        d.CooldownCounter = s.ReadInt32();
+        //        d.hiddenEnergy = s.ReadFloat();
 
-                Debug.Log(">>> EnhancedDisastersMod: Tsunami data loaded.");
-            }
+        //        Debug.Log(">>> EnhancedDisastersMod: Tsunami data loaded.");
+        //    }
 
-            public void AfterDeserialize(DataSerializer s)
-            {
-                // Empty
-            }
-        }
+        //    public void AfterDeserialize(DataSerializer s)
+        //    {
+        //        // Empty
+        //    }
+        //}
 
         public float HiddenEnergyThreshold = 1500; // Days
         private float hiddenEnergy = 0; // Days
@@ -38,7 +38,8 @@ namespace EnhancedDisastersMod
         public EnhancedTsunami()
         {
             DType = DisasterType.Tsunami;
-            CanOccurEverywhere = false;
+            OccurrenceBeforeUnlock = OccurrenceAreas.Nowhere;
+            OccurrenceAfterUnlock = OccurrenceAreas.Everywhere;
             OccurrencePerYear = 0.5f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
             cooldownDays = 60;

@@ -12,16 +12,24 @@ namespace EnhancedDisastersMod
         {
             public void Serialize(DataSerializer s)
             {
-                EnhancedThunderstorm d = Singleton<EnhancedDisastersManager>.instance.Thunderstorm;
-                s.WriteInt32(d.cooldownCounter);
+                EnhancedThunderstorm d = Singleton<EnhancedDisastersManager>.instance.container.Thunderstorm;
+                s.WriteBool(d.Enabled);
+                s.WriteFloat(d.OccurrencePerYear);
+                s.WriteInt32(d.MaxProbabilityMonth);
+                s.WriteFloat(d.RainFactor);
+                s.WriteInt32(d.CooldownCounter);
             }
 
             public void Deserialize(DataSerializer s)
             {
-                EnhancedThunderstorm d = Singleton<EnhancedDisastersManager>.instance.Thunderstorm;
-                d.cooldownCounter = s.ReadInt32();
+                EnhancedThunderstorm d = Singleton<EnhancedDisastersManager>.instance.container.Thunderstorm;
+                d.Enabled = s.ReadBool();
+                d.OccurrencePerYear = s.ReadFloat();
+                d.MaxProbabilityMonth = s.ReadInt32();
+                d.RainFactor = s.ReadFloat();
+                d.CooldownCounter = s.ReadInt32();
 
-                Debug.Log(">>> EnhancedDisastersMod: Thunderstorm data loaded.");
+                Debug.Log(">>> EnhancedDisastersMod: ForestFire data loaded.");
             }
 
             public void AfterDeserialize(DataSerializer s)
@@ -30,14 +38,15 @@ namespace EnhancedDisastersMod
             }
         }
 
-        public float RainFactor = 3.0f;
+        public float RainFactor = 2.0f;
         public int MaxProbabilityMonth = 7;
 
         public EnhancedThunderstorm()
         {
             DType = DisasterType.ThunderStorm;
-            CanOccurEverywhere = true;
-            OccurrencePerYear = 1.0f;
+            OccurrenceBeforeUnlock = OccurrenceAreas.OuterArea;
+            OccurrenceAfterUnlock = OccurrenceAreas.Everywhere;
+            OccurrencePerYear = 1.5f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
             cooldownDays = 30;
         }

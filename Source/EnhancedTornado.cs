@@ -8,36 +8,36 @@ namespace EnhancedDisastersMod
 {
     public class EnhancedTornado : EnhancedDisaster
     {
-        public class Data : IDataContainer
-        {
-            public void Serialize(DataSerializer s)
-            {
-                EnhancedTornado d = Singleton<EnhancedDisastersManager>.instance.Tornado;
-                s.WriteInt32(d.cooldownCounter);
-                s.WriteInt8(d.tornadosCount);
-            }
+        //public class Data : IDataContainer
+        //{
+        //    public void Serialize(DataSerializer s)
+        //    {
+        //        EnhancedTornado d = Singleton<EnhancedDisastersManager>.instance.Tornado;
+        //        s.WriteInt32(d.CooldownCounter);
+        //        s.WriteInt8(d.tornadosCount);
+        //    }
 
-            public void Deserialize(DataSerializer s)
-            {
-                EnhancedTornado d = Singleton<EnhancedDisastersManager>.instance.Tornado;
-                d.cooldownCounter = s.ReadInt32();
-                d.tornadosCount = (byte)s.ReadInt8();
+        //    public void Deserialize(DataSerializer s)
+        //    {
+        //        EnhancedTornado d = Singleton<EnhancedDisastersManager>.instance.Tornado;
+        //        d.CooldownCounter = s.ReadInt32();
+        //        d.tornadosCount = (byte)s.ReadInt8();
 
-                Debug.Log(">>> EnhancedDisastersMod: Tornado data loaded.");
-            }
+        //        Debug.Log(">>> EnhancedDisastersMod: Tornado data loaded.");
+        //    }
 
-            public void AfterDeserialize(DataSerializer s)
-            {
-                // Empty
-            }
-        }
+        //    public void AfterDeserialize(DataSerializer s)
+        //    {
+        //        // Empty
+        //    }
+        //}
 
         private byte tornadosCount = 0;
 
         public EnhancedTornado()
         {
             DType = DisasterType.Tornado;
-            CanOccurEverywhere = false;
+            OccurrenceAfterUnlock = OccurrenceAreas.InnerArea;
             OccurrencePerYear = 0.4f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
             cooldownDays = 15;
@@ -68,7 +68,7 @@ namespace EnhancedDisastersMod
 
             if (tornadosCount > 0)
             {
-                cooldownCounter = 0;
+                CooldownCounter = 0;
             }
         }
 

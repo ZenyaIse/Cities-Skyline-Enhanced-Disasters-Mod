@@ -1,4 +1,5 @@
-﻿using ColossalFramework.UI;
+﻿using ColossalFramework;
+using ColossalFramework.UI;
 using ICities;
 using UnityEngine;
 
@@ -13,6 +14,8 @@ namespace EnhancedDisastersMod
             Debug.Log("EnhancedDisastersMod Loaded: 2017/07/08");
 
             createExtendedDisasterPanel();
+
+            Singleton<EnhancedDisastersManager>.instance.CheckUnlocks();
         }
 
         private void createExtendedDisasterPanel()

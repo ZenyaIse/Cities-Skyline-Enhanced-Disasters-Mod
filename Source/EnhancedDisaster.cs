@@ -2,6 +2,7 @@
 using ICities;
 using UnityEngine;
 using ColossalFramework;
+using System.Xml.Serialization;
 
 namespace EnhancedDisastersMod
 {
@@ -10,16 +11,25 @@ namespace EnhancedDisastersMod
         protected const float framesPerDay = 585.142f; // See m_timePerFrame from SimulationManager.Awake()
         protected const float framesPerYear = framesPerDay * 365f;
         protected const uint randomizerRange = 67108864u;
-
-        protected int cooldownCounter = (int)framesPerDay * 7; // Init value for a new game
         protected int cooldownDays = 7;
 
+        [XmlIgnore]
+        public int CooldownCounter = (int)framesPerDay * 7; // Init value for a new game
+        [XmlIgnore]
         public DisasterType DType = DisasterType.Empty;
-        public bool Enabled = true;
-        public bool CanOccurEverywhere = false;
-        public float OccurrencePerYear = 1.0f;
+        [XmlIgnore]
         public ProbabilityDistributions ProbabilityDistribution = ProbabilityDistributions.Uniform;
+        [XmlIgnore]
         public int FullIntensityDisasterPopulation = 20000;
+        [XmlIgnore]
+        public OccurrenceAreas OccurrenceBeforeUnlock = OccurrenceAreas.Nowhere;
+        [XmlIgnore]
+        public OccurrenceAreas OccurrenceAfterUnlock = OccurrenceAreas.InnerArea;
+        [XmlIgnore]
+        public bool Unlocked = false;
+
+        public bool Enabled = true;
+        public float OccurrencePerYear = 1.0f;
 
         public void OnSimulationFrame()
         {
@@ -28,11 +38,16 @@ namespace EnhancedDisastersMod
                 return;
             }
 
+            if (!Unlocked && OccurrenceBeforeUnlock == OccurrenceAreas.Nowhere)
+            {
+                return;
+            }
+
             onSimulationFrame_local();
 
-            if (cooldownCounter > 0)
+            if (CooldownCounter > 0)
             {
-                cooldownCounter--;
+                CooldownCounter--;
                 return;
             }
 
@@ -53,7 +68,7 @@ namespace EnhancedDisastersMod
 
                 startDisaster(scaled_intensity);
 
-                cooldownCounter = (int)framesPerDay * cooldownDays;
+                CooldownCounter = (int)framesPerDay * cooldownDays;
 
                 //afterDisasterStarted(intensity);
             }
@@ -106,15 +121,10 @@ namespace EnhancedDisastersMod
             float angle;
             DisasterManager dm = Singleton<DisasterManager>.instance;
 
-            bool targetFound;
-            if (CanOccurEverywhere)
-            {
-                targetFound = findRandomTarget(out targetPosition, out angle);
-            }
-            else
-            {
-                targetFound = disasterInfo.m_disasterAI.FindRandomTarget(out targetPosition, out angle);
-            }
+            bool targetFound = false;
+            OccurrenceAreas area = Unlocked ? OccurrenceAfterUnlock : OccurrenceBeforeUnlock;
+            targetFound = findRandomTarget(out targetPosition, out angle, area);
+            //targetFound = disasterInfo.m_disasterAI.FindRandomTarget(out targetPosition, out angle);
 
             if (!targetFound)
             {
@@ -136,6 +146,8 @@ namespace EnhancedDisastersMod
                 return;
             }
 
+            setDisasterAIParameters(disasterInfo.m_disasterAI, intensity);
+
             disasterStarting(disasterInfo);
 
             dm.m_disasters.m_buffer[(int)disasterIndex].m_targetPosition = targetPosition;
@@ -146,10 +158,17 @@ namespace EnhancedDisastersMod
             expr_98_cp_0[(int)expr_98_cp_1].m_flags = (expr_98_cp_0[(int)expr_98_cp_1].m_flags | DisasterData.Flags.SelfTrigger);
             disasterInfo.m_disasterAI.StartNow(disasterIndex, ref dm.m_disasters.m_buffer[(int)disasterIndex]);
 
+            Debug.Log("Started by EnhancedDisastersMod");
+
             if (EnhancedDisastersManager.IsDebug)
             {
                 Debug.Log(getDebugStr() + string.Format("disaster intensity: {0}", intensity));
             }
+        }
+
+        protected virtual void setDisasterAIParameters(DisasterAI dai, byte intensity)
+        {
+
         }
 
         protected string getDebugStr()
@@ -157,7 +176,7 @@ namespace EnhancedDisastersMod
             return ">>> EnhancedDisastersMod: " + DType.ToString() + ", " + Singleton<SimulationManager>.instance.m_currentGameTime.ToShortDateString() + ", ";
         }
 
-        private bool findRandomTarget(out Vector3 target, out float angle)
+        private bool findRandomTarget(out Vector3 target, out float angle, OccurrenceAreas area)
         {
             GameAreaManager gam = Singleton<GameAreaManager>.instance;
             SimulationManager sm = Singleton<SimulationManager>.instance;
@@ -175,20 +194,20 @@ namespace EnhancedDisastersMod
                             float maxX;
                             float maxZ;
                             gam.GetAreaBounds(j, i, out minX, out minZ, out maxX, out maxZ);
-                            float minimumEdgeDistance = 100f;
-                            if (j == 0)
+                            float minimumEdgeDistance = 100f; // TO DO: implement
+                            if (!CanOccur(j - 1, i, area))
                             {
                                 minX += minimumEdgeDistance;
                             }
-                            if (i == 0)
+                            if (!CanOccur(j, i - 1, area))
                             {
                                 minZ += minimumEdgeDistance;
                             }
-                            if (j == 4)
+                            if (!CanOccur(j + 1, i, area))
                             {
                                 maxX -= minimumEdgeDistance;
                             }
-                            if (i == 4)
+                            if (!CanOccur(j, i + 1, area))
                             {
                                 maxZ -= minimumEdgeDistance;
                             }
@@ -197,7 +216,7 @@ namespace EnhancedDisastersMod
                             target.x = minX + (maxX - minX) * randX;
                             target.y = 0f;
                             target.z = minZ + (maxZ - minZ) * randZ;
-                            clampDisasterTarget(ref target);
+                            clampDisasterTarget(ref target, area);
                             target.y = Singleton<TerrainManager>.instance.SampleRawHeightSmoothWithWater(target, false, 0f);
                             angle = (float)sm.m_randomizer.Int32(0, 10000) * 0.0006283185f;
                             return true;
@@ -210,7 +229,7 @@ namespace EnhancedDisastersMod
             return false;
         }
 
-        private void clampDisasterTarget(ref Vector3 target)
+        private void clampDisasterTarget(ref Vector3 target, OccurrenceAreas area)
         {
             GameAreaManager instance = Singleton<GameAreaManager>.instance;
             float minimumEdgeDistance = 100f;
@@ -222,7 +241,7 @@ namespace EnhancedDisastersMod
             float maxX;
             float maxZ;
             instance.GetAreaBounds(x, z, out minX, out minZ, out maxX, out maxZ);
-            if (x == 0)
+            if (!CanOccur(x - 1, z, area))
             {
                 float dx1 = target.x - minX;
                 if (dx1 < minimumEdgeDistance)
@@ -230,7 +249,7 @@ namespace EnhancedDisastersMod
                     target.x += minimumEdgeDistance - dx1;
                 }
             }
-            if (z == 0)
+            if (!CanOccur(x, z - 1, area))
             {
                 float dz1 = target.z - minZ;
                 if (dz1 < minimumEdgeDistance)
@@ -238,7 +257,7 @@ namespace EnhancedDisastersMod
                     target.z += minimumEdgeDistance - dz1;
                 }
             }
-            if (x == 4)
+            if (!CanOccur(x + 1, z, area))
             {
                 float dx2 = maxX - target.x;
                 if (dx2 < minimumEdgeDistance)
@@ -246,7 +265,7 @@ namespace EnhancedDisastersMod
                     target.x += dx2 - minimumEdgeDistance;
                 }
             }
-            if (z == 4)
+            if (!CanOccur(x, z + 1, area))
             {
                 float dz2 = maxZ - target.z;
                 if (dz2 < minimumEdgeDistance)
@@ -254,7 +273,7 @@ namespace EnhancedDisastersMod
                     target.z += dz2 - minimumEdgeDistance;
                 }
             }
-            if (x == 0 && z == 0)
+            if (!CanOccur(x - 1, z - 1, area))
             {
                 Vector3 vector = new Vector3(minX, target.y, minZ);
                 Vector3 vector2 = target - vector;
@@ -267,7 +286,7 @@ namespace EnhancedDisastersMod
                     target = vector + vector2.normalized * minimumEdgeDistance;
                 }
             }
-            if (x == 4 && z == 0)
+            if (!CanOccur(x + 1, z - 1, area))
             {
                 Vector3 vector3 = new Vector3(maxX, target.y, minZ);
                 Vector3 vector4 = target - vector3;
@@ -280,7 +299,7 @@ namespace EnhancedDisastersMod
                     target = vector3 + vector4.normalized * minimumEdgeDistance;
                 }
             }
-            if (x == 0 && z == 4)
+            if (!CanOccur(x - 1, z + 1, area))
             {
                 Vector3 vector5 = new Vector3(minX, target.y, maxZ);
                 Vector3 vector6 = target - vector5;
@@ -293,7 +312,7 @@ namespace EnhancedDisastersMod
                     target = vector5 + vector6.normalized * minimumEdgeDistance;
                 }
             }
-            if (x == 4 && z == 4)
+            if (!CanOccur(x + 1, z + 1, area))
             {
                 Vector3 vector7 = new Vector3(maxX, target.y, maxZ);
                 Vector3 vector8 = target - vector7;
@@ -305,6 +324,22 @@ namespace EnhancedDisastersMod
                     }
                     target = vector7 + vector8.normalized * minimumEdgeDistance;
                 }
+            }
+        }
+
+        public bool CanOccur(int x, int z, OccurrenceAreas area)
+        {
+            GameAreaManager gam = Singleton<GameAreaManager>.instance;
+            switch (area)
+            {
+                case OccurrenceAreas.InnerArea:
+                    return x >= 0 && z >= 0 && x < 5 && z < 5 && gam.m_areaGrid[z * 5 + x] != 0; // Game default
+                case OccurrenceAreas.OuterArea:
+                    return x >= 0 && z >= 0 && x < 5 && z < 5 && gam.m_areaGrid[z * 5 + x] == 0;
+                case OccurrenceAreas.Everywhere:
+                    return x >= 0 && z >= 0 && x < 5 && z < 5;
+                default:
+                    return false;
             }
         }
 

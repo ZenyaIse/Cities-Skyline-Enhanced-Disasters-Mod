@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DisasterExtension.cs" />
+    <Compile Include="DisastersContainer.cs" />
     <Compile Include="EnhancedDisaster.cs" />
     <Compile Include="EnhancedDisastersManager.cs" />
     <Compile Include="EnhancedEarthquake.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="EnhancedTsunami.cs" />
     <Compile Include="ExtendedDisastersPanel.cs" />
     <Compile Include="LoadingExtension.cs" />
+    <Compile Include="OccurrenceAreas.cs" />
     <Compile Include="ProbabilityDistributions.cs" />
     <Compile Include="SerializableDataExtension.cs" />
     <Compile Include="Threading.cs" />

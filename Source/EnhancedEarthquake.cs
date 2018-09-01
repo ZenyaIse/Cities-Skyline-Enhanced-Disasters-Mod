@@ -8,33 +8,33 @@ namespace EnhancedDisastersMod
 {
     public class EnhancedEarthquake : EnhancedDisaster
     {
-        public class Data : IDataContainer
-        {
-            public void Serialize(DataSerializer s)
-            {
-                EnhancedEarthquake d = Singleton<EnhancedDisastersManager>.instance.Earthquake;
-                s.WriteInt32(d.cooldownCounter);
-                s.WriteFloat(d.strainEnergy);
-                s.WriteInt8(d.aftershocksCount);
-                s.WriteInt8(d.aftershockMaxIntensity);
-            }
+        //public class Data : IDataContainer
+        //{
+        //    public void Serialize(DataSerializer s)
+        //    {
+        //        EnhancedEarthquake d = Singleton<EnhancedDisastersManager>.instance.Earthquake;
+        //        s.WriteInt32(d.CooldownCounter);
+        //        s.WriteFloat(d.strainEnergy);
+        //        s.WriteInt8(d.aftershocksCount);
+        //        s.WriteInt8(d.aftershockMaxIntensity);
+        //    }
 
-            public void Deserialize(DataSerializer s)
-            {
-                EnhancedEarthquake d = Singleton<EnhancedDisastersManager>.instance.Earthquake;
-                d.cooldownCounter = s.ReadInt32();
-                d.strainEnergy = s.ReadFloat();
-                d.aftershocksCount = (byte)s.ReadInt8();
-                d.aftershockMaxIntensity = (byte)s.ReadInt8();
+        //    public void Deserialize(DataSerializer s)
+        //    {
+        //        EnhancedEarthquake d = Singleton<EnhancedDisastersManager>.instance.Earthquake;
+        //        d.CooldownCounter = s.ReadInt32();
+        //        d.strainEnergy = s.ReadFloat();
+        //        d.aftershocksCount = (byte)s.ReadInt8();
+        //        d.aftershockMaxIntensity = (byte)s.ReadInt8();
 
-                Debug.Log(">>> EnhancedDisastersMod: Earthquake data loaded.");
-            }
+        //        Debug.Log(">>> EnhancedDisastersMod: Earthquake data loaded.");
+        //    }
 
-            public void AfterDeserialize(DataSerializer s)
-            {
-                // Empty
-            }
-        }
+        //    public void AfterDeserialize(DataSerializer s)
+        //    {
+        //        // Empty
+        //    }
+        //}
 
         public float StrainThreshold = 700; // Days
         private float strainEnergy = 0; // Days
@@ -44,7 +44,7 @@ namespace EnhancedDisastersMod
         public EnhancedEarthquake()
         {
             DType = DisasterType.Earthquake;
-            CanOccurEverywhere = false;
+            OccurrenceAfterUnlock = OccurrenceAreas.InnerArea;
             OccurrencePerYear = 0.5f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
             cooldownDays = 10;
@@ -97,6 +97,18 @@ namespace EnhancedDisastersMod
             else
             {
                 return base.getRandomIntensity();
+            }
+        }
+
+        protected override void setDisasterAIParameters(DisasterAI dai, byte intensity)
+        {
+            EarthquakeAI ai = dai as EarthquakeAI;
+
+            if (ai == null) return;
+
+            if (intensity > 50)
+            {
+                ai.m_crackLength = 0;
             }
         }
 

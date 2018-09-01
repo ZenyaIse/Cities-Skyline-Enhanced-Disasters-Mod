@@ -12,15 +12,21 @@ namespace EnhancedDisastersMod
         {
             public void Serialize(DataSerializer s)
             {
-                EnhancedForestFire d = Singleton<EnhancedDisastersManager>.instance.ForestFire;
-                s.WriteInt32(d.cooldownCounter);
+                EnhancedForestFire d = Singleton<EnhancedDisastersManager>.instance.container.ForestFire;
+                s.WriteBool(d.Enabled);
+                s.WriteFloat(d.OccurrencePerYear);
+                s.WriteInt32(d.WarmupDays);
+                s.WriteInt32(d.CooldownCounter);
                 s.WriteUInt32(d.noRainFramesCount);
             }
 
             public void Deserialize(DataSerializer s)
             {
-                EnhancedForestFire d = Singleton<EnhancedDisastersManager>.instance.ForestFire;
-                d.cooldownCounter = s.ReadInt32();
+                EnhancedForestFire d = Singleton<EnhancedDisastersManager>.instance.container.ForestFire;
+                d.Enabled = s.ReadBool();
+                d.OccurrencePerYear = s.ReadFloat();
+                d.WarmupDays = s.ReadInt32();
+                d.CooldownCounter = s.ReadInt32();
                 d.noRainFramesCount = s.ReadUInt32();
 
                 Debug.Log(">>> EnhancedDisastersMod: ForestFire data loaded.");
@@ -38,7 +44,8 @@ namespace EnhancedDisastersMod
         public EnhancedForestFire()
         {
             DType = DisasterType.ForestFire;
-            CanOccurEverywhere = true;
+            OccurrenceBeforeUnlock = OccurrenceAreas.OuterArea;
+            OccurrenceAfterUnlock = OccurrenceAreas.Everywhere;
             OccurrencePerYear = 10.0f; // In case of dry weather
             ProbabilityDistribution = ProbabilityDistributions.Uniform;
             cooldownDays = 1;

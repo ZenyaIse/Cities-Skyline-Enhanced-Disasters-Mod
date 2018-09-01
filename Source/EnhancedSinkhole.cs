@@ -8,29 +8,29 @@ namespace EnhancedDisastersMod
 {
     public class EnhancedSinkhole : EnhancedDisaster
     {
-        public class Data : IDataContainer
-        {
-            public void Serialize(DataSerializer s)
-            {
-                EnhancedSinkhole d = Singleton<EnhancedDisastersManager>.instance.Sinkhole;
-                s.WriteInt32(d.cooldownCounter);
-                s.WriteFloat(d.groundwater);
-            }
+        //public class Data : IDataContainer
+        //{
+        //    public void Serialize(DataSerializer s)
+        //    {
+        //        EnhancedSinkhole d = Singleton<EnhancedDisastersManager>.instance.Sinkhole;
+        //        s.WriteInt32(d.CooldownCounter);
+        //        s.WriteFloat(d.groundwater);
+        //    }
 
-            public void Deserialize(DataSerializer s)
-            {
-                EnhancedSinkhole d = Singleton<EnhancedDisastersManager>.instance.Sinkhole;
-                d.cooldownCounter = s.ReadInt32();
-                d.groundwater = s.ReadFloat();
+        //    public void Deserialize(DataSerializer s)
+        //    {
+        //        EnhancedSinkhole d = Singleton<EnhancedDisastersManager>.instance.Sinkhole;
+        //        d.CooldownCounter = s.ReadInt32();
+        //        d.groundwater = s.ReadFloat();
 
-                Debug.Log(">>> EnhancedDisastersMod: Sinkhole data loaded.");
-            }
+        //        Debug.Log(">>> EnhancedDisastersMod: Sinkhole data loaded.");
+        //    }
 
-            public void AfterDeserialize(DataSerializer s)
-            {
-                // Empty
-            }
-        }
+        //    public void AfterDeserialize(DataSerializer s)
+        //    {
+        //        // Empty
+        //    }
+        //}
 
         public float GroundwaterCapacity = 360; // Rainy days
         private float groundwater = 0; // Rainy days count
@@ -38,7 +38,7 @@ namespace EnhancedDisastersMod
         public EnhancedSinkhole()
         {
             DType = DisasterType.Sinkhole;
-            CanOccurEverywhere = false;
+            OccurrenceAfterUnlock = OccurrenceAreas.InnerArea;
             OccurrencePerYear = 1.0f; // When groundwater is full
             ProbabilityDistribution = ProbabilityDistributions.Uniform;
             cooldownDays = 1;

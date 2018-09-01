@@ -1,5 +1,6 @@
-﻿using System.Text;
-using System.Collections.Generic;
+﻿using System;
+using System.IO;
+using System.Xml.Serialization;
 using ICities;
 using ColossalFramework;
 using UnityEngine;
@@ -10,32 +11,31 @@ namespace EnhancedDisastersMod
     {
         public static bool IsDebug = true;
 
-        public EnhancedForestFire ForestFire;
-        public EnhancedThunderstorm Thunderstorm;
-        public EnhancedTornado Tornado;
-        public EnhancedEarthquake Earthquake;
-        public EnhancedTsunami Tsunami;
-        public EnhancedSinkhole Sinkhole;
-        public EnhancedMeteorStrike MeteorStrike;
-        public List<EnhancedDisaster> AllDisasters = new List<EnhancedDisaster>();
+        public DisastersContainer container;
+
 #if DEBUG
         private int framesCount = 0;
 #endif
 
-        public EnhancedDisastersManager()
+        private EnhancedDisastersManager()
         {
-            AllDisasters.Add(ForestFire = new EnhancedForestFire());
-            AllDisasters.Add(Thunderstorm = new EnhancedThunderstorm());
-            AllDisasters.Add(Tornado = new EnhancedTornado());
-            AllDisasters.Add(Earthquake = new EnhancedEarthquake());
-            AllDisasters.Add(Tsunami = new EnhancedTsunami());
-            AllDisasters.Add(Sinkhole = new EnhancedSinkhole());
-            AllDisasters.Add(MeteorStrike = new EnhancedMeteorStrike());
+            container = DisastersContainer.CreateFromFile();
+            if (container == null)
+            {
+                container = new DisastersContainer();
+            }
+
+            container.CheckObjects();
         }
 
         public void OnSimulationFrame()
         {
-            AllDisasters.ForEach(x => x.OnSimulationFrame());
+            CheckUnlocks();
+
+            foreach (EnhancedDisaster ed in container.AllDisasters)
+            {
+                ed.OnSimulationFrame();
+            }
 #if DEBUG
             if (--framesCount <= 0)
             {
@@ -52,7 +52,7 @@ namespace EnhancedDisastersMod
 
         public void OnDisasterCreated(DisasterAI dai, byte intensity)
         {
-            foreach (EnhancedDisaster ed in AllDisasters)
+            foreach (EnhancedDisaster ed in container.AllDisasters)
             {
                 if (ed.CheckDisasterAIType(dai))
                 {
@@ -64,7 +64,7 @@ namespace EnhancedDisastersMod
 
         public void OnDisasterStarted(DisasterAI dai, byte intensity)
         {
-            foreach (EnhancedDisaster ed in AllDisasters)
+            foreach (EnhancedDisaster ed in container.AllDisasters)
             {
                 if (ed.CheckDisasterAIType(dai))
                 {
@@ -117,6 +117,17 @@ namespace EnhancedDisastersMod
             }
 
             return null;
+        }
+
+        public void CheckUnlocks()
+        {
+            string currentMilestoneName = Singleton<UnlockManager>.instance.GetCurrentMilestone().name;
+            //Debug.Log("Current Milestone: " + currentMilestoneName);
+
+            int milestoneNum = int.Parse(currentMilestoneName.Substring(9));
+
+            container.ForestFire.Unlocked = milestoneNum >= 3;
+            container.Thunderstorm.Unlocked = milestoneNum >= 3;
         }
     }
 }

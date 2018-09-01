@@ -6,8 +6,8 @@ namespace EnhancedDisastersMod
 {
     public class ExtendedDisastersPanel : UIPanel
     {
-        private UILabel[] labels = new UILabel[7];
-        private UIProgressBar[] progressBars = new UIProgressBar[7];
+        private UILabel[] labels;
+        private UIProgressBar[] progressBars;
         public int Counter = 0;
 
         public override void Awake()
@@ -37,7 +37,10 @@ namespace EnhancedDisastersMod
             int y = -50;
             int h = -35;
 
-            for (int i = 0; i < 7; i++)
+            int disasterCount = Singleton<EnhancedDisastersManager>.instance.container.AllDisasters.Count;
+            labels = new UILabel[disasterCount];
+            progressBars = new UIProgressBar[disasterCount];
+            for (int i = 0; i < disasterCount; i++)
             {
                 labels[i] = addLabel(y);
                 progressBars[i] = addProgressBar(y - 11);
@@ -88,12 +91,29 @@ namespace EnhancedDisastersMod
             Counter = 300;
 
             EnhancedDisastersManager edm = Singleton<EnhancedDisastersManager>.instance;
+            int disasterCount = edm.container.AllDisasters.Count;
 
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < disasterCount; i++)
             {
-                EnhancedDisaster d = edm.AllDisasters[i];
-                float p = d.GetCurrentOccurrencePerYear();
-                labels[i].text = string.Format("{0}: {1:0.00}", d.GetName(), p);
+                EnhancedDisaster d = edm.container.AllDisasters[i];
+                float p = d.CooldownCounter > 0 ? 0 : d.GetCurrentOccurrencePerYear();
+                string text;
+                if (d.Enabled)
+                {
+                    if (!d.Unlocked && d.OccurrenceBeforeUnlock == OccurrenceAreas.OuterArea)
+                    {
+                        text = string.Format("{0}: ({1:0.00})", d.GetName(), p);
+                    }
+                    else
+                    {
+                        text = string.Format("{0}: {1:0.00}", d.GetName(), p);
+                    }
+                }
+                else
+                {
+                    text = "Disabled";
+                }
+                labels[i].text = text;
                 progressBars[i].value = p / d.GetMaximumOccurrencePerYear();
             }
         }
