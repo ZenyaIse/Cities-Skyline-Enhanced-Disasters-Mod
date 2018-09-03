@@ -3,8 +3,8 @@
     public enum OccurrenceAreas
     {
         Nowhere,
-        InnerArea,
-        OuterArea,
+        UnlockedAreas,
+        LockedAreas,
         Everywhere
     }
 }

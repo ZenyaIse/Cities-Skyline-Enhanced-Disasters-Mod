@@ -37,7 +37,7 @@ namespace EnhancedDisastersMod
         public EnhancedMeteorStrike()
         {
             DType = DisasterType.MeteorStrike;
-            OccurrenceAfterUnlock = OccurrenceAreas.InnerArea;
+            OccurrenceAfterUnlock = OccurrenceAreas.UnlockedAreas;
             OccurrencePerYear = 0.2f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
             cooldownDays = 60;

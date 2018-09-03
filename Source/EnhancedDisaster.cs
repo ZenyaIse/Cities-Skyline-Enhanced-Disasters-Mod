@@ -24,7 +24,7 @@ namespace EnhancedDisastersMod
         [XmlIgnore]
         public OccurrenceAreas OccurrenceBeforeUnlock = OccurrenceAreas.Nowhere;
         [XmlIgnore]
-        public OccurrenceAreas OccurrenceAfterUnlock = OccurrenceAreas.InnerArea;
+        public OccurrenceAreas OccurrenceAfterUnlock = OccurrenceAreas.UnlockedAreas;
         [XmlIgnore]
         public bool Unlocked = false;
 
@@ -123,8 +123,18 @@ namespace EnhancedDisastersMod
 
             bool targetFound = false;
             OccurrenceAreas area = Unlocked ? OccurrenceAfterUnlock : OccurrenceBeforeUnlock;
-            targetFound = findRandomTarget(out targetPosition, out angle, area);
-            //targetFound = disasterInfo.m_disasterAI.FindRandomTarget(out targetPosition, out angle);
+            switch (area)
+            {
+                case OccurrenceAreas.LockedAreas:
+                    targetFound = findRandomTargetInLockedAreas(out targetPosition, out angle);
+                    break;
+                case OccurrenceAreas.Everywhere:
+                    targetFound = findRandomTargetEverywhere(out targetPosition, out angle);
+                    break;
+                default: // Vanilla default
+                    targetFound = disasterInfo.m_disasterAI.FindRandomTarget(out targetPosition, out angle);
+                    break;
+            }
 
             if (!targetFound)
             {
@@ -176,171 +186,95 @@ namespace EnhancedDisastersMod
             return ">>> EnhancedDisastersMod: " + DType.ToString() + ", " + Singleton<SimulationManager>.instance.m_currentGameTime.ToShortDateString() + ", ";
         }
 
-        private bool findRandomTarget(out Vector3 target, out float angle, OccurrenceAreas area)
+        private bool findRandomTargetEverywhere(out Vector3 target, out float angle)
         {
             GameAreaManager gam = Singleton<GameAreaManager>.instance;
             SimulationManager sm = Singleton<SimulationManager>.instance;
-            if (gam.m_areaCount > 0)
+            int i = sm.m_randomizer.Int32(0, 4);
+            int j = sm.m_randomizer.Int32(0, 4);
+            float minX;
+            float minZ;
+            float maxX;
+            float maxZ;
+            gam.GetAreaBounds(i, j, out minX, out minZ, out maxX, out maxZ);
+
+            float randX = (float)sm.m_randomizer.Int32(0, 10000) * 0.0001f;
+            float randZ = (float)sm.m_randomizer.Int32(0, 10000) * 0.0001f;
+            target.x = minX + (maxX - minX) * randX;
+            target.y = 0f;
+            target.z = minZ + (maxZ - minZ) * randZ;
+            target.y = Singleton<TerrainManager>.instance.SampleRawHeightSmoothWithWater(target, false, 0f);
+            angle = (float)sm.m_randomizer.Int32(0, 10000) * 0.0006283185f;
+            return true;
+        }
+
+        private bool findRandomTargetInLockedAreas(out Vector3 target, out float angle)
+        {
+            GameAreaManager gam = Singleton<GameAreaManager>.instance;
+            SimulationManager sm = Singleton<SimulationManager>.instance;
+
+            if (gam.m_areaCount >= 25)
             {
-                int areaIndex = sm.m_randomizer.Int32(1, gam.m_areaCount);
-                for (int i = 0; i < 5; i++)
+                target = Vector3.zero;
+                angle = 0f;
+                return false;
+            }
+
+            int lockedAreaCounter = sm.m_randomizer.Int32(1, 25 - gam.m_areaCount);
+            for (int i = 0; i < 5; i++)
+            {
+                for (int j = 0; j < 5; j++)
                 {
-                    for (int j = 0; j < 5; j++)
+                    if (IsUnlocked(i, j))
                     {
-                        if (gam.GetArea(j, i) == areaIndex)
+                        continue;
+                    }
+
+                    if (--lockedAreaCounter == 0)
+                    {
+                        float minX;
+                        float minZ;
+                        float maxX;
+                        float maxZ;
+                        gam.GetAreaBounds(j, i, out minX, out minZ, out maxX, out maxZ);
+                        float minimumEdgeDistance = 100f;
+                        if (IsUnlocked(j - 1, i))
                         {
-                            float minX;
-                            float minZ;
-                            float maxX;
-                            float maxZ;
-                            gam.GetAreaBounds(j, i, out minX, out minZ, out maxX, out maxZ);
-                            float minimumEdgeDistance = 100f; // TO DO: implement
-                            if (!CanOccur(j - 1, i, area))
-                            {
-                                minX += minimumEdgeDistance;
-                            }
-                            if (!CanOccur(j, i - 1, area))
-                            {
-                                minZ += minimumEdgeDistance;
-                            }
-                            if (!CanOccur(j + 1, i, area))
-                            {
-                                maxX -= minimumEdgeDistance;
-                            }
-                            if (!CanOccur(j, i + 1, area))
-                            {
-                                maxZ -= minimumEdgeDistance;
-                            }
-                            float randX = (float)sm.m_randomizer.Int32(0, 10000) * 0.0001f;
-                            float randZ = (float)sm.m_randomizer.Int32(0, 10000) * 0.0001f;
-                            target.x = minX + (maxX - minX) * randX;
-                            target.y = 0f;
-                            target.z = minZ + (maxZ - minZ) * randZ;
-                            clampDisasterTarget(ref target, area);
-                            target.y = Singleton<TerrainManager>.instance.SampleRawHeightSmoothWithWater(target, false, 0f);
-                            angle = (float)sm.m_randomizer.Int32(0, 10000) * 0.0006283185f;
-                            return true;
+                            minX += minimumEdgeDistance;
                         }
+                        if (IsUnlocked(j, i - 1))
+                        {
+                            minZ += minimumEdgeDistance;
+                        }
+                        if (IsUnlocked(j + 1, i))
+                        {
+                            maxX -= minimumEdgeDistance;
+                        }
+                        if (IsUnlocked(j, i + 1))
+                        {
+                            maxZ -= minimumEdgeDistance;
+                        }
+
+                        float randX = (float)sm.m_randomizer.Int32(0, 10000) * 0.0001f;
+                        float randZ = (float)sm.m_randomizer.Int32(0, 10000) * 0.0001f;
+                        target.x = minX + (maxX - minX) * randX;
+                        target.y = 0f;
+                        target.z = minZ + (maxZ - minZ) * randZ;
+                        target.y = Singleton<TerrainManager>.instance.SampleRawHeightSmoothWithWater(target, false, 0f);
+                        angle = (float)sm.m_randomizer.Int32(0, 10000) * 0.0006283185f;
+                        return true;
                     }
                 }
             }
+
             target = Vector3.zero;
             angle = 0f;
             return false;
         }
 
-        private void clampDisasterTarget(ref Vector3 target, OccurrenceAreas area)
+        public bool IsUnlocked(int x, int z)
         {
-            GameAreaManager instance = Singleton<GameAreaManager>.instance;
-            float minimumEdgeDistance = 100f;
-            int x;
-            int z;
-            instance.GetTileXZ(target, out x, out z);
-            float minX;
-            float minZ;
-            float maxX;
-            float maxZ;
-            instance.GetAreaBounds(x, z, out minX, out minZ, out maxX, out maxZ);
-            if (!CanOccur(x - 1, z, area))
-            {
-                float dx1 = target.x - minX;
-                if (dx1 < minimumEdgeDistance)
-                {
-                    target.x += minimumEdgeDistance - dx1;
-                }
-            }
-            if (!CanOccur(x, z - 1, area))
-            {
-                float dz1 = target.z - minZ;
-                if (dz1 < minimumEdgeDistance)
-                {
-                    target.z += minimumEdgeDistance - dz1;
-                }
-            }
-            if (!CanOccur(x + 1, z, area))
-            {
-                float dx2 = maxX - target.x;
-                if (dx2 < minimumEdgeDistance)
-                {
-                    target.x += dx2 - minimumEdgeDistance;
-                }
-            }
-            if (!CanOccur(x, z + 1, area))
-            {
-                float dz2 = maxZ - target.z;
-                if (dz2 < minimumEdgeDistance)
-                {
-                    target.z += dz2 - minimumEdgeDistance;
-                }
-            }
-            if (!CanOccur(x - 1, z - 1, area))
-            {
-                Vector3 vector = new Vector3(minX, target.y, minZ);
-                Vector3 vector2 = target - vector;
-                if (vector2.sqrMagnitude < minimumEdgeDistance * minimumEdgeDistance)
-                {
-                    if (vector2.sqrMagnitude < 1f)
-                    {
-                        vector2 = new Vector3(1f, 0f, 1f);
-                    }
-                    target = vector + vector2.normalized * minimumEdgeDistance;
-                }
-            }
-            if (!CanOccur(x + 1, z - 1, area))
-            {
-                Vector3 vector3 = new Vector3(maxX, target.y, minZ);
-                Vector3 vector4 = target - vector3;
-                if (vector4.sqrMagnitude < minimumEdgeDistance * minimumEdgeDistance)
-                {
-                    if (vector4.sqrMagnitude < 1f)
-                    {
-                        vector4 = new Vector3(-1f, 0f, 1f);
-                    }
-                    target = vector3 + vector4.normalized * minimumEdgeDistance;
-                }
-            }
-            if (!CanOccur(x - 1, z + 1, area))
-            {
-                Vector3 vector5 = new Vector3(minX, target.y, maxZ);
-                Vector3 vector6 = target - vector5;
-                if (vector6.sqrMagnitude < minimumEdgeDistance * minimumEdgeDistance)
-                {
-                    if (vector6.sqrMagnitude < 1f)
-                    {
-                        vector6 = new Vector3(1f, 0f, -1f);
-                    }
-                    target = vector5 + vector6.normalized * minimumEdgeDistance;
-                }
-            }
-            if (!CanOccur(x + 1, z + 1, area))
-            {
-                Vector3 vector7 = new Vector3(maxX, target.y, maxZ);
-                Vector3 vector8 = target - vector7;
-                if (vector8.sqrMagnitude < minimumEdgeDistance * minimumEdgeDistance)
-                {
-                    if (vector8.sqrMagnitude < 1f)
-                    {
-                        vector8 = new Vector3(-1f, 0f, -1f);
-                    }
-                    target = vector7 + vector8.normalized * minimumEdgeDistance;
-                }
-            }
-        }
-
-        public bool CanOccur(int x, int z, OccurrenceAreas area)
-        {
-            GameAreaManager gam = Singleton<GameAreaManager>.instance;
-            switch (area)
-            {
-                case OccurrenceAreas.InnerArea:
-                    return x >= 0 && z >= 0 && x < 5 && z < 5 && gam.m_areaGrid[z * 5 + x] != 0; // Game default
-                case OccurrenceAreas.OuterArea:
-                    return x >= 0 && z >= 0 && x < 5 && z < 5 && gam.m_areaGrid[z * 5 + x] == 0;
-                case OccurrenceAreas.Everywhere:
-                    return x >= 0 && z >= 0 && x < 5 && z < 5;
-                default:
-                    return false;
-            }
+            return x >= 0 && z >= 0 && x < 5 && z < 5 && Singleton<GameAreaManager>.instance.m_areaGrid[z * 5 + x] != 0;
         }
 
         protected virtual byte getRandomIntensity()

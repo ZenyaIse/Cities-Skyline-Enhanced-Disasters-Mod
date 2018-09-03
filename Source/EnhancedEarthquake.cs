@@ -44,7 +44,7 @@ namespace EnhancedDisastersMod
         public EnhancedEarthquake()
         {
             DType = DisasterType.Earthquake;
-            OccurrenceAfterUnlock = OccurrenceAreas.InnerArea;
+            OccurrenceAfterUnlock = OccurrenceAreas.UnlockedAreas;
             OccurrencePerYear = 0.5f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
             cooldownDays = 10;

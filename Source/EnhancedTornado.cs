@@ -37,7 +37,7 @@ namespace EnhancedDisastersMod
         public EnhancedTornado()
         {
             DType = DisasterType.Tornado;
-            OccurrenceAfterUnlock = OccurrenceAreas.InnerArea;
+            OccurrenceAfterUnlock = OccurrenceAreas.UnlockedAreas;
             OccurrencePerYear = 0.4f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
             cooldownDays = 15;

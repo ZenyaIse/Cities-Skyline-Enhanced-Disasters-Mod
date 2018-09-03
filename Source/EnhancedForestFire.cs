@@ -34,7 +34,7 @@ namespace EnhancedDisastersMod
 
             public void AfterDeserialize(DataSerializer s)
             {
-                // Empty
+                Mod.UpdateUI();
             }
         }
 
@@ -44,7 +44,7 @@ namespace EnhancedDisastersMod
         public EnhancedForestFire()
         {
             DType = DisasterType.ForestFire;
-            OccurrenceBeforeUnlock = OccurrenceAreas.OuterArea;
+            OccurrenceBeforeUnlock = OccurrenceAreas.LockedAreas;
             OccurrenceAfterUnlock = OccurrenceAreas.Everywhere;
             OccurrencePerYear = 10.0f; // In case of dry weather
             ProbabilityDistribution = ProbabilityDistributions.Uniform;

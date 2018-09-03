@@ -29,12 +29,12 @@ namespace EnhancedDisastersMod
                 d.RainFactor = s.ReadFloat();
                 d.CooldownCounter = s.ReadInt32();
 
-                Debug.Log(">>> EnhancedDisastersMod: ForestFire data loaded.");
+                Debug.Log(">>> EnhancedDisastersMod: Thunderstorm data loaded.");
             }
 
             public void AfterDeserialize(DataSerializer s)
             {
-                // Empty
+                Mod.UpdateUI();
             }
         }
 
@@ -44,11 +44,11 @@ namespace EnhancedDisastersMod
         public EnhancedThunderstorm()
         {
             DType = DisasterType.ThunderStorm;
-            OccurrenceBeforeUnlock = OccurrenceAreas.OuterArea;
+            OccurrenceBeforeUnlock = OccurrenceAreas.LockedAreas;
             OccurrenceAfterUnlock = OccurrenceAreas.Everywhere;
             OccurrencePerYear = 1.5f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
-            cooldownDays = 30;
+            cooldownDays = 60;
         }
 
         protected override float getCurrentProbabilityPerFrame()
@@ -81,6 +81,17 @@ namespace EnhancedDisastersMod
         public override string GetName()
         {
             return "Thunderstorm";
+        }
+
+        protected override void setDisasterAIParameters(DisasterAI dai, byte intensity)
+        {
+            ThunderStormAI ai = dai as ThunderStormAI;
+
+            if (ai != null)
+            {
+                uint activeDuration_original = 4096;
+                ai.m_activeDuration = activeDuration_original / 3 + (activeDuration_original * 2 / 3) * intensity / 100;
+            }
         }
     }
 }

@@ -97,24 +97,24 @@ namespace EnhancedDisastersMod
             {
                 EnhancedDisaster d = edm.container.AllDisasters[i];
                 float p = d.CooldownCounter > 0 ? 0 : d.GetCurrentOccurrencePerYear();
-                string text;
                 if (d.Enabled)
                 {
-                    if (!d.Unlocked && d.OccurrenceBeforeUnlock == OccurrenceAreas.OuterArea)
+                    progressBars[i].value = p / d.GetMaximumOccurrencePerYear();
+
+                    if (!d.Unlocked && d.OccurrenceBeforeUnlock == OccurrenceAreas.LockedAreas)
                     {
-                        text = string.Format("{0}: ({1:0.00})", d.GetName(), p);
+                        labels[i].text = string.Format("{0}: ({1:0.00})", d.GetName(), p);
                     }
                     else
                     {
-                        text = string.Format("{0}: {1:0.00}", d.GetName(), p);
+                        labels[i].text = string.Format("{0}: {1:0.00}", d.GetName(), p);
                     }
                 }
                 else
                 {
-                    text = "Disabled";
+                    labels[i].text = "Disabled";
+                    progressBars[i].value = 0;
                 }
-                labels[i].text = text;
-                progressBars[i].value = p / d.GetMaximumOccurrencePerYear();
             }
         }
     }
