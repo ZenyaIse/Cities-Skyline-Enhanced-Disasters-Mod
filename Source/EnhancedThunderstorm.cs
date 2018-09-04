@@ -34,7 +34,7 @@ namespace EnhancedDisastersMod
 
             public void AfterDeserialize(DataSerializer s)
             {
-                Mod.UpdateUI();
+                // Empty
             }
         }
 

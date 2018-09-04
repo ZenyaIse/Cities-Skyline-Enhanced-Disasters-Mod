@@ -73,6 +73,8 @@ namespace EnhancedDisastersMod
             {
                 Debug.Log(">>> EnhancedDisastersMod load error: " + ex.Message);
             }
+
+            Mod.UpdateUI();
         }
 
         public void OnReleased()
