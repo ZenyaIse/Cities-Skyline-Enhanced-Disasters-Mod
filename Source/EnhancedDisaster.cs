@@ -156,6 +156,9 @@ namespace EnhancedDisastersMod
                 return;
             }
 
+            Debug.Log("Started by EnhancedDisastersMod");
+            DisasterLogger.StartedByMod = true;
+
             setDisasterAIParameters(disasterInfo.m_disasterAI, intensity);
 
             disasterStarting(disasterInfo);
@@ -167,8 +170,6 @@ namespace EnhancedDisastersMod
             ushort expr_98_cp_1 = disasterIndex;
             expr_98_cp_0[(int)expr_98_cp_1].m_flags = (expr_98_cp_0[(int)expr_98_cp_1].m_flags | DisasterData.Flags.SelfTrigger);
             disasterInfo.m_disasterAI.StartNow(disasterIndex, ref dm.m_disasters.m_buffer[(int)disasterIndex]);
-
-            Debug.Log("Started by EnhancedDisastersMod");
 
             if (EnhancedDisastersManager.IsDebug)
             {

@@ -20,6 +20,9 @@ namespace EnhancedDisastersMod
             Debug.Log(">>> EnhancedDisastersMod (OnDisasterStarted): " + disasterData.Info.GetAI().name + "(" + disasterData.m_intensity.ToString() + "), "
                 + Singleton<SimulationManager>.instance.m_currentGameTime.ToShortDateString());
             Singleton<EnhancedDisastersManager>.instance.OnDisasterStarted(disasterData.Info.m_disasterAI, disasterData.m_intensity);
+
+            DisasterLogger.AddDisaster(Singleton<SimulationManager>.instance.m_currentGameTime, disasterData.Info.GetAI().name, disasterData.m_intensity);
+
         }
     }
 }
