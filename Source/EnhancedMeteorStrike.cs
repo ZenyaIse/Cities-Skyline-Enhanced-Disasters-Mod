@@ -77,11 +77,6 @@ namespace EnhancedDisastersMod
             return disasterAI as MeteorStrikeAI != null;
         }
 
-        public override float GetMaximumOccurrencePerYear()
-        {
-            return OccurrencePerYear * 5;
-        }
-
         public override string GetName()
         {
             return "Meteor Strike";

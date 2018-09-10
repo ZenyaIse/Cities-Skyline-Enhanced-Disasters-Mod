@@ -314,6 +314,9 @@ namespace EnhancedDisastersMod
             return 0;
         }
 
-        public abstract float GetMaximumOccurrencePerYear();
+        public virtual byte GetMaximumIntensity()
+        {
+            return scaleIntensityByPopulation(100);
+        }
     }
 }

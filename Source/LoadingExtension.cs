@@ -11,21 +11,23 @@ namespace EnhancedDisastersMod
 
         public override void OnLevelLoaded(LoadMode mode)
         {
-            Debug.Log("EnhancedDisastersMod Loaded: 2017/07/08");
-
-            createExtendedDisasterPanel();
-
-            Singleton<EnhancedDisastersManager>.instance.CheckUnlocks();
+            if (mode == LoadMode.NewGame || mode == LoadMode.LoadGame || mode == LoadMode.NewGameFromScenario)
+            {
+                createExtendedDisasterPanel();
+                Singleton<EnhancedDisastersManager>.instance.CheckUnlocks();
+            }
         }
 
         private void createExtendedDisasterPanel()
         {
+            if (dPanel != null) return;
+
             UIView v = UIView.GetAView();
 
             GameObject obj = new GameObject("ExtendedDisastersPanel");
             obj.transform.parent = v.cachedTransform;
             dPanel = obj.AddComponent<ExtendedDisastersPanel>();
-            dPanel.absolutePosition = new Vector3(v.fixedWidth - 180, 150);
+            dPanel.absolutePosition = new Vector3(v.fixedWidth - 420, 110);
 
             GameObject toggleButtonObject = new GameObject("ExtendedDisastersPanelButton");
             toggleButtonObject.transform.parent = v.transform;
@@ -35,7 +37,7 @@ namespace EnhancedDisastersMod
             toggleButton.normalFgSprite = "InfoIconElectricity";
             toggleButton.width = 30f;
             toggleButton.height = 30f;
-            toggleButton.absolutePosition = new Vector3(v.fixedWidth - 90, 120);
+            toggleButton.absolutePosition = new Vector3(v.fixedWidth - 50, 70);
             toggleButton.tooltip = "Extended Disasters";
             toggleButton.eventClick += ToggleButton_eventClick;
         }

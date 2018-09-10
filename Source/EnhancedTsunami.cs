@@ -67,11 +67,6 @@ namespace EnhancedDisastersMod
             return disasterAI as TsunamiAI != null;
         }
 
-        public override float GetMaximumOccurrencePerYear()
-        {
-            return OccurrencePerYear * 3;
-        }
-
         public override string GetName()
         {
             return "Tsunami";

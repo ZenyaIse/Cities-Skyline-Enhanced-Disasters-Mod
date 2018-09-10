@@ -70,11 +70,6 @@ namespace EnhancedDisastersMod
             return disasterAI as SinkholeAI != null;
         }
 
-        public override float GetMaximumOccurrencePerYear()
-        {
-            return OccurrencePerYear * 2;
-        }
-
         public override string GetName()
         {
             return "Sinkhole";

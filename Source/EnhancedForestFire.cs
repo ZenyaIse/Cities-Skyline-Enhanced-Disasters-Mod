@@ -74,11 +74,6 @@ namespace EnhancedDisastersMod
             return disasterAI as ForestFireAI != null;
         }
 
-        public override float GetMaximumOccurrencePerYear()
-        {
-            return OccurrencePerYear;
-        }
-
         public override string GetName()
         {
             return "Forest Fire";

@@ -117,11 +117,6 @@ namespace EnhancedDisastersMod
             return disasterAI as EarthquakeAI != null;
         }
 
-        public override float GetMaximumOccurrencePerYear()
-        {
-            return OccurrencePerYear * 3;
-        }
-
         public override string GetName()
         {
             return "Earthquake";
