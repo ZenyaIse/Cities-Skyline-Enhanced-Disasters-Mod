@@ -58,8 +58,6 @@ namespace EnhancedDisastersMod
                 return;
             }
 
-            //probability *= 5;
-
             SimulationManager sm = Singleton<SimulationManager>.instance;
             if (sm.m_randomizer.Int32(randomizerRange) < (uint)(randomizerRange * probability))
             {
@@ -138,10 +136,7 @@ namespace EnhancedDisastersMod
 
             if (!targetFound)
             {
-                if (EnhancedDisastersManager.IsDebug)
-                {
-                    Debug.Log(getDebugStr() + "target not found");
-                }
+                DebugLogger.Log(getDebugStr() + "target not found");
                 return;
             }
 
@@ -149,14 +144,10 @@ namespace EnhancedDisastersMod
             bool disasterCreated = dm.CreateDisaster(out disasterIndex, disasterInfo);
             if (!disasterCreated)
             {
-                if (EnhancedDisastersManager.IsDebug)
-                {
-                    Debug.Log(getDebugStr() + "could not create disaster");
-                }
+                DebugLogger.Log(getDebugStr() + "could not create disaster");
                 return;
             }
 
-            Debug.Log("Started by EnhancedDisastersMod");
             DisasterLogger.StartedByMod = true;
 
             setDisasterAIParameters(disasterInfo.m_disasterAI, intensity);
@@ -171,10 +162,7 @@ namespace EnhancedDisastersMod
             expr_98_cp_0[(int)expr_98_cp_1].m_flags = (expr_98_cp_0[(int)expr_98_cp_1].m_flags | DisasterData.Flags.SelfTrigger);
             disasterInfo.m_disasterAI.StartNow(disasterIndex, ref dm.m_disasters.m_buffer[(int)disasterIndex]);
 
-            if (EnhancedDisastersManager.IsDebug)
-            {
-                Debug.Log(getDebugStr() + string.Format("disaster intensity: {0}", intensity));
-            }
+            DebugLogger.Log(getDebugStr() + string.Format("disaster intensity: {0}, area: {1}", intensity, Unlocked ? OccurrenceAfterUnlock : OccurrenceBeforeUnlock));
         }
 
         protected virtual void setDisasterAIParameters(DisasterAI dai, byte intensity)
@@ -184,7 +172,7 @@ namespace EnhancedDisastersMod
 
         protected string getDebugStr()
         {
-            return ">>> EnhancedDisastersMod: " + DType.ToString() + ", " + Singleton<SimulationManager>.instance.m_currentGameTime.ToShortDateString() + ", ";
+            return DType.ToString() + ", " + Singleton<SimulationManager>.instance.m_currentGameTime.ToShortDateString() + ", ";
         }
 
         private bool findRandomTargetEverywhere(out Vector3 target, out float angle)
@@ -214,6 +202,7 @@ namespace EnhancedDisastersMod
             GameAreaManager gam = Singleton<GameAreaManager>.instance;
             SimulationManager sm = Singleton<SimulationManager>.instance;
 
+            // No locked areas
             if (gam.m_areaCount >= 25)
             {
                 target = Vector3.zero;
@@ -263,6 +252,7 @@ namespace EnhancedDisastersMod
                         target.z = minZ + (maxZ - minZ) * randZ;
                         target.y = Singleton<TerrainManager>.instance.SampleRawHeightSmoothWithWater(target, false, 0f);
                         angle = (float)sm.m_randomizer.Int32(0, 10000) * 0.0006283185f;
+                        DebugLogger.Log(string.Format("findRandomTargetInLockedAreas, j = {0}, i = {1}, areaCount = {2}", j, i, gam.m_areaCount));
                         return true;
                     }
                 }

@@ -28,13 +28,11 @@ namespace EnhancedDisastersMod
                 d.WarmupDays = s.ReadInt32();
                 d.CooldownCounter = s.ReadInt32();
                 d.noRainFramesCount = s.ReadUInt32();
-
-                Debug.Log(">>> EnhancedDisastersMod: ForestFire data loaded.");
             }
 
             public void AfterDeserialize(DataSerializer s)
             {
-                // Empty
+                Debug.Log(">>> EnhancedDisastersMod: ForestFire data loaded.");
             }
         }
 

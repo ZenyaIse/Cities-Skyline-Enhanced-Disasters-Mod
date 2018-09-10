@@ -54,6 +54,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DebugLogger.cs" />
     <Compile Include="DisasterExtension.cs" />
     <Compile Include="DisasterLogger.cs" />
     <Compile Include="DisastersContainer.cs" />

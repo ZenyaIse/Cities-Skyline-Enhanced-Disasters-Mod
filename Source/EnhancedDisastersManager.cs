@@ -9,8 +9,6 @@ namespace EnhancedDisastersMod
 {
     public class EnhancedDisastersManager : Singleton<EnhancedDisastersManager>
     {
-        public static bool IsDebug = true;
-
         public DisastersContainer container;
 
 #if DEBUG
@@ -122,9 +120,12 @@ namespace EnhancedDisastersMod
         public void CheckUnlocks()
         {
             string currentMilestoneName = Singleton<UnlockManager>.instance.GetCurrentMilestone().name;
-            //Debug.Log("Current Milestone: " + currentMilestoneName);
 
-            int milestoneNum = int.Parse(currentMilestoneName.Substring(9));
+            int milestoneNum;
+            if (!int.TryParse(currentMilestoneName.Substring(9), out milestoneNum))
+            {
+                milestoneNum = 99; // Unlock all disasters if can not read the milestone number
+            }
 
             container.ForestFire.Unlocked = milestoneNum >= 3;
             container.Thunderstorm.Unlocked = milestoneNum >= 3;

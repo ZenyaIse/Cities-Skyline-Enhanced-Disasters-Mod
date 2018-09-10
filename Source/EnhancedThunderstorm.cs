@@ -28,13 +28,11 @@ namespace EnhancedDisastersMod
                 d.MaxProbabilityMonth = s.ReadInt32();
                 d.RainFactor = s.ReadFloat();
                 d.CooldownCounter = s.ReadInt32();
-
-                Debug.Log(">>> EnhancedDisastersMod: Thunderstorm data loaded.");
             }
 
             public void AfterDeserialize(DataSerializer s)
             {
-                // Empty
+                Debug.Log(">>> EnhancedDisastersMod: Thunderstorm data loaded.");
             }
         }
 
@@ -90,7 +88,9 @@ namespace EnhancedDisastersMod
             if (ai != null)
             {
                 uint activeDuration_original = 4096;
-                ai.m_activeDuration = activeDuration_original / 3 + (activeDuration_original * 2 / 3) * intensity / 100;
+                uint activeDuration_new = activeDuration_original / 2 + (activeDuration_original / 2) * intensity / 100;
+                DebugLogger.Log(string.Format("Thunderstorm: m_activeDuration {0} -> {1}", ai.m_activeDuration, activeDuration_new));
+                ai.m_activeDuration = activeDuration_new;
             }
         }
     }
