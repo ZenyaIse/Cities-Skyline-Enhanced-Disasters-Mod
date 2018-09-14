@@ -37,10 +37,13 @@ namespace EnhancedDisastersMod
         public EnhancedMeteorStrike()
         {
             DType = DisasterType.MeteorStrike;
-            OccurrenceAfterUnlock = OccurrenceAreas.UnlockedAreas;
+            OccurrenceAreaAfterUnlock = OccurrenceAreas.UnlockedAreas;
             OccurrencePerYear = 0.2f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
-            cooldownDays = 60;
+
+            calmDays = 60;
+            probabilityWarmupDays = 180;
+            intensityWarmupDays = 360;
         }
 
         protected override float getCurrentProbabilityPerFrame()
@@ -68,7 +71,7 @@ namespace EnhancedDisastersMod
 
             if (meteorsCount > 0)
             {
-                CooldownCounter = 0;
+                calmCounter = 0;
             }
         }
 

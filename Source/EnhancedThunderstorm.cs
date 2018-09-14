@@ -17,7 +17,9 @@ namespace EnhancedDisastersMod
                 s.WriteFloat(d.OccurrencePerYear);
                 s.WriteInt32(d.MaxProbabilityMonth);
                 s.WriteFloat(d.RainFactor);
-                s.WriteInt32(d.CooldownCounter);
+                s.WriteInt32(d.calmCounter);
+                s.WriteInt32(d.probabilityWarmupCounter);
+                s.WriteInt32(d.intensityWarmupCounter);
             }
 
             public void Deserialize(DataSerializer s)
@@ -27,7 +29,12 @@ namespace EnhancedDisastersMod
                 d.OccurrencePerYear = s.ReadFloat();
                 d.MaxProbabilityMonth = s.ReadInt32();
                 d.RainFactor = s.ReadFloat();
-                d.CooldownCounter = s.ReadInt32();
+                d.calmCounter = s.ReadInt32();
+                if (s.version == 1)
+                {
+                    d.probabilityWarmupCounter = s.ReadInt32();
+                    d.intensityWarmupCounter = s.ReadInt32();
+                }
             }
 
             public void AfterDeserialize(DataSerializer s)
@@ -42,11 +49,14 @@ namespace EnhancedDisastersMod
         public EnhancedThunderstorm()
         {
             DType = DisasterType.ThunderStorm;
-            OccurrenceBeforeUnlock = OccurrenceAreas.LockedAreas;
-            OccurrenceAfterUnlock = OccurrenceAreas.Everywhere;
+            OccurrenceAreaBeforeUnlock = OccurrenceAreas.LockedAreas;
+            OccurrenceAreaAfterUnlock = OccurrenceAreas.Everywhere;
             OccurrencePerYear = 1.5f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
-            cooldownDays = 60;
+
+            calmDays = 30;
+            probabilityWarmupDays = 30;
+            intensityWarmupDays = 60;
         }
 
         protected override float getCurrentProbabilityPerFrame()

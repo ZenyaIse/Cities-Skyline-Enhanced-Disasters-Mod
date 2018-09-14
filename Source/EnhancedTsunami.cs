@@ -38,11 +38,14 @@ namespace EnhancedDisastersMod
         public EnhancedTsunami()
         {
             DType = DisasterType.Tsunami;
-            OccurrenceBeforeUnlock = OccurrenceAreas.Nowhere;
-            OccurrenceAfterUnlock = OccurrenceAreas.Everywhere;
+            OccurrenceAreaBeforeUnlock = OccurrenceAreas.Nowhere;
+            OccurrenceAreaAfterUnlock = OccurrenceAreas.Everywhere;
             OccurrencePerYear = 0.5f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
-            cooldownDays = 60;
+
+            calmDays = 180;
+            probabilityWarmupDays = 180;
+            intensityWarmupDays = 360;
         }
 
         protected override void onSimulationFrame_local()

@@ -1,19 +1,11 @@
-﻿using System;
-using System.IO;
-using System.Xml.Serialization;
-using ICities;
+﻿using ICities;
 using ColossalFramework;
-using UnityEngine;
 
 namespace EnhancedDisastersMod
 {
     public class EnhancedDisastersManager : Singleton<EnhancedDisastersManager>
     {
         public DisastersContainer container;
-
-#if DEBUG
-        private int framesCount = 0;
-#endif
 
         private EnhancedDisastersManager()
         {
@@ -34,18 +26,6 @@ namespace EnhancedDisastersMod
             {
                 ed.OnSimulationFrame();
             }
-#if DEBUG
-            if (--framesCount <= 0)
-            {
-                framesCount = 4096; // One week
-
-                StringBuilder sb = new StringBuilder();
-                sb.Append(">>> EnhancedDisastersMod: " + Singleton<SimulationManager>.instance.m_currentGameTime.ToShortDateString());
-                AllDisasters.ForEach(x => sb.Append("\n" + x.GetType().Name + ": " + x.GetCurrentOccurrencePerYear().ToString()));
-
-                Debug.Log(sb.ToString());
-            }
-#endif
         }
 
         public void OnDisasterCreated(DisasterAI dai, byte intensity)
@@ -127,8 +107,8 @@ namespace EnhancedDisastersMod
                 milestoneNum = 99; // Unlock all disasters if can not read the milestone number
             }
 
-            container.ForestFire.Unlocked = milestoneNum >= 3;
-            container.Thunderstorm.Unlocked = milestoneNum >= 3;
+            if (milestoneNum >= 3) container.ForestFire.Unlock();
+            if (milestoneNum >= 3) container.Thunderstorm.Unlock();
         }
     }
 }

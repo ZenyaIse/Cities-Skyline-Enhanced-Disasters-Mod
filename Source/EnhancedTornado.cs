@@ -37,10 +37,13 @@ namespace EnhancedDisastersMod
         public EnhancedTornado()
         {
             DType = DisasterType.Tornado;
-            OccurrenceAfterUnlock = OccurrenceAreas.UnlockedAreas;
+            OccurrenceAreaAfterUnlock = OccurrenceAreas.UnlockedAreas;
             OccurrencePerYear = 0.4f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
-            cooldownDays = 15;
+
+            calmDays = 180;
+            probabilityWarmupDays = 180;
+            intensityWarmupDays = 360;
         }
 
         protected override float getCurrentProbabilityPerFrame()
@@ -68,7 +71,7 @@ namespace EnhancedDisastersMod
 
             if (tornadosCount > 0)
             {
-                CooldownCounter = 0;
+                calmCounter = 0;
             }
         }
 

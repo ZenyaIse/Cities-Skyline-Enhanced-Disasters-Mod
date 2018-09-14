@@ -38,10 +38,13 @@ namespace EnhancedDisastersMod
         public EnhancedSinkhole()
         {
             DType = DisasterType.Sinkhole;
-            OccurrenceAfterUnlock = OccurrenceAreas.UnlockedAreas;
+            OccurrenceAreaAfterUnlock = OccurrenceAreas.UnlockedAreas;
             OccurrencePerYear = 1.0f; // When groundwater is full
             ProbabilityDistribution = ProbabilityDistributions.Uniform;
-            cooldownDays = 1;
+
+            calmDays = 7;
+            probabilityWarmupDays = 0;
+            intensityWarmupDays = 0;
         }
 
         protected override void onSimulationFrame_local()

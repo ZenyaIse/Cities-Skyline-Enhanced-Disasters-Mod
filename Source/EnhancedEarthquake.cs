@@ -44,10 +44,13 @@ namespace EnhancedDisastersMod
         public EnhancedEarthquake()
         {
             DType = DisasterType.Earthquake;
-            OccurrenceAfterUnlock = OccurrenceAreas.UnlockedAreas;
+            OccurrenceAreaAfterUnlock = OccurrenceAreas.UnlockedAreas;
             OccurrencePerYear = 0.5f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
-            cooldownDays = 10;
+
+            calmDays = 60;
+            probabilityWarmupDays = 60;
+            intensityWarmupDays = 180;
         }
 
         protected override void onSimulationFrame_local()

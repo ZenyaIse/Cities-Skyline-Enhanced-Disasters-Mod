@@ -148,7 +148,7 @@ namespace EnhancedDisastersMod
             for (int i = 0; i < disasterCount; i++)
             {
                 EnhancedDisaster d = edm.container.AllDisasters[i];
-                float p = d.CooldownCounter > 0 ? 0 : d.GetCurrentOccurrencePerYear();
+                float p = d.GetCurrentOccurrencePerYear();
                 byte maxIntensity = d.GetMaximumIntensity();
                 if (d.Enabled)
                 {

@@ -16,7 +16,9 @@ namespace EnhancedDisastersMod
                 s.WriteBool(d.Enabled);
                 s.WriteFloat(d.OccurrencePerYear);
                 s.WriteInt32(d.WarmupDays);
-                s.WriteInt32(d.CooldownCounter);
+                s.WriteInt32(d.calmCounter);
+                s.WriteInt32(d.probabilityWarmupCounter);
+                s.WriteInt32(d.intensityWarmupCounter);
                 s.WriteUInt32(d.noRainFramesCount);
             }
 
@@ -26,7 +28,12 @@ namespace EnhancedDisastersMod
                 d.Enabled = s.ReadBool();
                 d.OccurrencePerYear = s.ReadFloat();
                 d.WarmupDays = s.ReadInt32();
-                d.CooldownCounter = s.ReadInt32();
+                d.calmCounter = s.ReadInt32();
+                if (s.version == 1)
+                {
+                    d.probabilityWarmupCounter = s.ReadInt32();
+                    d.intensityWarmupCounter = s.ReadInt32();
+                }
                 d.noRainFramesCount = s.ReadUInt32();
             }
 
@@ -42,11 +49,14 @@ namespace EnhancedDisastersMod
         public EnhancedForestFire()
         {
             DType = DisasterType.ForestFire;
-            OccurrenceBeforeUnlock = OccurrenceAreas.LockedAreas;
-            OccurrenceAfterUnlock = OccurrenceAreas.Everywhere;
+            OccurrenceAreaBeforeUnlock = OccurrenceAreas.LockedAreas;
+            OccurrenceAreaAfterUnlock = OccurrenceAreas.Everywhere;
             OccurrencePerYear = 10.0f; // In case of dry weather
             ProbabilityDistribution = ProbabilityDistributions.Uniform;
-            cooldownDays = 1;
+
+            calmDays = 7;
+            probabilityWarmupDays = 0;
+            intensityWarmupDays = 0;
         }
 
         protected override void onSimulationFrame_local()

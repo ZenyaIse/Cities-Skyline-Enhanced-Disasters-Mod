@@ -8,28 +8,50 @@ namespace EnhancedDisastersMod
 {
     public abstract class EnhancedDisaster
     {
+        // Constants
         protected const float framesPerDay = 585.142f; // See m_timePerFrame from SimulationManager.Awake()
         protected const float framesPerYear = framesPerDay * 365f;
         protected const uint randomizerRange = 67108864u;
-        protected int cooldownDays = 7;
 
-        [XmlIgnore]
-        public int CooldownCounter = (int)framesPerDay * 7; // Init value for a new game
-        [XmlIgnore]
-        public DisasterType DType = DisasterType.Empty;
-        [XmlIgnore]
-        public ProbabilityDistributions ProbabilityDistribution = ProbabilityDistributions.Uniform;
-        [XmlIgnore]
-        public int FullIntensityDisasterPopulation = 20000;
-        [XmlIgnore]
-        public OccurrenceAreas OccurrenceBeforeUnlock = OccurrenceAreas.Nowhere;
-        [XmlIgnore]
-        public OccurrenceAreas OccurrenceAfterUnlock = OccurrenceAreas.UnlockedAreas;
-        [XmlIgnore]
-        public bool Unlocked = false;
+        // Cooldown variables
+        protected int calmDays = 7;
+        protected int calmCounter = 0;
+        protected int probabilityWarmupDays = 7;
+        protected int probabilityWarmupCounter = 0;
+        protected int intensityWarmupDays = 7;
+        protected int intensityWarmupCounter = 0;
 
+        // Disaster properties
+        protected DisasterType DType = DisasterType.Empty;
+        protected ProbabilityDistributions ProbabilityDistribution = ProbabilityDistributions.Uniform;
+        protected int FullIntensityDisasterPopulation = 20000;
+        protected OccurrenceAreas OccurrenceAreaBeforeUnlock = OccurrenceAreas.Nowhere;
+        protected OccurrenceAreas OccurrenceAreaAfterUnlock = OccurrenceAreas.UnlockedAreas;
+        protected bool Unlocked = false;
+
+        // Disaster public properties (to be saved in xml)
         public bool Enabled = true;
         public float OccurrencePerYear = 1.0f;
+
+
+        // Public
+
+        public abstract string GetName();
+
+        public float GetCurrentOccurrencePerYear()
+        {
+            if (calmCounter > 0)
+            {
+                return 0f;
+            }
+
+            return scaleProbability(getCurrentProbabilityPerFrame()) * framesPerYear;
+        }
+
+        public virtual byte GetMaximumIntensity()
+        {
+            return scaleIntensity(100);
+        }
 
         public void OnSimulationFrame()
         {
@@ -38,17 +60,27 @@ namespace EnhancedDisastersMod
                 return;
             }
 
-            if (!Unlocked && OccurrenceBeforeUnlock == OccurrenceAreas.Nowhere)
+            if (!Unlocked && OccurrenceAreaBeforeUnlock == OccurrenceAreas.Nowhere)
             {
                 return;
             }
 
             onSimulationFrame_local();
 
-            if (CooldownCounter > 0)
+            if (calmCounter > 0)
             {
-                CooldownCounter--;
+                calmCounter--;
                 return;
+            }
+
+            if (probabilityWarmupCounter > 0)
+            {
+                probabilityWarmupCounter--;
+            }
+
+            if (intensityWarmupCounter > 0)
+            {
+                intensityWarmupCounter--;
             }
 
             float probability = getCurrentProbabilityPerFrame();
@@ -58,35 +90,107 @@ namespace EnhancedDisastersMod
                 return;
             }
 
+            probability = scaleProbability(probability);
+
             SimulationManager sm = Singleton<SimulationManager>.instance;
             if (sm.m_randomizer.Int32(randomizerRange) < (uint)(randomizerRange * probability))
             {
                 byte intensity = getRandomIntensity();
-                byte scaled_intensity = scaleIntensityByPopulation(intensity);
+                intensity = scaleIntensity(intensity);
+                startDisaster(intensity);
 
-                startDisaster(scaled_intensity);
-
-                CooldownCounter = (int)framesPerDay * cooldownDays;
-
-                //afterDisasterStarted(intensity);
+                calmCounter = (int)(framesPerDay * calmDays);
+                probabilityWarmupCounter = (int)(framesPerDay * probabilityWarmupDays);
+                intensityWarmupCounter = (int)(framesPerDay * intensityWarmupDays);
             }
         }
 
-        public abstract string GetName();
-
-        protected virtual void onSimulationFrame_local()
+        public void Unlock()
         {
-
+            Unlocked = false;
         }
+
+
+        // Utilities
 
         protected virtual float getCurrentProbabilityPerFrame()
         {
             return OccurrencePerYear / framesPerYear;
         }
 
-        public float GetCurrentOccurrencePerYear()
+        protected virtual byte getRandomIntensity()
         {
-            return getCurrentProbabilityPerFrame() * framesPerYear;
+            int intensity;
+
+            if (ProbabilityDistribution == ProbabilityDistributions.PowerLow)
+            {
+                float randomValue = Singleton<SimulationManager>.instance.m_randomizer.Int32(1000, 10000) / 10000.0f; // from range 0.1 - 1.0
+
+                // See Gutenberg–Richter law.
+                // a, b = 0.11
+                intensity = (int)(10 * (0.11 - Math.Log10(randomValue)) / 0.11);
+
+                if (intensity > 100)
+                {
+                    intensity = 100;
+                }
+            }
+            else
+            {
+                intensity = Singleton<SimulationManager>.instance.m_randomizer.Int32(10, 100);
+            }
+
+            return (byte)intensity;
+        }
+
+        private byte scaleIntensity(byte intensity)
+        {
+            // Warmup period
+            if (intensityWarmupCounter > 0)
+            {
+                intensity = (byte)(10 + (intensity - 10) * (1 - intensityWarmupCounter / (framesPerDay * intensityWarmupDays)));
+            }
+
+            // Scale by population
+            int population = getPopulation();
+            if (population < FullIntensityDisasterPopulation)
+            {
+                intensity = (byte)(10 + (intensity - 10) * population / FullIntensityDisasterPopulation);
+            }
+
+            return intensity;
+        }
+
+        private float scaleProbability(float probability)
+        {
+            if (probabilityWarmupCounter > 0)
+            {
+                probability *= 1 - probabilityWarmupCounter / (framesPerDay * probabilityWarmupDays);
+            }
+
+            return probability;
+        }
+
+        protected int getPopulation()
+        {
+            if (Singleton<DistrictManager>.exists)
+            {
+                return (int)Singleton<DistrictManager>.instance.m_districts.m_buffer[0].m_populationData.m_finalCount;
+            }
+            return 0;
+        }
+
+        protected string getDebugStr()
+        {
+            return DType.ToString() + ", " + Singleton<SimulationManager>.instance.m_currentGameTime.ToShortDateString() + ", ";
+        }
+
+
+        // Disaster
+
+        protected virtual void onSimulationFrame_local()
+        {
+
         }
 
         public virtual void OnDisasterCreated(byte intensity)
@@ -120,7 +224,7 @@ namespace EnhancedDisastersMod
             DisasterManager dm = Singleton<DisasterManager>.instance;
 
             bool targetFound = false;
-            OccurrenceAreas area = Unlocked ? OccurrenceAfterUnlock : OccurrenceBeforeUnlock;
+            OccurrenceAreas area = Unlocked ? OccurrenceAreaAfterUnlock : OccurrenceAreaBeforeUnlock;
             switch (area)
             {
                 case OccurrenceAreas.LockedAreas:
@@ -162,17 +266,12 @@ namespace EnhancedDisastersMod
             expr_98_cp_0[(int)expr_98_cp_1].m_flags = (expr_98_cp_0[(int)expr_98_cp_1].m_flags | DisasterData.Flags.SelfTrigger);
             disasterInfo.m_disasterAI.StartNow(disasterIndex, ref dm.m_disasters.m_buffer[(int)disasterIndex]);
 
-            DebugLogger.Log(getDebugStr() + string.Format("disaster intensity: {0}, area: {1}", intensity, Unlocked ? OccurrenceAfterUnlock : OccurrenceBeforeUnlock));
+            DebugLogger.Log(getDebugStr() + string.Format("disaster intensity: {0}, area: {1}", intensity, Unlocked ? OccurrenceAreaAfterUnlock : OccurrenceAreaBeforeUnlock));
         }
 
         protected virtual void setDisasterAIParameters(DisasterAI dai, byte intensity)
         {
 
-        }
-
-        protected string getDebugStr()
-        {
-            return DType.ToString() + ", " + Singleton<SimulationManager>.instance.m_currentGameTime.ToShortDateString() + ", ";
         }
 
         private bool findRandomTargetEverywhere(out Vector3 target, out float angle)
@@ -266,57 +365,6 @@ namespace EnhancedDisastersMod
         public bool IsUnlocked(int x, int z)
         {
             return x >= 0 && z >= 0 && x < 5 && z < 5 && Singleton<GameAreaManager>.instance.m_areaGrid[z * 5 + x] != 0;
-        }
-
-        protected virtual byte getRandomIntensity()
-        {
-            int intensity;
-
-            if (ProbabilityDistribution == ProbabilityDistributions.PowerLow)
-            {
-                float randomValue = Singleton<SimulationManager>.instance.m_randomizer.Int32(1000, 10000) / 10000.0f; // from range 0.1 - 1.0
-
-                // See Gutenberg–Richter law.
-                // a, b = 0.11
-                intensity = (int)(10 * (0.11 - Math.Log10(randomValue)) / 0.11);
-
-                if (intensity > 100)
-                {
-                    intensity = 100;
-                }
-            }
-            else
-            {
-                intensity = Singleton<SimulationManager>.instance.m_randomizer.Int32(10, 100);
-            }
-
-            return (byte)intensity;
-        }
-
-        private byte scaleIntensityByPopulation(byte intensity)
-        {
-            int population = getPopulation();
-
-            if (population < FullIntensityDisasterPopulation)
-            {
-                intensity = (byte)(10 + (intensity - 10) * population / FullIntensityDisasterPopulation);
-            }
-
-            return intensity;
-        }
-
-        protected int getPopulation()
-        {
-            if (Singleton<DistrictManager>.exists)
-            {
-                return (int)Singleton<DistrictManager>.instance.m_districts.m_buffer[0].m_populationData.m_finalCount;
-            }
-            return 0;
-        }
-
-        public virtual byte GetMaximumIntensity()
-        {
-            return scaleIntensityByPopulation(100);
         }
     }
 }
