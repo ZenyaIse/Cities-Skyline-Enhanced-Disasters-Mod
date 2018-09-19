@@ -2,12 +2,13 @@ using ICities;
 using ColossalFramework;
 using ColossalFramework.UI;
 using UnityEngine;
+using ColossalFramework.Plugins;
+using System.Reflection;
 
 namespace EnhancedDisastersMod
 {
     public class Mod : IUserMod
     {
-        private static Mod instance;
         private bool freezeUI = false;
         private UICheckBox ForestFireEnabledUI;
         private UISlider ForestFireMaxProbabilityUI;
@@ -31,17 +32,28 @@ namespace EnhancedDisastersMod
 
         public static void UpdateUI()
         {
-            if (instance != null)
+            foreach (PluginManager.PluginInfo current in Singleton<PluginManager>.instance.GetPluginsInfo())
             {
-                instance.updateUI();
+                if (current.isEnabled)
+                {
+                    IUserMod[] instances = current.GetInstances<IUserMod>();
+                    MethodInfo method = instances[0].GetType().GetMethod("EnhancedDisastersOptionsUpdateUI", BindingFlags.Instance | BindingFlags.Public);
+                    if (method != null)
+                    {
+                        method.Invoke(instances[0], new object[] { });
+                        return;
+                    }
+                }
             }
         }
 
-        private void updateUI()
+        private void EnhancedDisastersOptionsUpdateUI()
         {
+            if (ForestFireEnabledUI == null) return;
+
             DisastersContainer c = Singleton<EnhancedDisastersManager>.instance.container;
 
-            instance.freezeUI = true;
+            freezeUI = true;
 
             ForestFireEnabledUI.isChecked = c.ForestFire.Enabled;
             ForestFireMaxProbabilityUI.value = c.ForestFire.OccurrencePerYear;
@@ -52,7 +64,7 @@ namespace EnhancedDisastersMod
             ThunderstormMaxProbabilityMonthUI.selectedIndex = c.Thunderstorm.MaxProbabilityMonth - 1;
             ThunderstormRainFactorUI.value = c.Thunderstorm.RainFactor;
 
-            instance.freezeUI = false;
+            freezeUI = false;
         }
 
         private void addLabelToSlider(object obj)
@@ -83,8 +95,6 @@ namespace EnhancedDisastersMod
 
         public void OnSettingsUI(UIHelperBase helper)
         {
-            instance = this;
-
             DisastersContainer c = Singleton<EnhancedDisastersManager>.instance.container;
 
             #region ForestFire
