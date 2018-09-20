@@ -11,10 +11,10 @@ namespace EnhancedDisastersMod
 
         public EnhancedForestFire ForestFire;
         public EnhancedThunderstorm Thunderstorm;
+        public EnhancedSinkhole Sinkhole;
         //public EnhancedTornado Tornado;
         //public EnhancedEarthquake Earthquake;
         //public EnhancedTsunami Tsunami;
-        //public EnhancedSinkhole Sinkhole;
         //public EnhancedMeteorStrike MeteorStrike;
 
         [XmlIgnore]
@@ -32,14 +32,15 @@ namespace EnhancedDisastersMod
         {
             if (ForestFire == null) ForestFire = new EnhancedForestFire();
             if (Thunderstorm == null) Thunderstorm = new EnhancedThunderstorm();
+            if (Sinkhole == null) Sinkhole = new EnhancedSinkhole();
 
             AllDisasters.Clear();
             AllDisasters.Add(ForestFire);
             AllDisasters.Add(Thunderstorm);
+            AllDisasters.Add(Sinkhole);
             //AllDisasters.Add(Tornado);
             //AllDisasters.Add(Earthquake);
             //AllDisasters.Add(Tsunami);
-            //AllDisasters.Add(Sinkhole);
             //AllDisasters.Add(MeteorStrike);
         }
 

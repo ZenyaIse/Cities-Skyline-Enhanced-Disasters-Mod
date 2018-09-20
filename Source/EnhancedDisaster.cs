@@ -27,7 +27,7 @@ namespace EnhancedDisastersMod
         protected int FullIntensityDisasterPopulation = 20000;
         protected OccurrenceAreas OccurrenceAreaBeforeUnlock = OccurrenceAreas.Nowhere;
         protected OccurrenceAreas OccurrenceAreaAfterUnlock = OccurrenceAreas.UnlockedAreas;
-        protected bool Unlocked = false;
+        protected bool unlocked = false;
 
         // Disaster public properties (to be saved in xml)
         public bool Enabled = true;
@@ -60,7 +60,7 @@ namespace EnhancedDisastersMod
                 return;
             }
 
-            if (!Unlocked && OccurrenceAreaBeforeUnlock == OccurrenceAreas.Nowhere)
+            if (!unlocked && OccurrenceAreaBeforeUnlock == OccurrenceAreas.Nowhere)
             {
                 return;
             }
@@ -107,7 +107,7 @@ namespace EnhancedDisastersMod
 
         public void Unlock()
         {
-            Unlocked = false;
+            unlocked = true;
         }
 
 
@@ -163,6 +163,11 @@ namespace EnhancedDisastersMod
 
         private float scaleProbability(float probability)
         {
+            if (!unlocked && OccurrenceAreaBeforeUnlock == OccurrenceAreas.Nowhere)
+            {
+                return 0;
+            }
+
             if (probabilityWarmupCounter > 0)
             {
                 probability *= 1 - probabilityWarmupCounter / (framesPerDay * probabilityWarmupDays);
@@ -224,7 +229,7 @@ namespace EnhancedDisastersMod
             DisasterManager dm = Singleton<DisasterManager>.instance;
 
             bool targetFound = false;
-            OccurrenceAreas area = Unlocked ? OccurrenceAreaAfterUnlock : OccurrenceAreaBeforeUnlock;
+            OccurrenceAreas area = unlocked ? OccurrenceAreaAfterUnlock : OccurrenceAreaBeforeUnlock;
             switch (area)
             {
                 case OccurrenceAreas.LockedAreas:
@@ -266,7 +271,7 @@ namespace EnhancedDisastersMod
             expr_98_cp_0[(int)expr_98_cp_1].m_flags = (expr_98_cp_0[(int)expr_98_cp_1].m_flags | DisasterData.Flags.SelfTrigger);
             disasterInfo.m_disasterAI.StartNow(disasterIndex, ref dm.m_disasters.m_buffer[(int)disasterIndex]);
 
-            DebugLogger.Log(getDebugStr() + string.Format("disaster intensity: {0}, area: {1}", intensity, Unlocked ? OccurrenceAreaAfterUnlock : OccurrenceAreaBeforeUnlock));
+            DebugLogger.Log(getDebugStr() + string.Format("disaster intensity: {0}, area: {1}", intensity, unlocked ? OccurrenceAreaAfterUnlock : OccurrenceAreaBeforeUnlock));
         }
 
         protected virtual void setDisasterAIParameters(DisasterAI dai, byte intensity)

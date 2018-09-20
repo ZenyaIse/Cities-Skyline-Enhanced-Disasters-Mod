@@ -109,6 +109,7 @@ namespace EnhancedDisastersMod
 
             if (milestoneNum >= 3) container.ForestFire.Unlock();
             if (milestoneNum >= 3) container.Thunderstorm.Unlock();
+            if (milestoneNum >= 4) container.Sinkhole.Unlock();
         }
     }
 }

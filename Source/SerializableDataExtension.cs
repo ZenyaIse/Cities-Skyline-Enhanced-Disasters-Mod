@@ -10,7 +10,7 @@ namespace EnhancedDisastersMod
     public class SerializableDataExtension : ISerializableDataExtension
     {
         public const string DataID = "EnhancedDisastersMod";
-        public const uint DataVersion = 1;
+        public const uint DataVersion = 0;
         private ISerializableData serializableData;
 
         public void OnCreated(ISerializableData serializedData)
@@ -30,10 +30,10 @@ namespace EnhancedDisastersMod
 
                     DataSerializer.Serialize(stream, DataSerializer.Mode.Memory, DataVersion, new EnhancedForestFire.Data());
                     DataSerializer.Serialize(stream, DataSerializer.Mode.Memory, DataVersion, new EnhancedThunderstorm.Data());
+                    DataSerializer.Serialize(stream, DataSerializer.Mode.Memory, DataVersion, new EnhancedSinkhole.Data());
                     //DataSerializer.Serialize(stream, DataSerializer.Mode.Memory, DataVersion, new EnhancedTornado.Data());
                     //DataSerializer.Serialize(stream, DataSerializer.Mode.Memory, DataVersion, new EnhancedEarthquake.Data());
                     //DataSerializer.Serialize(stream, DataSerializer.Mode.Memory, DataVersion, new EnhancedTsunami.Data());
-                    //DataSerializer.Serialize(stream, DataSerializer.Mode.Memory, DataVersion, new EnhancedSinkhole.Data());
                     //DataSerializer.Serialize(stream, DataSerializer.Mode.Memory, DataVersion, new EnhancedMeteorStrike.Data());
                     data = stream.ToArray();
                 }

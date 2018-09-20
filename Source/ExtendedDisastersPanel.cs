@@ -159,14 +159,14 @@ namespace EnhancedDisastersMod
 
                     progressBars_maxIntensity[i].value = maxIntensity * 0.01f;
                     setProgressBarColor(progressBars_maxIntensity[i]);
-
-                    //if (!d.Unlocked && d.OccurrenceBeforeUnlock == OccurrenceAreas.LockedAreas)
                 }
                 else
                 {
                     labels[i].text = "Disabled";
+
                     progressBars_probability[i].value = 0;
                     progressBars_probability[i].progressColor = Color.black;
+
                     progressBars_maxIntensity[i].value = 0;
                     progressBars_maxIntensity[i].progressColor = Color.black;
                 }

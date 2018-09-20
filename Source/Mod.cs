@@ -10,13 +10,20 @@ namespace EnhancedDisastersMod
     public class Mod : IUserMod
     {
         private bool freezeUI = false;
+
         private UICheckBox ForestFireEnabledUI;
         private UISlider ForestFireMaxProbabilityUI;
         private UISlider ForestFireWarmupDaysUI;
+
         private UICheckBox ThunderstormEnabledUI;
         private UISlider ThunderstormMaxProbabilityUI;
         private UIDropDown ThunderstormMaxProbabilityMonthUI;
         private UISlider ThunderstormRainFactorUI;
+
+        private UICheckBox UI_Sinkhole_Enabled;
+        private UISlider UI_Sinkhole_MinProbability;
+        private UISlider UI_Sinkhole_MaxProbability;
+        private UISlider UI_Sinkhole_RainDuration;
 
         public string Name
         {
@@ -63,6 +70,11 @@ namespace EnhancedDisastersMod
             ThunderstormMaxProbabilityUI.value = c.Thunderstorm.OccurrencePerYear;
             ThunderstormMaxProbabilityMonthUI.selectedIndex = c.Thunderstorm.MaxProbabilityMonth - 1;
             ThunderstormRainFactorUI.value = c.Thunderstorm.RainFactor;
+
+            UI_Sinkhole_Enabled.isChecked = c.Sinkhole.Enabled;
+            UI_Sinkhole_MinProbability.value = c.Sinkhole.OccurrencePerYear;
+            UI_Sinkhole_MaxProbability.value = c.Sinkhole.OccurrencePerYearMax;
+            UI_Sinkhole_RainDuration.value = c.Sinkhole.RainDurationDays;
 
             freezeUI = false;
         }
@@ -136,6 +148,28 @@ namespace EnhancedDisastersMod
             {
                 if (!freezeUI) c.Thunderstorm.RainFactor = val;
             }));
+
+            helper.AddSpace(20);
+            #endregion
+
+            #region Sinkhole
+            UIHelperBase sinkholeGroup = helper.AddGroup("Sinkhole disaster");
+            UI_Sinkhole_Enabled = (UICheckBox)sinkholeGroup.AddCheckbox("Enable", c.Sinkhole.Enabled, delegate (bool isChecked)
+            {
+                if (!freezeUI) c.Sinkhole.Enabled = isChecked;
+            });
+            addLabelToSlider(UI_Sinkhole_MinProbability = (UISlider)sinkholeGroup.AddSlider("Min probability", 0.1f, 5, 0.1f, c.Sinkhole.OccurrencePerYear, delegate (float val)
+            {
+                if (!freezeUI) c.Sinkhole.OccurrencePerYear = val;
+            }), " times per year");
+            addLabelToSlider(UI_Sinkhole_MaxProbability = (UISlider)sinkholeGroup.AddSlider("Max probability", 0.1f, 5, 0.1f, c.Sinkhole.OccurrencePerYearMax, delegate (float val)
+            {
+                if (!freezeUI) c.Sinkhole.OccurrencePerYearMax = val;
+            }), " times per year");
+            addLabelToSlider(UI_Sinkhole_RainDuration = (UISlider)sinkholeGroup.AddSlider("Rain duration", 10, 360, 10, c.Sinkhole.RainDurationDays, delegate (float val)
+            {
+                if (!freezeUI) c.Sinkhole.RainDurationDays = (int)val;
+            }), " days");
 
             helper.AddSpace(20);
             #endregion

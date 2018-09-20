@@ -30,11 +30,8 @@ namespace EnhancedDisastersMod
                 d.MaxProbabilityMonth = s.ReadInt32();
                 d.RainFactor = s.ReadFloat();
                 d.calmCounter = s.ReadInt32();
-                if (s.version == 1)
-                {
-                    d.probabilityWarmupCounter = s.ReadInt32();
-                    d.intensityWarmupCounter = s.ReadInt32();
-                }
+                d.probabilityWarmupCounter = s.ReadInt32();
+                d.intensityWarmupCounter = s.ReadInt32();
             }
 
             public void AfterDeserialize(DataSerializer s)
