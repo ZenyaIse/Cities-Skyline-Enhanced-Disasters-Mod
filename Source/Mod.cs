@@ -21,9 +21,8 @@ namespace EnhancedDisastersMod
         private UISlider ThunderstormRainFactorUI;
 
         private UICheckBox UI_Sinkhole_Enabled;
-        private UISlider UI_Sinkhole_MinProbability;
         private UISlider UI_Sinkhole_MaxProbability;
-        private UISlider UI_Sinkhole_RainDuration;
+        private UISlider UI_Sinkhole_GroundwaterCapacity;
 
         public string Name
         {
@@ -72,9 +71,8 @@ namespace EnhancedDisastersMod
             ThunderstormRainFactorUI.value = c.Thunderstorm.RainFactor;
 
             UI_Sinkhole_Enabled.isChecked = c.Sinkhole.Enabled;
-            UI_Sinkhole_MinProbability.value = c.Sinkhole.OccurrencePerYear;
-            UI_Sinkhole_MaxProbability.value = c.Sinkhole.OccurrencePerYearMax;
-            UI_Sinkhole_RainDuration.value = c.Sinkhole.RainDurationDays;
+            UI_Sinkhole_MaxProbability.value = c.Sinkhole.OccurrencePerYear;
+            UI_Sinkhole_GroundwaterCapacity.value = c.Sinkhole.GroundwaterCapacity;
 
             freezeUI = false;
         }
@@ -158,18 +156,14 @@ namespace EnhancedDisastersMod
             {
                 if (!freezeUI) c.Sinkhole.Enabled = isChecked;
             });
-            addLabelToSlider(UI_Sinkhole_MinProbability = (UISlider)sinkholeGroup.AddSlider("Min probability", 0.1f, 5, 0.1f, c.Sinkhole.OccurrencePerYear, delegate (float val)
+            addLabelToSlider(UI_Sinkhole_MaxProbability = (UISlider)sinkholeGroup.AddSlider("Max probability", 0.2f, 5, 0.2f, c.Sinkhole.OccurrencePerYear, delegate (float val)
             {
                 if (!freezeUI) c.Sinkhole.OccurrencePerYear = val;
             }), " times per year");
-            addLabelToSlider(UI_Sinkhole_MaxProbability = (UISlider)sinkholeGroup.AddSlider("Max probability", 0.1f, 5, 0.1f, c.Sinkhole.OccurrencePerYearMax, delegate (float val)
+            addLabelToSlider(UI_Sinkhole_GroundwaterCapacity = (UISlider)sinkholeGroup.AddSlider("Groundwater capacity", 1, 100, 1, c.Sinkhole.GroundwaterCapacity, delegate (float val)
             {
-                if (!freezeUI) c.Sinkhole.OccurrencePerYearMax = val;
-            }), " times per year");
-            addLabelToSlider(UI_Sinkhole_RainDuration = (UISlider)sinkholeGroup.AddSlider("Rain duration", 10, 360, 10, c.Sinkhole.RainDurationDays, delegate (float val)
-            {
-                if (!freezeUI) c.Sinkhole.RainDurationDays = (int)val;
-            }), " days");
+                if (!freezeUI) c.Sinkhole.GroundwaterCapacity = val;
+            }));
 
             helper.AddSpace(20);
             #endregion

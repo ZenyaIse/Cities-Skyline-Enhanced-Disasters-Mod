@@ -16,9 +16,8 @@ namespace EnhancedDisastersMod
                 s.WriteBool(d.Enabled);
                 s.WriteFloat(d.OccurrencePerYear);
 
-                s.WriteFloat(d.OccurrencePerYearMax);
-                s.WriteInt32(d.RainDurationDays);
-                s.WriteFloat(d.groundwaterCounter);
+                s.WriteFloat(d.GroundwaterCapacity);
+                s.WriteFloat(d.groundwaterAmount);
 
                 s.WriteInt32(d.calmCounter);
                 s.WriteInt32(d.probabilityWarmupCounter);
@@ -31,9 +30,8 @@ namespace EnhancedDisastersMod
                 d.Enabled = s.ReadBool();
                 d.OccurrencePerYear = s.ReadFloat();
 
-                d.OccurrencePerYearMax = s.ReadFloat();
-                d.RainDurationDays = s.ReadInt32();
-                d.groundwaterCounter = s.ReadFloat();
+                d.GroundwaterCapacity = s.ReadFloat();
+                d.groundwaterAmount = s.ReadFloat();
 
                 d.calmCounter = s.ReadInt32();
                 d.probabilityWarmupCounter = s.ReadInt32();
@@ -46,18 +44,17 @@ namespace EnhancedDisastersMod
             }
         }
 
-        public float OccurrencePerYearMax = 2f;
-        public int RainDurationDays = 180; // Rainy days
-        private float groundwaterCounter = 0; // Rainy days count
+        public float GroundwaterCapacity = 50;
+        private float groundwaterAmount = 0; // groundwaterAmount=1 means rain of intensity 1 during 1 day
 
         public EnhancedSinkhole()
         {
             DType = DisasterType.Sinkhole;
             OccurrenceAreaAfterUnlock = OccurrenceAreas.UnlockedAreas;
-            OccurrencePerYear = 0.2f; // When groundwater is 0
+            OccurrencePerYear = 1f; // When groundwater is full
             ProbabilityDistribution = ProbabilityDistributions.Uniform;
 
-            calmDays = 14;
+            calmDays = 30;
             probabilityWarmupDays = 0;
             intensityWarmupDays = 0;
         }
@@ -67,21 +64,20 @@ namespace EnhancedDisastersMod
             WeatherManager wm = Singleton<WeatherManager>.instance;
             if (wm.m_currentRain > 0)
             {
-                groundwaterCounter += 1 / framesPerDay;
-            }
-            else
-            {
-                groundwaterCounter -= 1 / framesPerDay;
+                groundwaterAmount += wm.m_currentRain / framesPerDay;
             }
 
-            groundwaterCounter = Mathf.Clamp(groundwaterCounter, 0, RainDurationDays);
+            groundwaterAmount -= groundwaterAmount / GroundwaterCapacity / framesPerDay;
+
+            if (groundwaterAmount < 0)
+            {
+                groundwaterAmount = 0;
+            }
         }
 
         protected override float getCurrentProbabilityPerFrame()
         {
-            float minProbability = base.getCurrentProbabilityPerFrame();
-            float maxProbability = OccurrencePerYearMax / framesPerYear;
-            return minProbability + (maxProbability - minProbability) * groundwaterCounter / RainDurationDays;
+            return base.getCurrentProbabilityPerFrame() * groundwaterAmount / GroundwaterCapacity;
         }
 
         public override bool CheckDisasterAIType(object disasterAI)

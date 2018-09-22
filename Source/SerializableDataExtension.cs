@@ -62,10 +62,10 @@ namespace EnhancedDisastersMod
                 {
                     DataSerializer.Deserialize<EnhancedForestFire.Data>(stream, DataSerializer.Mode.Memory);
                     DataSerializer.Deserialize<EnhancedThunderstorm.Data>(stream, DataSerializer.Mode.Memory);
+                    DataSerializer.Deserialize<EnhancedSinkhole.Data>(stream, DataSerializer.Mode.Memory);
                     //DataSerializer.Deserialize<EnhancedTornado.Data>(stream, DataSerializer.Mode.Memory);
                     //DataSerializer.Deserialize<EnhancedEarthquake.Data>(stream, DataSerializer.Mode.Memory);
                     //DataSerializer.Deserialize<EnhancedTsunami.Data>(stream, DataSerializer.Mode.Memory);
-                    //DataSerializer.Deserialize<EnhancedSinkhole.Data>(stream, DataSerializer.Mode.Memory);
                     //DataSerializer.Deserialize<EnhancedMeteorStrike.Data>(stream, DataSerializer.Mode.Memory);
                 }
             }
