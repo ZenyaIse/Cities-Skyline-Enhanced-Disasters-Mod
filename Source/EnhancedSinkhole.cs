@@ -2,45 +2,32 @@
 using ColossalFramework;
 using ColossalFramework.IO;
 using UnityEngine;
-using System;
 
 namespace EnhancedDisastersMod
 {
     public class EnhancedSinkhole : EnhancedDisaster
     {
-        public class Data : IDataContainer
+        public class Data : SerializableDataCommon, IDataContainer
         {
             public void Serialize(DataSerializer s)
             {
                 EnhancedSinkhole d = Singleton<EnhancedDisastersManager>.instance.container.Sinkhole;
-                s.WriteBool(d.Enabled);
-                s.WriteFloat(d.OccurrencePerYear);
-
+                serializeCommonParameters(s, d);
                 s.WriteFloat(d.GroundwaterCapacity);
                 s.WriteFloat(d.groundwaterAmount);
-
-                s.WriteInt32(d.calmCounter);
-                s.WriteInt32(d.probabilityWarmupCounter);
-                s.WriteInt32(d.intensityWarmupCounter);
             }
 
             public void Deserialize(DataSerializer s)
             {
                 EnhancedSinkhole d = Singleton<EnhancedDisastersManager>.instance.container.Sinkhole;
-                d.Enabled = s.ReadBool();
-                d.OccurrencePerYear = s.ReadFloat();
-
+                deserializeCommonParameters(s, d);
                 d.GroundwaterCapacity = s.ReadFloat();
                 d.groundwaterAmount = s.ReadFloat();
-
-                d.calmCounter = s.ReadInt32();
-                d.probabilityWarmupCounter = s.ReadInt32();
-                d.intensityWarmupCounter = s.ReadInt32();
             }
 
             public void AfterDeserialize(DataSerializer s)
             {
-                Debug.Log(">>> EnhancedDisastersMod: Sinkhole data loaded.");
+                afterDeserializeLog("Sinkhole");
             }
         }
 

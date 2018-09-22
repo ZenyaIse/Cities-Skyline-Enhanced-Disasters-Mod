@@ -1,13 +1,40 @@
 ﻿using System;
 using ICities;
-using UnityEngine;
 using ColossalFramework;
-using System.Xml.Serialization;
+using ColossalFramework.IO;
+using UnityEngine;
 
 namespace EnhancedDisastersMod
 {
     public abstract class EnhancedDisaster
     {
+        public class SerializableDataCommon
+        {
+            public void serializeCommonParameters(DataSerializer s, EnhancedDisaster disaster)
+            {
+                s.WriteBool(disaster.Enabled);
+                s.WriteFloat(disaster.OccurrencePerYear);
+                s.WriteInt32(disaster.calmCounter);
+                s.WriteInt32(disaster.probabilityWarmupCounter);
+                s.WriteInt32(disaster.intensityWarmupCounter);
+            }
+
+            public void deserializeCommonParameters(DataSerializer s, EnhancedDisaster disaster)
+            {
+                disaster.Enabled = s.ReadBool();
+                disaster.OccurrencePerYear = s.ReadFloat();
+                disaster.calmCounter = s.ReadInt32();
+                disaster.probabilityWarmupCounter = s.ReadInt32();
+                disaster.intensityWarmupCounter = s.ReadInt32();
+            }
+
+            public void afterDeserializeLog(string className)
+            {
+                Debug.Log(">>> EnhancedDisastersMod: " + className + " data loaded.");
+            }
+        }
+
+
         // Constants
         protected const float framesPerDay = 585.142f; // See m_timePerFrame from SimulationManager.Awake()
         protected const float framesPerYear = framesPerDay * 365f;

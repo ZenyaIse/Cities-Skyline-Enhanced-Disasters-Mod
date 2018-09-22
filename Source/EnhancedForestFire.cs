@@ -8,38 +8,27 @@ namespace EnhancedDisastersMod
 {
     public class EnhancedForestFire : EnhancedDisaster
     {
-        public class Data : IDataContainer
+        public class Data : SerializableDataCommon, IDataContainer
         {
             public void Serialize(DataSerializer s)
             {
                 EnhancedForestFire d = Singleton<EnhancedDisastersManager>.instance.container.ForestFire;
-                s.WriteBool(d.Enabled);
-                s.WriteFloat(d.OccurrencePerYear);
+                serializeCommonParameters(s, d);
                 s.WriteInt32(d.WarmupDays);
-                s.WriteInt32(d.calmCounter);
-                s.WriteInt32(d.probabilityWarmupCounter);
-                s.WriteInt32(d.intensityWarmupCounter);
                 s.WriteUInt32(d.noRainFramesCount);
             }
 
             public void Deserialize(DataSerializer s)
             {
                 EnhancedForestFire d = Singleton<EnhancedDisastersManager>.instance.container.ForestFire;
-                d.Enabled = s.ReadBool();
-                d.OccurrencePerYear = s.ReadFloat();
+                deserializeCommonParameters(s, d);
                 d.WarmupDays = s.ReadInt32();
-                d.calmCounter = s.ReadInt32();
-                if (s.version == 1)
-                {
-                    d.probabilityWarmupCounter = s.ReadInt32();
-                    d.intensityWarmupCounter = s.ReadInt32();
-                }
                 d.noRainFramesCount = s.ReadUInt32();
             }
 
             public void AfterDeserialize(DataSerializer s)
             {
-                Debug.Log(">>> EnhancedDisastersMod: ForestFire data loaded.");
+                afterDeserializeLog("ForestFire");
             }
         }
 

@@ -8,35 +8,27 @@ namespace EnhancedDisastersMod
 {
     public class EnhancedThunderstorm: EnhancedDisaster
     {
-        public class Data : IDataContainer
+        public class Data : SerializableDataCommon, IDataContainer
         {
             public void Serialize(DataSerializer s)
             {
                 EnhancedThunderstorm d = Singleton<EnhancedDisastersManager>.instance.container.Thunderstorm;
-                s.WriteBool(d.Enabled);
-                s.WriteFloat(d.OccurrencePerYear);
+                serializeCommonParameters(s, d);
                 s.WriteInt32(d.MaxProbabilityMonth);
                 s.WriteFloat(d.RainFactor);
-                s.WriteInt32(d.calmCounter);
-                s.WriteInt32(d.probabilityWarmupCounter);
-                s.WriteInt32(d.intensityWarmupCounter);
             }
 
             public void Deserialize(DataSerializer s)
             {
                 EnhancedThunderstorm d = Singleton<EnhancedDisastersManager>.instance.container.Thunderstorm;
-                d.Enabled = s.ReadBool();
-                d.OccurrencePerYear = s.ReadFloat();
+                deserializeCommonParameters(s, d);
                 d.MaxProbabilityMonth = s.ReadInt32();
                 d.RainFactor = s.ReadFloat();
-                d.calmCounter = s.ReadInt32();
-                d.probabilityWarmupCounter = s.ReadInt32();
-                d.intensityWarmupCounter = s.ReadInt32();
             }
 
             public void AfterDeserialize(DataSerializer s)
             {
-                Debug.Log(">>> EnhancedDisastersMod: Thunderstorm data loaded.");
+                afterDeserializeLog("Thunderstorm");
             }
         }
 
