@@ -81,7 +81,7 @@ namespace EnhancedDisastersMod
 
             if (ai != null)
             {
-                uint activeDuration_original = ai.m_activeDuration;
+                uint activeDuration_original = 8192; // ai.m_activeDuration;
                 uint activeDuration_new = activeDuration_original / 2 + (activeDuration_original / 2) * intensity / 100;
                 DebugLogger.Log(string.Format("Thunderstorm: m_activeDuration {0} -> {1}", ai.m_activeDuration, activeDuration_new));
                 ai.m_activeDuration = activeDuration_new;
