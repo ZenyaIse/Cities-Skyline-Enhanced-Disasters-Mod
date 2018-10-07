@@ -66,11 +66,30 @@ namespace EnhancedDisastersMod
                 y += h;
             }
 
+            UIButton bigRedBtn = this.AddUIComponent<UIButton>();
+            bigRedBtn.name = "bigRedBtn";
+            bigRedBtn.position = new Vector3(10, height - 30);
+            bigRedBtn.size = new Vector2(width - 20, 25);
+            bigRedBtn.textColor = Color.white;
+            bigRedBtn.normalBgSprite = "ButtonMenu";
+            bigRedBtn.hoveredBgSprite = "ButtonMenuHovered";
+            bigRedBtn.text = "Stop all disasters";
+            bigRedBtn.eventClick += BigRedBtn_eventClick;
+
             UIButton btn = this.AddUIComponent<UIButton>();
             btn.position = new Vector3(370, -5);
             btn.size = new Vector2(30, 30);
             btn.normalFgSprite = "buttonclose";
             btn.eventClick += Btn_eventClick;
+        }
+
+        private void BigRedBtn_eventClick(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            DisasterManager dm = Singleton<DisasterManager>.instance;
+            for (ushort i = 0; i < dm.m_disasterCount; i++)
+            {
+                dm.ReleaseDisaster(i);
+            }
         }
 
         private void Btn_eventClick(UIComponent component, UIMouseEventParameter eventParam)
