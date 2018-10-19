@@ -268,7 +268,7 @@ namespace EnhancedDisastersMod
                 case OccurrenceAreas.UnlockedAreas: // Vanilla default
                     targetFound = disasterInfo.m_disasterAI.FindRandomTarget(out targetPosition, out angle);
                     break;
-                case OccurrenceAreas.Nowhere:
+                default:
                     return;
             }
 

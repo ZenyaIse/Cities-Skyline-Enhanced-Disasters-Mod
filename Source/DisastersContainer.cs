@@ -13,7 +13,7 @@ namespace EnhancedDisastersMod
         public EnhancedThunderstorm Thunderstorm;
         public EnhancedSinkhole Sinkhole;
         public EnhancedTsunami Tsunami;
-        //public EnhancedTornado Tornado;
+        public EnhancedTornado Tornado;
         //public EnhancedEarthquake Earthquake;
         //public EnhancedMeteorStrike MeteorStrike;
 
@@ -34,13 +34,14 @@ namespace EnhancedDisastersMod
             if (Thunderstorm == null) Thunderstorm = new EnhancedThunderstorm();
             if (Sinkhole == null) Sinkhole = new EnhancedSinkhole();
             if (Tsunami == null) Tsunami = new EnhancedTsunami();
+            if (Tornado == null) Tornado = new EnhancedTornado();
 
             AllDisasters.Clear();
             AllDisasters.Add(ForestFire);
             AllDisasters.Add(Thunderstorm);
             AllDisasters.Add(Sinkhole);
             AllDisasters.Add(Tsunami);
-            //AllDisasters.Add(Tornado);
+            AllDisasters.Add(Tornado);
             //AllDisasters.Add(Earthquake);
             //AllDisasters.Add(MeteorStrike);
         }
