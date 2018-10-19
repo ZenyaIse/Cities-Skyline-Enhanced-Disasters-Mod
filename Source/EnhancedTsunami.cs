@@ -29,8 +29,6 @@ namespace EnhancedDisastersMod
         public EnhancedTsunami()
         {
             DType = DisasterType.Tsunami;
-            OccurrenceAreaBeforeUnlock = OccurrenceAreas.Nowhere;
-            OccurrenceAreaAfterUnlock = OccurrenceAreas.Everywhere;
             OccurrencePerYear = 0.3f;
             ProbabilityDistribution = ProbabilityDistributions.Uniform;
 
