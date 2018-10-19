@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using ColossalFramework;
 using ColossalFramework.UI;
+using System.Text;
 
 namespace EnhancedDisastersMod
 {
@@ -22,7 +23,7 @@ namespace EnhancedDisastersMod
             this.canFocus = true;
             //this.isInteractive = true;
 
-            height = 200;
+            height = 250;
             width = 400;
 
             isVisible = false;
@@ -68,7 +69,7 @@ namespace EnhancedDisastersMod
 
             UIButton bigRedBtn = this.AddUIComponent<UIButton>();
             bigRedBtn.name = "bigRedBtn";
-            bigRedBtn.position = new Vector3(10, height - 30);
+            bigRedBtn.position = new Vector3(10, -height + 30);
             bigRedBtn.size = new Vector2(width - 20, 25);
             bigRedBtn.textColor = Color.white;
             bigRedBtn.normalBgSprite = "ButtonMenu";
@@ -86,10 +87,21 @@ namespace EnhancedDisastersMod
         private void BigRedBtn_eventClick(UIComponent component, UIMouseEventParameter eventParam)
         {
             DisasterManager dm = Singleton<DisasterManager>.instance;
+            StringBuilder sb = new StringBuilder();
             for (ushort i = 0; i < dm.m_disasterCount; i++)
             {
-                dm.ReleaseDisaster(i);
+                sb.AppendLine(dm.m_disasters.m_buffer[i].Info.name + " flags: " + dm.m_disasters.m_buffer[i].m_flags.ToString());
+                if ((dm.m_disasters.m_buffer[i].m_flags & (DisasterData.Flags.Emerging | DisasterData.Flags.Active | DisasterData.Flags.Clearing)) != DisasterData.Flags.None)
+                {
+                    dm.m_disasters.m_buffer[i].m_flags = ((dm.m_disasters.m_buffer[i].m_flags & ~(DisasterData.Flags.Emerging | DisasterData.Flags.Active | DisasterData.Flags.Clearing)) | DisasterData.Flags.Finished);
+                }
+                //DisasterInfo info = dm.m_disasters.m_buffer[i].Info;
+                //if (info != null)
+                //{
+                    //info.m_disasterAI.DeactivateNow(i, ref dm.m_disasters.m_buffer[i]);
+                //}
             }
+            Debug.Log(sb.ToString());
         }
 
         private void Btn_eventClick(UIComponent component, UIMouseEventParameter eventParam)

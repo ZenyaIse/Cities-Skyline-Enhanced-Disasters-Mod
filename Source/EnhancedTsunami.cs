@@ -1,68 +1,42 @@
 ﻿using ICities;
 using ColossalFramework;
 using ColossalFramework.IO;
-using UnityEngine;
-using System;
 
 namespace EnhancedDisastersMod
 {
     public class EnhancedTsunami : EnhancedDisaster
     {
-        //public class Data : IDataContainer
-        //{
-        //    public void Serialize(DataSerializer s)
-        //    {
-        //        EnhancedTsunami d = Singleton<EnhancedDisastersManager>.instance.Tsunami;
-        //        s.WriteInt32(d.CooldownCounter);
-        //        s.WriteFloat(d.hiddenEnergy);
-        //    }
+        public class Data : SerializableDataCommon, IDataContainer
+        {
+            public void Serialize(DataSerializer s)
+            {
+                EnhancedTsunami d = Singleton<EnhancedDisastersManager>.instance.container.Tsunami;
+                serializeCommonParameters(s, d);
+            }
 
-        //    public void Deserialize(DataSerializer s)
-        //    {
-        //        EnhancedTsunami d = Singleton<EnhancedDisastersManager>.instance.Tsunami;
-        //        d.CooldownCounter = s.ReadInt32();
-        //        d.hiddenEnergy = s.ReadFloat();
+            public void Deserialize(DataSerializer s)
+            {
+                EnhancedTsunami d = Singleton<EnhancedDisastersManager>.instance.container.Tsunami;
+                deserializeCommonParameters(s, d);
+            }
 
-        //        Debug.Log(">>> EnhancedDisastersMod: Tsunami data loaded.");
-        //    }
-
-        //    public void AfterDeserialize(DataSerializer s)
-        //    {
-        //        // Empty
-        //    }
-        //}
-
-        public float HiddenEnergyThreshold = 1500; // Days
-        private float hiddenEnergy = 0; // Days
+            public void AfterDeserialize(DataSerializer s)
+            {
+                afterDeserializeLog("Tsunami");
+            }
+        }
 
         public EnhancedTsunami()
         {
             DType = DisasterType.Tsunami;
             OccurrenceAreaBeforeUnlock = OccurrenceAreas.Nowhere;
             OccurrenceAreaAfterUnlock = OccurrenceAreas.Everywhere;
-            OccurrencePerYear = 0.5f;
-            ProbabilityDistribution = ProbabilityDistributions.PowerLow;
+            OccurrencePerYear = 0.3f;
+            ProbabilityDistribution = ProbabilityDistributions.Uniform;
 
             calmDays = 180;
             probabilityWarmupDays = 180;
-            intensityWarmupDays = 360;
-        }
-
-        protected override void onSimulationFrame_local()
-        {
-            hiddenEnergy += 1 / framesPerDay;
-        }
-
-        protected override float getCurrentProbabilityPerFrame()
-        {
-            return base.getCurrentProbabilityPerFrame() * hiddenEnergy / HiddenEnergyThreshold;
-        }
-
-        public override void OnDisasterStarted(byte intensity)
-        {
-            float strainEnergy_old = hiddenEnergy;
-            hiddenEnergy = hiddenEnergy * (1 - intensity / 100f);
-            Debug.Log(string.Format(">>> EnhancedDisastersMod: Tsunami hidden energy changed from {0} to {1}.", strainEnergy_old, hiddenEnergy));
+            intensityWarmupDays = 360 * 3;
         }
 
         public override bool CheckDisasterAIType(object disasterAI)
