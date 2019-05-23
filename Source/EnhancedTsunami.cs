@@ -29,7 +29,7 @@ namespace EnhancedDisastersMod
         public EnhancedTsunami()
         {
             DType = DisasterType.Tsunami;
-            OccurrencePerYear = 0.3f;
+            OccurrencePerYear = 0.4f;
             ProbabilityDistribution = ProbabilityDistributions.Uniform;
 
             calmDays = 180;

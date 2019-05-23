@@ -33,8 +33,8 @@ namespace EnhancedDisastersMod
                     DataSerializer.Serialize(stream, DataSerializer.Mode.Memory, DataVersion, new EnhancedSinkhole.Data());
                     DataSerializer.Serialize(stream, DataSerializer.Mode.Memory, DataVersion, new EnhancedTsunami.Data());
                     DataSerializer.Serialize(stream, DataSerializer.Mode.Memory, DataVersion, new EnhancedTornado.Data());
-                    //DataSerializer.Serialize(stream, DataSerializer.Mode.Memory, DataVersion, new EnhancedEarthquake.Data());
-                    //DataSerializer.Serialize(stream, DataSerializer.Mode.Memory, DataVersion, new EnhancedMeteorStrike.Data());
+                    DataSerializer.Serialize(stream, DataSerializer.Mode.Memory, DataVersion, new EnhancedEarthquake.Data());
+                    DataSerializer.Serialize(stream, DataSerializer.Mode.Memory, DataVersion, new EnhancedMeteorStrike.Data());
                     data = stream.ToArray();
                 }
 
@@ -65,8 +65,8 @@ namespace EnhancedDisastersMod
                     DataSerializer.Deserialize<EnhancedSinkhole.Data>(stream, DataSerializer.Mode.Memory);
                     DataSerializer.Deserialize<EnhancedTsunami.Data>(stream, DataSerializer.Mode.Memory);
                     DataSerializer.Deserialize<EnhancedTornado.Data>(stream, DataSerializer.Mode.Memory);
-                    //DataSerializer.Deserialize<EnhancedEarthquake.Data>(stream, DataSerializer.Mode.Memory);
-                    //DataSerializer.Deserialize<EnhancedMeteorStrike.Data>(stream, DataSerializer.Mode.Memory);
+                    DataSerializer.Deserialize<EnhancedEarthquake.Data>(stream, DataSerializer.Mode.Memory);
+                    DataSerializer.Deserialize<EnhancedMeteorStrike.Data>(stream, DataSerializer.Mode.Memory);
                 }
             }
             catch (Exception ex)

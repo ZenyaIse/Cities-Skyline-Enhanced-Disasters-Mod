@@ -14,8 +14,8 @@ namespace EnhancedDisastersMod
         public EnhancedSinkhole Sinkhole;
         public EnhancedTsunami Tsunami;
         public EnhancedTornado Tornado;
-        //public EnhancedEarthquake Earthquake;
-        //public EnhancedMeteorStrike MeteorStrike;
+        public EnhancedEarthquake Earthquake;
+        public EnhancedMeteorStrike MeteorStrike;
 
         [XmlIgnore]
         public List<EnhancedDisaster> AllDisasters = new List<EnhancedDisaster>();
@@ -35,6 +35,8 @@ namespace EnhancedDisastersMod
             if (Sinkhole == null) Sinkhole = new EnhancedSinkhole();
             if (Tsunami == null) Tsunami = new EnhancedTsunami();
             if (Tornado == null) Tornado = new EnhancedTornado();
+            if (Earthquake == null) Earthquake = new EnhancedEarthquake();
+            if (MeteorStrike == null) MeteorStrike = new EnhancedMeteorStrike();
 
             AllDisasters.Clear();
             AllDisasters.Add(ForestFire);
@@ -42,8 +44,8 @@ namespace EnhancedDisastersMod
             AllDisasters.Add(Sinkhole);
             AllDisasters.Add(Tsunami);
             AllDisasters.Add(Tornado);
-            //AllDisasters.Add(Earthquake);
-            //AllDisasters.Add(MeteorStrike);
+            AllDisasters.Add(Earthquake);
+            AllDisasters.Add(MeteorStrike);
         }
 
         public static DisastersContainer CreateFromFile()
