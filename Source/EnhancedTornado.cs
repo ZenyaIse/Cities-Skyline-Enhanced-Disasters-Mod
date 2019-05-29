@@ -28,17 +28,33 @@ namespace EnhancedDisastersMod
             }
         }
 
-        private byte tornadosCount = 0;
+        public int MaxProbabilityMonth = 5;
 
         public EnhancedTornado()
         {
             DType = DisasterType.Tornado;
-            OccurrencePerYear = 0.4f;
+            OccurrencePerYear = 1.0f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
 
-            calmDays = 180;
+            calmDays = 360;
             probabilityWarmupDays = 180;
-            intensityWarmupDays = 360;
+            intensityWarmupDays = 180;
+        }
+
+        protected override float getCurrentProbabilityPerFrame()
+        {
+            if (Singleton<WeatherManager>.instance.m_currentFog > 0)
+            {
+                return 0;
+            }
+
+            DateTime dt = Singleton<SimulationManager>.instance.m_currentGameTime;
+            int delta_month = Math.Abs(dt.Month - MaxProbabilityMonth);
+            if (delta_month > 6) delta_month = 12 - delta_month;
+
+            float probability = base.getCurrentProbabilityPerFrame() * (1f - delta_month / 6f);
+
+            return probability;
         }
 
         public override bool CheckDisasterAIType(object disasterAI)
