@@ -29,12 +29,12 @@ namespace EnhancedDisastersMod
         public EnhancedTsunami()
         {
             DType = DisasterType.Tsunami;
-            OccurrencePerYear = 0.4f;
+            OccurrencePerYear = 1.0f;
             ProbabilityDistribution = ProbabilityDistributions.Uniform;
 
-            calmDays = 180;
-            probabilityWarmupDays = 180;
-            intensityWarmupDays = 360 * 3;
+            calmDays = 360;
+            probabilityWarmupDays = 360 * 5;
+            intensityWarmupDays = 360 * 2;
         }
 
         public override bool CheckDisasterAIType(object disasterAI)
