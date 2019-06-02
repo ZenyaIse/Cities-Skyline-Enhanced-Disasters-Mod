@@ -38,7 +38,7 @@ namespace EnhancedDisastersMod
         {
             DType = DisasterType.Sinkhole;
             OccurrenceAreaAfterUnlock = OccurrenceAreas.UnlockedAreas;
-            OccurrencePerYear = 1f; // When groundwater is full
+            BaseOccurrencePerYear = 1f; // When groundwater is full
             ProbabilityDistribution = ProbabilityDistributions.Uniform;
 
             calmDays = 30;
@@ -62,9 +62,9 @@ namespace EnhancedDisastersMod
             }
         }
 
-        protected override float getCurrentProbabilityPerFrame()
+        protected override float getCurrentOccurrencePerYear_local()
         {
-            return base.getCurrentProbabilityPerFrame() * groundwaterAmount / GroundwaterCapacity;
+            return base.getCurrentOccurrencePerYear_local() * groundwaterAmount / GroundwaterCapacity;
         }
 
         public override bool CheckDisasterAIType(object disasterAI)

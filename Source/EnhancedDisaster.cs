@@ -13,7 +13,7 @@ namespace EnhancedDisastersMod
             public void serializeCommonParameters(DataSerializer s, EnhancedDisaster disaster)
             {
                 s.WriteBool(disaster.Enabled);
-                s.WriteFloat(disaster.OccurrencePerYear);
+                s.WriteFloat(disaster.BaseOccurrencePerYear);
                 s.WriteInt32(disaster.calmCounter);
                 s.WriteInt32(disaster.probabilityWarmupCounter);
                 s.WriteInt32(disaster.intensityWarmupCounter);
@@ -22,7 +22,7 @@ namespace EnhancedDisastersMod
             public void deserializeCommonParameters(DataSerializer s, EnhancedDisaster disaster)
             {
                 disaster.Enabled = s.ReadBool();
-                disaster.OccurrencePerYear = s.ReadFloat();
+                disaster.BaseOccurrencePerYear = s.ReadFloat();
                 disaster.calmCounter = s.ReadInt32();
                 disaster.probabilityWarmupCounter = s.ReadInt32();
                 disaster.intensityWarmupCounter = s.ReadInt32();
@@ -51,14 +51,14 @@ namespace EnhancedDisastersMod
         // Disaster properties
         protected DisasterType DType = DisasterType.Empty;
         protected ProbabilityDistributions ProbabilityDistribution = ProbabilityDistributions.Uniform;
-        protected int FullIntensityDisasterPopulation = 20000;
+        protected int FullIntensityPopulation = 20000;
         protected OccurrenceAreas OccurrenceAreaBeforeUnlock = OccurrenceAreas.Nowhere;
         protected OccurrenceAreas OccurrenceAreaAfterUnlock = OccurrenceAreas.UnlockedAreas;
         protected bool unlocked = false;
 
         // Disaster public properties (to be saved in xml)
         public bool Enabled = true;
-        public float OccurrencePerYear = 1.0f;
+        public float BaseOccurrencePerYear = 1.0f;
 
 
         // Public
@@ -72,7 +72,7 @@ namespace EnhancedDisastersMod
                 return 0f;
             }
 
-            return scaleProbability(getCurrentProbabilityPerFrame()) * framesPerYear;
+            return scaleProbability(getCurrentOccurrencePerYear_local());
         }
 
         public virtual byte GetMaximumIntensity()
@@ -110,7 +110,7 @@ namespace EnhancedDisastersMod
                 intensityWarmupCounter--;
             }
 
-            float probability = getCurrentProbabilityPerFrame();
+            float probability = getCurrentOccurrencePerYear_local();
 
             if (probability == 0)
             {
@@ -120,7 +120,7 @@ namespace EnhancedDisastersMod
             probability = scaleProbability(probability);
 
             SimulationManager sm = Singleton<SimulationManager>.instance;
-            if (sm.m_randomizer.Int32(randomizerRange) < (uint)(randomizerRange * probability))
+            if (sm.m_randomizer.Int32(randomizerRange) < (uint)(randomizerRange * probability / framesPerYear))
             {
                 byte intensity = getRandomIntensity();
                 intensity = scaleIntensity(intensity);
@@ -140,9 +140,9 @@ namespace EnhancedDisastersMod
 
         // Utilities
 
-        protected virtual float getCurrentProbabilityPerFrame()
+        protected virtual float getCurrentOccurrencePerYear_local()
         {
-            return OccurrencePerYear / framesPerYear;
+            return BaseOccurrencePerYear;
         }
 
         protected virtual byte getRandomIntensity()
@@ -180,9 +180,9 @@ namespace EnhancedDisastersMod
 
             // Scale by population
             int population = getPopulation();
-            if (population < FullIntensityDisasterPopulation)
+            if (population < FullIntensityPopulation)
             {
-                intensity = (byte)(10 + (intensity - 10) * population / FullIntensityDisasterPopulation);
+                intensity = (byte)(10 + (intensity - 10) * population / FullIntensityPopulation);
             }
 
             return intensity;

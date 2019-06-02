@@ -40,7 +40,7 @@ namespace EnhancedDisastersMod
             DType = DisasterType.ThunderStorm;
             OccurrenceAreaBeforeUnlock = OccurrenceAreas.LockedAreas;
             OccurrenceAreaAfterUnlock = OccurrenceAreas.Everywhere;
-            OccurrencePerYear = 1.5f;
+            BaseOccurrencePerYear = 1.5f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
 
             calmDays = 30;
@@ -48,21 +48,21 @@ namespace EnhancedDisastersMod
             intensityWarmupDays = 60;
         }
 
-        protected override float getCurrentProbabilityPerFrame()
+        protected override float getCurrentOccurrencePerYear_local()
         {
             DateTime dt = Singleton<SimulationManager>.instance.m_currentGameTime;
             int delta_month = Math.Abs(dt.Month - MaxProbabilityMonth);
             if (delta_month > 6) delta_month = 12 - delta_month;
 
-            float probability = base.getCurrentProbabilityPerFrame() * (1f - delta_month / 6f);
+            float occurence = base.getCurrentOccurrencePerYear_local() * (1f - delta_month / 6f);
 
             WeatherManager wm = Singleton<WeatherManager>.instance;
             if (wm.m_currentRain > 0)
             {
-                probability *= RainFactor;
+                occurence *= RainFactor;
             }
 
-            return probability;
+            return occurence;
         }
 
         public override bool CheckDisasterAIType(object disasterAI)

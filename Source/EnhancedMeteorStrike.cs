@@ -34,7 +34,7 @@ namespace EnhancedDisastersMod
         {
             DType = DisasterType.MeteorStrike;
             OccurrenceAreaAfterUnlock = OccurrenceAreas.UnlockedAreas;
-            OccurrencePerYear = 0.5f;
+            BaseOccurrencePerYear = 0.5f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
 
             calmDays = 360 * 2;

@@ -62,16 +62,16 @@ namespace EnhancedDisastersMod
             freezeUI = true;
 
             ForestFireEnabledUI.isChecked = c.ForestFire.Enabled;
-            ForestFireMaxProbabilityUI.value = c.ForestFire.OccurrencePerYear;
+            ForestFireMaxProbabilityUI.value = c.ForestFire.BaseOccurrencePerYear;
             ForestFireWarmupDaysUI.value = c.ForestFire.WarmupDays;
 
             ThunderstormEnabledUI.isChecked = c.Thunderstorm.Enabled;
-            ThunderstormMaxProbabilityUI.value = c.Thunderstorm.OccurrencePerYear;
+            ThunderstormMaxProbabilityUI.value = c.Thunderstorm.BaseOccurrencePerYear;
             ThunderstormMaxProbabilityMonthUI.selectedIndex = c.Thunderstorm.MaxProbabilityMonth - 1;
             ThunderstormRainFactorUI.value = c.Thunderstorm.RainFactor;
 
             UI_Sinkhole_Enabled.isChecked = c.Sinkhole.Enabled;
-            UI_Sinkhole_MaxProbability.value = c.Sinkhole.OccurrencePerYear;
+            UI_Sinkhole_MaxProbability.value = c.Sinkhole.BaseOccurrencePerYear;
             UI_Sinkhole_GroundwaterCapacity.value = c.Sinkhole.GroundwaterCapacity;
 
             freezeUI = false;
@@ -113,9 +113,9 @@ namespace EnhancedDisastersMod
             {
                 if (!freezeUI) c.ForestFire.Enabled = isChecked;
             });
-            addLabelToSlider(ForestFireMaxProbabilityUI = (UISlider)forestFireGroup.AddSlider("Max probability", 1, 20, 1, c.ForestFire.OccurrencePerYear, delegate (float val)
+            addLabelToSlider(ForestFireMaxProbabilityUI = (UISlider)forestFireGroup.AddSlider("Max probability", 1, 20, 1, c.ForestFire.BaseOccurrencePerYear, delegate (float val)
             {
-                if (!freezeUI) c.ForestFire.OccurrencePerYear = val;
+                if (!freezeUI) c.ForestFire.BaseOccurrencePerYear = val;
             }), " times per year");
             addLabelToSlider(ForestFireWarmupDaysUI = (UISlider)forestFireGroup.AddSlider("Warmup period", 10, 360, 10, c.ForestFire.WarmupDays, delegate (float val)
             {
@@ -131,9 +131,9 @@ namespace EnhancedDisastersMod
             {
                 if (!freezeUI) c.Thunderstorm.Enabled = isChecked;
             });
-            addLabelToSlider(ThunderstormMaxProbabilityUI = (UISlider)thunderstormGroup.AddSlider("Max probability", 0.1f, 5f, 0.1f, c.Thunderstorm.OccurrencePerYear, delegate (float val)
+            addLabelToSlider(ThunderstormMaxProbabilityUI = (UISlider)thunderstormGroup.AddSlider("Max probability", 0.1f, 5f, 0.1f, c.Thunderstorm.BaseOccurrencePerYear, delegate (float val)
             {
-                if (!freezeUI) c.Thunderstorm.OccurrencePerYear = val;
+                if (!freezeUI) c.Thunderstorm.BaseOccurrencePerYear = val;
             }), " times per year");
             ThunderstormMaxProbabilityMonthUI = (UIDropDown)thunderstormGroup.AddDropdown("Most stormy month",
                 new string[] { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" },
@@ -156,9 +156,9 @@ namespace EnhancedDisastersMod
             {
                 if (!freezeUI) c.Sinkhole.Enabled = isChecked;
             });
-            addLabelToSlider(UI_Sinkhole_MaxProbability = (UISlider)sinkholeGroup.AddSlider("Max probability", 0.2f, 5, 0.2f, c.Sinkhole.OccurrencePerYear, delegate (float val)
+            addLabelToSlider(UI_Sinkhole_MaxProbability = (UISlider)sinkholeGroup.AddSlider("Max probability", 0.2f, 5, 0.2f, c.Sinkhole.BaseOccurrencePerYear, delegate (float val)
             {
-                if (!freezeUI) c.Sinkhole.OccurrencePerYear = val;
+                if (!freezeUI) c.Sinkhole.BaseOccurrencePerYear = val;
             }), " times per year");
             addLabelToSlider(UI_Sinkhole_GroundwaterCapacity = (UISlider)sinkholeGroup.AddSlider("Groundwater capacity", 1, 100, 1, c.Sinkhole.GroundwaterCapacity, delegate (float val)
             {

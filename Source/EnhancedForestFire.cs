@@ -40,7 +40,7 @@ namespace EnhancedDisastersMod
             DType = DisasterType.ForestFire;
             OccurrenceAreaBeforeUnlock = OccurrenceAreas.LockedAreas;
             OccurrenceAreaAfterUnlock = OccurrenceAreas.Everywhere;
-            OccurrencePerYear = 10.0f; // In case of dry weather
+            BaseOccurrencePerYear = 10.0f; // In case of dry weather
             ProbabilityDistribution = ProbabilityDistributions.Uniform;
 
             calmDays = 7;
@@ -61,11 +61,11 @@ namespace EnhancedDisastersMod
             }
         }
 
-        protected override float getCurrentProbabilityPerFrame()
+        protected override float getCurrentOccurrencePerYear_local()
         {
             float daysWithoutRain = noRainFramesCount / framesPerDay;
 
-            return base.getCurrentProbabilityPerFrame() * Math.Min(1f, daysWithoutRain / WarmupDays);
+            return base.getCurrentOccurrencePerYear_local() * Math.Min(1f, daysWithoutRain / WarmupDays);
         }
 
         public override bool CheckDisasterAIType(object disasterAI)

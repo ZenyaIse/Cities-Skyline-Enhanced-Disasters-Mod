@@ -33,7 +33,7 @@ namespace EnhancedDisastersMod
         public EnhancedTornado()
         {
             DType = DisasterType.Tornado;
-            OccurrencePerYear = 1.0f;
+            BaseOccurrencePerYear = 1.0f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
 
             calmDays = 360;
@@ -41,7 +41,7 @@ namespace EnhancedDisastersMod
             intensityWarmupDays = 180;
         }
 
-        protected override float getCurrentProbabilityPerFrame()
+        protected override float getCurrentOccurrencePerYear_local()
         {
             if (Singleton<WeatherManager>.instance.m_currentFog > 0)
             {
@@ -52,9 +52,9 @@ namespace EnhancedDisastersMod
             int delta_month = Math.Abs(dt.Month - MaxProbabilityMonth);
             if (delta_month > 6) delta_month = 12 - delta_month;
 
-            float probability = base.getCurrentProbabilityPerFrame() * (1f - delta_month / 6f);
+            float occurrence = base.getCurrentOccurrencePerYear_local() * (1f - delta_month / 6f);
 
-            return probability;
+            return occurrence;
         }
 
         public override bool CheckDisasterAIType(object disasterAI)
