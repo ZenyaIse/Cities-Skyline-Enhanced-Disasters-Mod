@@ -14,12 +14,18 @@ namespace EnhancedDisastersMod
             {
                 EnhancedEarthquake d = Singleton<EnhancedDisastersManager>.instance.container.Earthquake;
                 serializeCommonParameters(s, d);
+
+                s.WriteInt8(d.aftershocksCount);
+                s.WriteInt8(d.aftershockMaxIntensity);
             }
 
             public void Deserialize(DataSerializer s)
             {
                 EnhancedEarthquake d = Singleton<EnhancedDisastersManager>.instance.container.Earthquake;
                 deserializeCommonParameters(s, d);
+
+                d.aftershocksCount = (byte)s.ReadInt8();
+                d.aftershockMaxIntensity = (byte)s.ReadInt8();
             }
 
             public void AfterDeserialize(DataSerializer s)
@@ -27,33 +33,6 @@ namespace EnhancedDisastersMod
                 afterDeserializeLog("EnhancedEarthquake");
             }
         }
-        //public class Data : IDataContainer
-        //{
-        //    public void Serialize(DataSerializer s)
-        //    {
-        //        EnhancedEarthquake d = Singleton<EnhancedDisastersManager>.instance.Earthquake;
-        //        s.WriteInt32(d.CooldownCounter);
-        //        s.WriteFloat(d.strainEnergy);
-        //        s.WriteInt8(d.aftershocksCount);
-        //        s.WriteInt8(d.aftershockMaxIntensity);
-        //    }
-
-        //    public void Deserialize(DataSerializer s)
-        //    {
-        //        EnhancedEarthquake d = Singleton<EnhancedDisastersManager>.instance.Earthquake;
-        //        d.CooldownCounter = s.ReadInt32();
-        //        d.strainEnergy = s.ReadFloat();
-        //        d.aftershocksCount = (byte)s.ReadInt8();
-        //        d.aftershockMaxIntensity = (byte)s.ReadInt8();
-
-        //        Debug.Log(">>> EnhancedDisastersMod: Earthquake data loaded.");
-        //    }
-
-        //    public void AfterDeserialize(DataSerializer s)
-        //    {
-        //        // Empty
-        //    }
-        //}
 
         //public float StrainThreshold = 700; // Days
         //private float strainEnergy = 0; // Days
