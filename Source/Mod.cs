@@ -31,7 +31,7 @@ namespace EnhancedDisastersMod
 
         public string Description
         {
-            get { return "More natural behavior of natural disasters. Ver. 2019/06/03"; }
+            get { return "More natural behavior of natural disasters. Ver. 2019/06/08"; }
         }
 
         #region Options UI

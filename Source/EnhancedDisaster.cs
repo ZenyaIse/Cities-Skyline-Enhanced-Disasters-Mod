@@ -110,17 +110,17 @@ namespace EnhancedDisastersMod
                 intensityWarmupCounter--;
             }
 
-            float probability = getCurrentOccurrencePerYear_local();
+            float occurrencePerYear = getCurrentOccurrencePerYear_local();
 
-            if (probability == 0)
+            if (occurrencePerYear == 0)
             {
                 return;
             }
 
-            probability = scaleProbability(probability);
+            occurrencePerYear = scaleProbability(occurrencePerYear);
 
             SimulationManager sm = Singleton<SimulationManager>.instance;
-            if (sm.m_randomizer.Int32(randomizerRange) < (uint)(randomizerRange * probability / framesPerYear))
+            if (sm.m_randomizer.Int32(randomizerRange) < (uint)(randomizerRange * occurrencePerYear / framesPerYear))
             {
                 byte intensity = getRandomIntensity();
                 intensity = scaleIntensity(intensity);
@@ -170,7 +170,7 @@ namespace EnhancedDisastersMod
             return (byte)intensity;
         }
 
-        private byte scaleIntensity(byte intensity)
+        protected byte scaleIntensity(byte intensity)
         {
             // Warmup period
             if (intensityWarmupCounter > 0)
