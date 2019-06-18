@@ -15,6 +15,8 @@ namespace EnhancedDisastersMod
                 EnhancedEarthquake d = Singleton<EnhancedDisastersManager>.instance.container.Earthquake;
                 serializeCommonParameters(s, d);
 
+                s.WriteFloat(d.WarmupYears);
+
                 s.WriteInt8(d.aftershocksCount);
                 s.WriteInt8(d.aftershockMaxIntensity);
             }
@@ -23,6 +25,8 @@ namespace EnhancedDisastersMod
             {
                 EnhancedEarthquake d = Singleton<EnhancedDisastersManager>.instance.container.Earthquake;
                 deserializeCommonParameters(s, d);
+
+                d.WarmupYears = s.ReadFloat();
 
                 d.aftershocksCount = (byte)s.ReadInt8();
                 d.aftershockMaxIntensity = (byte)s.ReadInt8();
@@ -34,8 +38,6 @@ namespace EnhancedDisastersMod
             }
         }
 
-        //public float StrainThreshold = 700; // Days
-        //private float strainEnergy = 0; // Days
         private byte aftershocksCount = 0;
         private byte aftershockMaxIntensity = 0;
 
@@ -46,15 +48,31 @@ namespace EnhancedDisastersMod
             BaseOccurrencePerYear = 1.0f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
 
-            calmDays = 360;
-            probabilityWarmupDays = 360 * 3;
-            intensityWarmupDays = 360;
+            WarmupYears = 3;
         }
 
-        //protected override void onSimulationFrame_local()
-        //{
-        //    strainEnergy += 1 / framesPerDay;
-        //}
+        public float WarmupYears
+        {
+            get
+            {
+                return probabilityWarmupDays / 360f;
+            }
+
+            set
+            {
+                probabilityWarmupDays = (int)(360 * value);
+                intensityWarmupDays = probabilityWarmupDays / 3;
+                calmDays = probabilityWarmupDays / 3;
+            }
+        }
+
+        protected override void onSimulationFrame_local()
+        {
+            if (aftershocksCount > 0)
+            {
+                calmCounter = 0;
+            }
+        }
 
         protected override float getCurrentOccurrencePerYear_local()
         {
@@ -71,7 +89,7 @@ namespace EnhancedDisastersMod
             if (aftershocksCount == 0)
             {
                 aftershockMaxIntensity = (byte)(10 + (intensity - 10) * 3 / 4);
-                aftershocksCount = (byte)Singleton<SimulationManager>.instance.m_randomizer.Int32((uint)intensity / 10);
+                aftershocksCount = (byte)Singleton<SimulationManager>.instance.m_randomizer.Int32((uint)intensity / 25);
             }
             else
             {
@@ -81,13 +99,6 @@ namespace EnhancedDisastersMod
 
             Debug.Log(string.Format(">>> EnhancedDisastersMod: {0} aftershocks are still going to happen.", aftershocksCount));
         }
-
-        //public override void OnDisasterStarted(byte intensity)
-        //{
-        //    float strainEnergy_old = strainEnergy;
-        //    strainEnergy = strainEnergy * (1 - intensity / 100f);
-        //    Debug.Log(string.Format(">>> EnhancedDisastersMod: Strain energy changed from {0} to {1}.", strainEnergy_old, strainEnergy));
-        //}
 
         protected override byte getRandomIntensity()
         {
