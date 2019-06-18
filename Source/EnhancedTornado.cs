@@ -14,12 +14,16 @@ namespace EnhancedDisastersMod
             {
                 EnhancedTornado d = Singleton<EnhancedDisastersManager>.instance.container.Tornado;
                 serializeCommonParameters(s, d);
+
+                s.WriteBool(d.NoTornadoDuringFog);
             }
 
             public void Deserialize(DataSerializer s)
             {
                 EnhancedTornado d = Singleton<EnhancedDisastersManager>.instance.container.Tornado;
                 deserializeCommonParameters(s, d);
+
+                d.NoTornadoDuringFog = s.ReadBool();
             }
 
             public void AfterDeserialize(DataSerializer s)
@@ -29,6 +33,7 @@ namespace EnhancedDisastersMod
         }
 
         public int MaxProbabilityMonth = 5;
+        public bool NoTornadoDuringFog = true;
 
         public EnhancedTornado()
         {
@@ -43,7 +48,7 @@ namespace EnhancedDisastersMod
 
         protected override float getCurrentOccurrencePerYear_local()
         {
-            if (Singleton<WeatherManager>.instance.m_currentFog > 0)
+            if (NoTornadoDuringFog && Singleton<WeatherManager>.instance.m_currentFog > 0)
             {
                 return 0;
             }
