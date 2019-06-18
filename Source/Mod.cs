@@ -11,18 +11,37 @@ namespace EnhancedDisastersMod
     {
         private bool freezeUI = false;
 
-        private UICheckBox ForestFireEnabledUI;
+        private UICheckBox UI_ForestFire_Enabled;
         private UISlider ForestFireMaxProbabilityUI;
-        private UISlider ForestFireWarmupDaysUI;
+        private UISlider UI_ForestFire_WarmupDays;
 
-        private UICheckBox ThunderstormEnabledUI;
-        private UISlider ThunderstormMaxProbabilityUI;
-        private UIDropDown ThunderstormMaxProbabilityMonthUI;
-        private UISlider ThunderstormRainFactorUI;
+        private UICheckBox UI_Thunderstorm_Enabled;
+        private UISlider UI_Thunderstorm_MaxProbability;
+        private UIDropDown UI_Thunderstorm_MaxProbabilityMonth;
+        private UISlider UI_Thunderstorm_RainFactor;
 
         private UICheckBox UI_Sinkhole_Enabled;
         private UISlider UI_Sinkhole_MaxProbability;
         private UISlider UI_Sinkhole_GroundwaterCapacity;
+
+        private UICheckBox UI_Tornado_Enabled;
+        private UISlider UI_Tornado_MaxProbability;
+        private UIDropDown UI_Tornado_MaxProbabilityMonth;
+        private UICheckBox UI_Tornado_NoDuringFog;
+
+        private UICheckBox UI_Tsunami_Enabled;
+        private UISlider UI_Tsunami_MaxProbability;
+        private UISlider UI_Tsunami_WarmupYears;
+
+        private UICheckBox UI_Earthquake_Enabled;
+        private UISlider UI_Earthquake_MaxProbability;
+        private UISlider UI_Earthquake_WarmupYears;
+
+        private UICheckBox UI_MeteorStrike_Enabled;
+        private UISlider UI_MeteorStrike_MaxProbability;
+        private UICheckBox UI_MeteorStrike_Meteor1Enabled;
+        private UICheckBox UI_MeteorStrike_Meteor2Enabled;
+        private UICheckBox UI_MeteorStrike_Meteor3Enabled;
 
         public string Name
         {
@@ -55,24 +74,43 @@ namespace EnhancedDisastersMod
 
         private void EnhancedDisastersOptionsUpdateUI()
         {
-            if (ForestFireEnabledUI == null) return;
+            if (UI_ForestFire_Enabled == null) return;
 
             DisastersContainer c = Singleton<EnhancedDisastersManager>.instance.container;
 
             freezeUI = true;
 
-            ForestFireEnabledUI.isChecked = c.ForestFire.Enabled;
+            UI_ForestFire_Enabled.isChecked = c.ForestFire.Enabled;
             ForestFireMaxProbabilityUI.value = c.ForestFire.BaseOccurrencePerYear;
-            ForestFireWarmupDaysUI.value = c.ForestFire.WarmupDays;
+            UI_ForestFire_WarmupDays.value = c.ForestFire.WarmupDays;
 
-            ThunderstormEnabledUI.isChecked = c.Thunderstorm.Enabled;
-            ThunderstormMaxProbabilityUI.value = c.Thunderstorm.BaseOccurrencePerYear;
-            ThunderstormMaxProbabilityMonthUI.selectedIndex = c.Thunderstorm.MaxProbabilityMonth - 1;
-            ThunderstormRainFactorUI.value = c.Thunderstorm.RainFactor;
+            UI_Thunderstorm_Enabled.isChecked = c.Thunderstorm.Enabled;
+            UI_Thunderstorm_MaxProbability.value = c.Thunderstorm.BaseOccurrencePerYear;
+            UI_Thunderstorm_MaxProbabilityMonth.selectedIndex = c.Thunderstorm.MaxProbabilityMonth - 1;
+            UI_Thunderstorm_RainFactor.value = c.Thunderstorm.RainFactor;
 
             UI_Sinkhole_Enabled.isChecked = c.Sinkhole.Enabled;
             UI_Sinkhole_MaxProbability.value = c.Sinkhole.BaseOccurrencePerYear;
             UI_Sinkhole_GroundwaterCapacity.value = c.Sinkhole.GroundwaterCapacity;
+
+            UI_Tornado_Enabled.isChecked = c.Tornado.Enabled;
+            UI_Tornado_MaxProbability.value = c.Tornado.BaseOccurrencePerYear;
+            UI_Tornado_MaxProbabilityMonth.selectedIndex = c.Tornado.MaxProbabilityMonth - 1;
+            UI_Tornado_NoDuringFog.isChecked = c.Tornado.NoTornadoDuringFog;
+
+            UI_Tsunami_Enabled.isChecked = c.Tsunami.Enabled;
+            UI_Tsunami_MaxProbability.value = c.Tsunami.BaseOccurrencePerYear;
+            UI_Tsunami_WarmupYears.value = c.Tsunami.WarmupYears;
+
+            UI_Earthquake_Enabled.isChecked = c.Earthquake.Enabled;
+            UI_Earthquake_MaxProbability.value = c.Earthquake.BaseOccurrencePerYear;
+            UI_Earthquake_WarmupYears.value = c.Earthquake.WarmupYears;
+
+            UI_MeteorStrike_Enabled.isChecked = c.MeteorStrike.Enabled;
+            UI_MeteorStrike_MaxProbability.value = c.MeteorStrike.BaseOccurrencePerYear;
+            UI_MeteorStrike_Meteor1Enabled.isChecked = c.MeteorStrike.GetEnabled(0);
+            UI_MeteorStrike_Meteor2Enabled.isChecked = c.MeteorStrike.GetEnabled(1);
+            UI_MeteorStrike_Meteor3Enabled.isChecked = c.MeteorStrike.GetEnabled(2);
 
             freezeUI = false;
         }
@@ -107,65 +145,213 @@ namespace EnhancedDisastersMod
         {
             DisastersContainer c = Singleton<EnhancedDisastersManager>.instance.container;
 
-            #region ForestFire
-            UIHelperBase forestFireGroup = helper.AddGroup("Forest Fire disaster");
-            ForestFireEnabledUI = (UICheckBox)forestFireGroup.AddCheckbox("Enable", c.ForestFire.Enabled, delegate (bool isChecked)
+            UI_ForestFire_Enabled = (UICheckBox)helper.AddCheckbox("Enable Forest Fire", c.ForestFire.Enabled, delegate (bool isChecked)
             {
                 if (!freezeUI) c.ForestFire.Enabled = isChecked;
             });
-            addLabelToSlider(ForestFireMaxProbabilityUI = (UISlider)forestFireGroup.AddSlider("Max probability", 1, 20, 1, c.ForestFire.BaseOccurrencePerYear, delegate (float val)
-            {
-                if (!freezeUI) c.ForestFire.BaseOccurrencePerYear = val;
-            }), " times per year");
-            addLabelToSlider(ForestFireWarmupDaysUI = (UISlider)forestFireGroup.AddSlider("Warmup period", 10, 360, 10, c.ForestFire.WarmupDays, delegate (float val)
-            {
-                if (!freezeUI) c.ForestFire.WarmupDays = (int)val;
-            }), " days");
-
-            helper.AddSpace(20);
-            #endregion
-
-            #region Thunderstorm
-            UIHelperBase thunderstormGroup = helper.AddGroup("Thunderstorm disaster");
-            ThunderstormEnabledUI = (UICheckBox)thunderstormGroup.AddCheckbox("Enable", c.Thunderstorm.Enabled, delegate (bool isChecked)
+            UI_Thunderstorm_Enabled = (UICheckBox)helper.AddCheckbox("Enable Thunderstorm", c.Thunderstorm.Enabled, delegate (bool isChecked)
             {
                 if (!freezeUI) c.Thunderstorm.Enabled = isChecked;
             });
-            addLabelToSlider(ThunderstormMaxProbabilityUI = (UISlider)thunderstormGroup.AddSlider("Max probability", 0.1f, 5f, 0.1f, c.Thunderstorm.BaseOccurrencePerYear, delegate (float val)
+            UI_Sinkhole_Enabled = (UICheckBox)helper.AddCheckbox("Enable Sinkhole", c.Sinkhole.Enabled, delegate (bool isChecked)
+            {
+                if (!freezeUI) c.Sinkhole.Enabled = isChecked;
+            });
+            UI_Tornado_Enabled = (UICheckBox)helper.AddCheckbox("Enable Tornado", c.Tornado.Enabled, delegate (bool isChecked)
+            {
+                if (!freezeUI) c.Tornado.Enabled = isChecked;
+            });
+            UI_Tsunami_Enabled = (UICheckBox)helper.AddCheckbox("Enable Tsunami", c.Tsunami.Enabled, delegate (bool isChecked)
+            {
+                if (!freezeUI) c.Tsunami.Enabled = isChecked;
+            });
+            UI_Earthquake_Enabled = (UICheckBox)helper.AddCheckbox("Enable Earthquake", c.Earthquake.Enabled, delegate (bool isChecked)
+            {
+                if (!freezeUI) c.Earthquake.Enabled = isChecked;
+            });
+            UI_MeteorStrike_Enabled = (UICheckBox)helper.AddCheckbox("Enable Meteor Strike", c.MeteorStrike.Enabled, delegate (bool isChecked)
+            {
+                if (!freezeUI) c.MeteorStrike.Enabled = isChecked;
+            });
+
+            //UIHelperBase advancedSettingsGroup = helper.AddGroup("Advanced settings");
+            helper.AddGroup(" "); // Adds horizontal line
+
+            #region ForestFire
+
+            UIHelperBase forestFireGroup = helper.AddGroup("Forest Fire disaster");
+
+            ForestFireMaxProbabilityUI = (UISlider)forestFireGroup.AddSlider("Max probability", 1, 50, 1, c.ForestFire.BaseOccurrencePerYear, delegate (float val)
+            {
+                if (!freezeUI) c.ForestFire.BaseOccurrencePerYear = val;
+            });
+            addLabelToSlider(ForestFireMaxProbabilityUI, " times per year");
+            ForestFireMaxProbabilityUI.tooltip = "Occurrence (per year) in case of a long period without rain";
+
+            UI_ForestFire_WarmupDays = (UISlider)forestFireGroup.AddSlider("Warmup period", 10, 360, 10, c.ForestFire.WarmupDays, delegate (float val)
+            {
+                if (!freezeUI) c.ForestFire.WarmupDays = (int)val;
+            });
+            addLabelToSlider(UI_ForestFire_WarmupDays, " days");
+            UI_ForestFire_WarmupDays.tooltip = "No-rain period during wich the probability of Forest Fire increases";
+
+            helper.AddSpace(20);
+
+            #endregion
+
+            #region Thunderstorm
+
+            UIHelperBase thunderstormGroup = helper.AddGroup("Thunderstorm disaster");
+
+            UI_Thunderstorm_MaxProbability = (UISlider)thunderstormGroup.AddSlider("Max probability", 0.1f, 5f, 0.1f, c.Thunderstorm.BaseOccurrencePerYear, delegate (float val)
             {
                 if (!freezeUI) c.Thunderstorm.BaseOccurrencePerYear = val;
-            }), " times per year");
-            ThunderstormMaxProbabilityMonthUI = (UIDropDown)thunderstormGroup.AddDropdown("Most stormy month",
-                new string[] { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" },
+            });
+            addLabelToSlider(UI_Thunderstorm_MaxProbability, " times per year");
+            UI_Thunderstorm_MaxProbability.tooltip = "Occurrence (per year) in thunderstorm season";
+
+            UI_Thunderstorm_MaxProbabilityMonth = (UIDropDown)thunderstormGroup.AddDropdown("Thunderstorm season peak",
+                Helper.GetMonths(),
                 c.Thunderstorm.MaxProbabilityMonth - 1,
                 delegate (int sel)
                 {
                     if (!freezeUI) c.Thunderstorm.MaxProbabilityMonth = sel + 1;
                 });
-            addLabelToSlider(ThunderstormRainFactorUI = (UISlider)thunderstormGroup.AddSlider("During rain factor", 1f, 5f, 0.2f, c.Thunderstorm.RainFactor, delegate (float val)
+
+            UI_Thunderstorm_RainFactor = (UISlider)thunderstormGroup.AddSlider("Rain factor", 1f, 5f, 0.2f, c.Thunderstorm.RainFactor, delegate (float val)
             {
                 if (!freezeUI) c.Thunderstorm.RainFactor = val;
-            }));
+            });
+            addLabelToSlider(UI_Thunderstorm_RainFactor);
+            UI_Thunderstorm_RainFactor.tooltip = "Thunderstorm probability increases by this factor during rain.";
 
             helper.AddSpace(20);
+            
             #endregion
 
             #region Sinkhole
+
             UIHelperBase sinkholeGroup = helper.AddGroup("Sinkhole disaster");
-            UI_Sinkhole_Enabled = (UICheckBox)sinkholeGroup.AddCheckbox("Enable", c.Sinkhole.Enabled, delegate (bool isChecked)
-            {
-                if (!freezeUI) c.Sinkhole.Enabled = isChecked;
-            });
-            addLabelToSlider(UI_Sinkhole_MaxProbability = (UISlider)sinkholeGroup.AddSlider("Max probability", 0.2f, 5, 0.2f, c.Sinkhole.BaseOccurrencePerYear, delegate (float val)
+
+            UI_Sinkhole_MaxProbability = (UISlider)sinkholeGroup.AddSlider("Max probability", 0.2f, 5, 0.2f, c.Sinkhole.BaseOccurrencePerYear, delegate (float val)
             {
                 if (!freezeUI) c.Sinkhole.BaseOccurrencePerYear = val;
-            }), " times per year");
-            addLabelToSlider(UI_Sinkhole_GroundwaterCapacity = (UISlider)sinkholeGroup.AddSlider("Groundwater capacity", 1, 100, 1, c.Sinkhole.GroundwaterCapacity, delegate (float val)
+            });
+            addLabelToSlider(UI_Sinkhole_MaxProbability, " times per year");
+            UI_Sinkhole_MaxProbability.tooltip = "Occurrence (per year) in case of a long period of rain";
+
+            UI_Sinkhole_GroundwaterCapacity = (UISlider)sinkholeGroup.AddSlider("Groundwater capacity", 1, 100, 1, c.Sinkhole.GroundwaterCapacity, delegate (float val)
             {
                 if (!freezeUI) c.Sinkhole.GroundwaterCapacity = val;
-            }));
+            });
+            addLabelToSlider(UI_Sinkhole_GroundwaterCapacity);
+            UI_Sinkhole_GroundwaterCapacity.tooltip = "Set how fast groundwater fills up during rain and causes a sinkhole to appear.";
 
             helper.AddSpace(20);
+
+            #endregion
+
+            #region Tornado
+
+            UIHelperBase tornadoGroup = helper.AddGroup("Tornado disaster");
+
+            UI_Tornado_MaxProbability = (UISlider)tornadoGroup.AddSlider("Max probability", 0.1f, 5f, 0.1f, c.Tornado.BaseOccurrencePerYear, delegate (float val)
+            {
+                if (!freezeUI) c.Tornado.BaseOccurrencePerYear = val;
+            });
+            addLabelToSlider(UI_Tornado_MaxProbability, " times per year");
+            UI_Tornado_MaxProbability.tooltip = "Occurrence (per year) in Tornado season";
+
+            UI_Tornado_MaxProbabilityMonth = (UIDropDown)tornadoGroup.AddDropdown("Tornado season peak",
+                Helper.GetMonths(),
+                c.Tornado.MaxProbabilityMonth - 1,
+                delegate (int sel)
+                {
+                    if (!freezeUI) c.Tornado.MaxProbabilityMonth = sel + 1;
+                });
+
+            UI_Tornado_NoDuringFog = (UICheckBox)tornadoGroup.AddCheckbox("No Tornado during fog", c.Tornado.NoTornadoDuringFog, delegate (bool isChecked)
+            {
+                if (!freezeUI) c.Tornado.NoTornadoDuringFog = isChecked;
+            });
+            UI_Tornado_NoDuringFog.tooltip = "Tornado does not occur during foggy weather";
+
+            helper.AddSpace(20);
+
+            #endregion
+
+            #region Tsunami
+
+            UIHelperBase tsunamiGroup = helper.AddGroup("Tsunami disaster");
+
+            UI_Tsunami_MaxProbability = (UISlider)tsunamiGroup.AddSlider("Max probability", 0.1f, 10, 0.1f, c.Tsunami.BaseOccurrencePerYear, delegate (float val)
+            {
+                if (!freezeUI) c.Tsunami.BaseOccurrencePerYear = val;
+            });
+            addLabelToSlider(UI_Tsunami_MaxProbability, " times per year");
+            UI_Tsunami_MaxProbability.tooltip = "Maximum occurrence (per year) after a long period without tsunamis";
+
+            UI_Tsunami_WarmupYears = (UISlider)tsunamiGroup.AddSlider("Charge period", 0.5f, 20, 0.5f, c.Tsunami.WarmupYears, delegate (float val)
+            {
+                if (!freezeUI) c.Tsunami.BaseOccurrencePerYear = val;
+            });
+            addLabelToSlider(UI_Tsunami_WarmupYears, " years");
+            UI_Tsunami_WarmupYears.tooltip = "The probability of tsunami increases to the maximum during this period";
+
+            helper.AddSpace(20);
+
+            #endregion
+
+            #region Earthquake
+
+            UIHelperBase earthquakeGroup = helper.AddGroup("Earthquake disaster");
+
+            UI_Earthquake_MaxProbability = (UISlider)earthquakeGroup.AddSlider("Max probability", 0.1f, 10, 0.1f, c.Earthquake.BaseOccurrencePerYear, delegate (float val)
+            {
+                if (!freezeUI) c.Earthquake.BaseOccurrencePerYear = val;
+            });
+            addLabelToSlider(UI_Earthquake_MaxProbability, " times per year");
+            UI_Earthquake_MaxProbability.tooltip = "Maximum occurrence (per year) after a long period without earthquakes";
+
+            UI_Earthquake_WarmupYears = (UISlider)earthquakeGroup.AddSlider("Charge period", 0.5f, 20, 0.5f, c.Earthquake.WarmupYears, delegate (float val)
+            {
+                if (!freezeUI) c.Earthquake.BaseOccurrencePerYear = val;
+            });
+            addLabelToSlider(UI_Earthquake_WarmupYears, " years");
+            UI_Earthquake_WarmupYears.tooltip = "The probability of earthquake increases to the maximum during this period";
+
+            helper.AddSpace(20);
+
+            #endregion
+
+            #region MeteorStrike
+
+            UIHelperBase meteorStrikeGroup = helper.AddGroup("Meteor Strike disaster");
+
+            UI_MeteorStrike_MaxProbability = (UISlider)meteorStrikeGroup.AddSlider("Max probability", 0.1f, 10, 0.1f, c.MeteorStrike.BaseOccurrencePerYear, delegate (float val)
+            {
+                if (!freezeUI) c.MeteorStrike.BaseOccurrencePerYear = val;
+            });
+            addLabelToSlider(UI_MeteorStrike_MaxProbability, " times per year");
+            UI_MeteorStrike_MaxProbability.tooltip = "Maximum occurrence of meteor strike per year per one meteor when it approaches the Earth";
+
+            UI_MeteorStrike_Meteor1Enabled = (UICheckBox)meteorStrikeGroup.AddCheckbox("Enable long period (10-11 years) meteor", c.MeteorStrike.GetEnabled(0), delegate (bool isChecked)
+            {
+                if (!freezeUI) c.MeteorStrike.SetEnabled(0, isChecked);
+            });
+
+            UI_MeteorStrike_Meteor2Enabled = (UICheckBox)meteorStrikeGroup.AddCheckbox("Enable medium period (5-6 years) meteor", c.MeteorStrike.GetEnabled(1), delegate (bool isChecked)
+            {
+                if (!freezeUI) c.MeteorStrike.SetEnabled(1, isChecked);
+            });
+
+            UI_MeteorStrike_Meteor3Enabled = (UICheckBox)meteorStrikeGroup.AddCheckbox("Enable short period (2-3 years) meteor", c.MeteorStrike.GetEnabled(2), delegate (bool isChecked)
+            {
+                if (!freezeUI) c.MeteorStrike.SetEnabled(2, isChecked);
+            });
+
+            helper.AddSpace(20);
+
             #endregion
 
             // Save button

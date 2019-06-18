@@ -66,6 +66,7 @@
     <Compile Include="EnhancedTornado.cs" />
     <Compile Include="EnhancedTsunami.cs" />
     <Compile Include="ExtendedDisastersPanel.cs" />
+    <Compile Include="Helper.cs" />
     <Compile Include="LoadingExtension.cs" />
     <Compile Include="OccurrenceAreas.cs" />
     <Compile Include="ProbabilityDistributions.cs" />
