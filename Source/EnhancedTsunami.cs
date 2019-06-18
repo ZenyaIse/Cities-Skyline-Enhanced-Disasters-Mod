@@ -12,12 +12,16 @@ namespace EnhancedDisastersMod
             {
                 EnhancedTsunami d = Singleton<EnhancedDisastersManager>.instance.container.Tsunami;
                 serializeCommonParameters(s, d);
+
+                s.WriteFloat(d.WarmupYears);
             }
 
             public void Deserialize(DataSerializer s)
             {
                 EnhancedTsunami d = Singleton<EnhancedDisastersManager>.instance.container.Tsunami;
                 deserializeCommonParameters(s, d);
+
+                d.WarmupYears = s.ReadFloat();
             }
 
             public void AfterDeserialize(DataSerializer s)
@@ -32,9 +36,22 @@ namespace EnhancedDisastersMod
             BaseOccurrencePerYear = 1.0f;
             ProbabilityDistribution = ProbabilityDistributions.Uniform;
 
-            calmDays = 360;
-            probabilityWarmupDays = 360 * 5;
-            intensityWarmupDays = 360 * 2;
+            WarmupYears = 5;
+        }
+
+        public float WarmupYears
+        {
+            get
+            {
+                return probabilityWarmupDays / 360f;
+            }
+
+            set
+            {
+                probabilityWarmupDays = (int)(360 * value);
+                intensityWarmupDays = probabilityWarmupDays / 2;
+                calmDays = probabilityWarmupDays / 5;
+            }
         }
 
         public override bool CheckDisasterAIType(object disasterAI)
