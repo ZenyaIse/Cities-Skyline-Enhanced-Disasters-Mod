@@ -17,6 +17,7 @@ namespace EnhancedDisastersMod
 
                 for (int i = 0; i < d.meteorEvents.Length; i++)
                 {
+                    s.WriteBool(d.meteorEvents[i].Enabled);
                     s.WriteInt32(d.meteorEvents[i].PeriodFrames);
                     s.WriteInt8(d.meteorEvents[i].MaxIntensity);
                     s.WriteInt32(d.meteorEvents[i].FramesUntilNextEvent);
@@ -28,6 +29,15 @@ namespace EnhancedDisastersMod
             {
                 EnhancedMeteorStrike d = Singleton<EnhancedDisastersManager>.instance.container.MeteorStrike;
                 deserializeCommonParameters(s, d);
+
+                for (int i = 0; i < d.meteorEvents.Length; i++)
+                {
+                    d.meteorEvents[i].Enabled = s.ReadBool();
+                    d.meteorEvents[i].PeriodFrames = s.ReadInt32();
+                    d.meteorEvents[i].MaxIntensity = (byte)s.ReadInt8();
+                    d.meteorEvents[i].FramesUntilNextEvent = s.ReadInt32();
+                    d.meteorEvents[i].MeteorsFallen = s.ReadInt32();
+                }
             }
 
             public void AfterDeserialize(DataSerializer s)
@@ -42,6 +52,7 @@ namespace EnhancedDisastersMod
             public byte MaxIntensity;
             public int FramesUntilNextEvent;
             public int MeteorsFallen;
+            public bool Enabled;
 
             public MeteorEvent(int periodFrames, byte maxIntensity, int framesUntilNextEvent)
             {
@@ -49,6 +60,7 @@ namespace EnhancedDisastersMod
                 MaxIntensity = maxIntensity;
                 FramesUntilNextEvent = framesUntilNextEvent;
                 MeteorsFallen = 0;
+                Enabled = true;
             }
 
             public static MeteorEvent Init(float periodYears, byte maxIntensity)
@@ -64,6 +76,8 @@ namespace EnhancedDisastersMod
 
             public float GetProbabilityMultiplier()
             {
+                if (!Enabled) return 0;
+
                 if (MeteorsFallen > 0)
                 {
                     return 0;
@@ -80,6 +94,8 @@ namespace EnhancedDisastersMod
 
             public byte GetActualMaxIntensity()
             {
+                if (!Enabled) return 1;
+
                 if (FramesUntilNextEvent < framesPerDay * 60)
                 {
                     return MaxIntensity;
@@ -90,6 +106,8 @@ namespace EnhancedDisastersMod
 
             public void OnSimulationFrame()
             {
+                if (!Enabled) return;
+
                 FramesUntilNextEvent--;
 
                 if (FramesUntilNextEvent == 0)
@@ -109,6 +127,12 @@ namespace EnhancedDisastersMod
 
                 return true;
             }
+
+            public override string ToString()
+            {
+                return string.Format("Period {0} years, max intensity {1}, next meteor after {2} years",
+                    PeriodFrames / framesPerYear, MaxIntensity, FramesUntilNextEvent / framesPerYear);
+            }
         }
 
         private MeteorEvent[] meteorEvents;
@@ -127,12 +151,32 @@ namespace EnhancedDisastersMod
             };
         }
 
+        public bool GetEnabled(int index)
+        {
+            return meteorEvents[index].Enabled;
+        }
+
+        public void SetEnabled(int index, bool value)
+        {
+            meteorEvents[index].Enabled = value;
+        }
+
+        //private int countTmp = 0;
         protected override void onSimulationFrame_local()
         {
             for (int i = 0; i < meteorEvents.Length; i++)
             {
                 meteorEvents[i].OnSimulationFrame();
             }
+
+            //if (--countTmp <= 0)
+            //{
+            //    countTmp = 2000;
+            //    for (int i = 0; i < meteorEvents.Length; i++)
+            //    {
+            //        Debug.Log("Meteor " + i.ToString() + ". " + meteorEvents[i].ToString());
+            //    }
+            //}
         }
 
         protected override float getCurrentOccurrencePerYear_local()
@@ -168,25 +212,6 @@ namespace EnhancedDisastersMod
                 if (meteorEvents[i].OnMeteorFallen(intensity)) return;
             }
         }
-
-        //public override void OnDisasterCreated(byte intensity)
-        //{
-        //    if (meteorsCount == 0)
-        //    {
-        //        meteorsCount = (byte)Singleton<SimulationManager>.instance.m_randomizer.Int32(3);
-
-        //        Debug.Log(string.Format(">>> EnhancedDisastersMod: Group of {0} meteors was created.", meteorsCount + 1));
-        //    }
-        //    else
-        //    {
-        //        meteorsCount--;
-        //    }
-
-        //    if (meteorsCount > 0)
-        //    {
-        //        calmCounter = 0;
-        //    }
-        //}
 
         public override bool CheckDisasterAIType(object disasterAI)
         {
