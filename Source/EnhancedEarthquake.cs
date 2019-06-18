@@ -19,6 +19,11 @@ namespace EnhancedDisastersMod
 
                 s.WriteInt8(d.aftershocksCount);
                 s.WriteInt8(d.aftershockMaxIntensity);
+
+                s.WriteFloat(d.lastTargetPosition.x);
+                s.WriteFloat(d.lastTargetPosition.y);
+                s.WriteFloat(d.lastTargetPosition.z);
+                s.WriteFloat(d.lastAngle);
             }
 
             public void Deserialize(DataSerializer s)
@@ -30,6 +35,9 @@ namespace EnhancedDisastersMod
 
                 d.aftershocksCount = (byte)s.ReadInt8();
                 d.aftershockMaxIntensity = (byte)s.ReadInt8();
+
+                d.lastTargetPosition = new Vector3(s.ReadFloat(), s.ReadFloat(), s.ReadFloat());
+                d.lastAngle = s.ReadFloat();
             }
 
             public void AfterDeserialize(DataSerializer s)
@@ -40,6 +48,8 @@ namespace EnhancedDisastersMod
 
         private byte aftershocksCount = 0;
         private byte aftershockMaxIntensity = 0;
+        private Vector3 lastTargetPosition = new Vector3();
+        private float lastAngle = 0;
 
         public EnhancedEarthquake()
         {
@@ -98,6 +108,23 @@ namespace EnhancedDisastersMod
             }
 
             Debug.Log(string.Format(">>> EnhancedDisastersMod: {0} aftershocks are still going to happen.", aftershocksCount));
+        }
+
+        protected override bool findTarget(DisasterInfo disasterInfo, out Vector3 targetPosition, out float angle)
+        {
+            if (aftershocksCount == 0)
+            {
+                bool result = base.findTarget(disasterInfo, out targetPosition, out angle);
+                lastTargetPosition = targetPosition;
+                lastAngle = angle;
+                return result;
+            }
+            else
+            {
+                targetPosition = lastTargetPosition;
+                angle = lastAngle;
+                return true;
+            }
         }
 
         protected override byte getRandomIntensity()

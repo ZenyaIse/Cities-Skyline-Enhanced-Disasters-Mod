@@ -253,30 +253,15 @@ namespace EnhancedDisastersMod
 
             Vector3 targetPosition;
             float angle;
-            DisasterManager dm = Singleton<DisasterManager>.instance;
-
-            bool targetFound = false;
-            OccurrenceAreas area = unlocked ? OccurrenceAreaAfterUnlock : OccurrenceAreaBeforeUnlock;
-            switch (area)
-            {
-                case OccurrenceAreas.LockedAreas:
-                    targetFound = findRandomTargetInLockedAreas(out targetPosition, out angle);
-                    break;
-                case OccurrenceAreas.Everywhere:
-                    targetFound = findRandomTargetEverywhere(out targetPosition, out angle);
-                    break;
-                case OccurrenceAreas.UnlockedAreas: // Vanilla default
-                    targetFound = disasterInfo.m_disasterAI.FindRandomTarget(out targetPosition, out angle);
-                    break;
-                default:
-                    return;
-            }
+            bool targetFound = findTarget(disasterInfo, out targetPosition, out angle);
 
             if (!targetFound)
             {
                 DebugLogger.Log(getDebugStr() + "target not found");
                 return;
             }
+
+            DisasterManager dm = Singleton<DisasterManager>.instance;
 
             ushort disasterIndex;
             bool disasterCreated = dm.CreateDisaster(out disasterIndex, disasterInfo);
@@ -301,6 +286,24 @@ namespace EnhancedDisastersMod
             disasterInfo.m_disasterAI.StartNow(disasterIndex, ref dm.m_disasters.m_buffer[(int)disasterIndex]);
 
             DebugLogger.Log(getDebugStr() + string.Format("disaster intensity: {0}, area: {1}", intensity, unlocked ? OccurrenceAreaAfterUnlock : OccurrenceAreaBeforeUnlock));
+        }
+
+        protected virtual bool findTarget(DisasterInfo disasterInfo, out Vector3 targetPosition, out float angle)
+        {
+            OccurrenceAreas area = unlocked ? OccurrenceAreaAfterUnlock : OccurrenceAreaBeforeUnlock;
+            switch (area)
+            {
+                case OccurrenceAreas.LockedAreas:
+                    return findRandomTargetInLockedAreas(out targetPosition, out angle);
+                case OccurrenceAreas.Everywhere:
+                    return findRandomTargetEverywhere(out targetPosition, out angle);
+                case OccurrenceAreas.UnlockedAreas: // Vanilla default
+                    return disasterInfo.m_disasterAI.FindRandomTarget(out targetPosition, out angle);
+                default:
+                    targetPosition = new Vector3();
+                    angle = 0;
+                    return false;
+            }
         }
 
         protected virtual void setDisasterAIParameters(DisasterAI dai, byte intensity)
