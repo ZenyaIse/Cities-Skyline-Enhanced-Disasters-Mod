@@ -48,14 +48,16 @@ namespace EnhancedDisastersMod
 
         private struct MeteorEvent
         {
+            public string Name;
             public int PeriodFrames;
             public byte MaxIntensity;
             public int FramesUntilNextEvent;
             public int MeteorsFallen;
             public bool Enabled;
 
-            public MeteorEvent(int periodFrames, byte maxIntensity, int framesUntilNextEvent)
+            public MeteorEvent(string name, int periodFrames, byte maxIntensity, int framesUntilNextEvent)
             {
+                Name = name;
                 PeriodFrames = periodFrames;
                 MaxIntensity = maxIntensity;
                 FramesUntilNextEvent = framesUntilNextEvent;
@@ -63,11 +65,12 @@ namespace EnhancedDisastersMod
                 Enabled = true;
             }
 
-            public static MeteorEvent Init(float periodYears, byte maxIntensity)
+            public static MeteorEvent Init(string name, float periodYears, byte maxIntensity)
             {
                 SimulationManager sm = Singleton<SimulationManager>.instance;
 
                 return new MeteorEvent(
+                    name,
                     (int)(periodYears * framesPerYear + sm.m_randomizer.Int32((uint)(framesPerYear / 2))),
                     maxIntensity,
                     (int)(periodYears * framesPerYear / 4 + sm.m_randomizer.Int32((uint)(periodYears * framesPerYear * 3 / 4)))
@@ -133,6 +136,25 @@ namespace EnhancedDisastersMod
                 return string.Format("Period {0} years, max intensity {1}, next meteor after {2} years",
                     PeriodFrames / framesPerYear, MaxIntensity, FramesUntilNextEvent / framesPerYear);
             }
+
+            public string GetStateDescription()
+            {
+                if (!Enabled) return "";
+
+                if (MeteorsFallen > 0)
+                {
+                    return Name + " already fallen.";
+                }
+
+                if (FramesUntilNextEvent <= framesPerDay * 60)
+                {
+                    return Name + " is approaching.";
+                }
+                else
+                {
+                    return Name + " will be close in " + ((int)(FramesUntilNextEvent / framesPerDay / 30) - 1).ToString() + " months.";
+                }
+            }
         }
 
         private MeteorEvent[] meteorEvents;
@@ -141,13 +163,13 @@ namespace EnhancedDisastersMod
         {
             DType = DisasterType.MeteorStrike;
             OccurrenceAreaAfterUnlock = OccurrenceAreas.UnlockedAreas;
-            BaseOccurrencePerYear = 3.0f;
+            BaseOccurrencePerYear = 10.0f;
             ProbabilityDistribution = ProbabilityDistributions.Uniform;
 
             meteorEvents = new MeteorEvent[] {
-                MeteorEvent.Init(9, 100),
-                MeteorEvent.Init(5, 70),
-                MeteorEvent.Init(2, 30)
+                MeteorEvent.Init("Long period meteor", 9, 100),
+                MeteorEvent.Init("Medium period meteor", 5, 70),
+                MeteorEvent.Init("Short period meteor", 2, 30)
             };
         }
 
@@ -161,7 +183,7 @@ namespace EnhancedDisastersMod
             meteorEvents[index].Enabled = value;
         }
 
-        //private int countTmp = 0;
+        private int countTmp = 0;
         protected override void onSimulationFrame_local()
         {
             for (int i = 0; i < meteorEvents.Length; i++)
@@ -169,14 +191,14 @@ namespace EnhancedDisastersMod
                 meteorEvents[i].OnSimulationFrame();
             }
 
-            //if (--countTmp <= 0)
-            //{
-            //    countTmp = 2000;
-            //    for (int i = 0; i < meteorEvents.Length; i++)
-            //    {
-            //        Debug.Log("Meteor " + i.ToString() + ". " + meteorEvents[i].ToString());
-            //    }
-            //}
+            if (--countTmp <= 0)
+            {
+                countTmp = 3000;
+                for (int i = 0; i < meteorEvents.Length; i++)
+                {
+                    Debug.Log("Meteor " + i.ToString() + ". " + meteorEvents[i].ToString());
+                }
+            }
         }
 
         protected override float getCurrentOccurrencePerYear_local()
@@ -221,6 +243,18 @@ namespace EnhancedDisastersMod
         public override string GetName()
         {
             return "Meteor Strike";
+        }
+
+        public override string GetProbabilityTooltip()
+        {
+            string result = "";
+
+            for (int i = 0; i < meteorEvents.Length; i++)
+            {
+                result += meteorEvents[i].GetStateDescription() + Environment.NewLine;
+            }
+
+            return result;
         }
     }
 }

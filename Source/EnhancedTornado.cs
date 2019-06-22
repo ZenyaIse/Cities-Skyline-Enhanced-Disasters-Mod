@@ -62,6 +62,19 @@ namespace EnhancedDisastersMod
             return occurrence;
         }
 
+        public override string GetProbabilityTooltip()
+        {
+            if (calmCounter == 0)
+            {
+                if (NoTornadoDuringFog && Singleton<WeatherManager>.instance.m_currentFog > 0)
+                {
+                    return "No " + GetName() + " during fog.";
+                }
+            }
+
+            return base.GetProbabilityTooltip();
+        }
+
         public override bool CheckDisasterAIType(object disasterAI)
         {
             return disasterAI as TornadoAI != null;

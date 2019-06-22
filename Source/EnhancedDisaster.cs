@@ -137,6 +137,44 @@ namespace EnhancedDisastersMod
             unlocked = true;
         }
 
+        public virtual string GetProbabilityTooltip()
+        {
+            if (calmCounter > 0)
+            {
+                return "No " + GetName() + " for another " + formatDate(calmCounter);
+            }
+
+            if (probabilityWarmupCounter > 0)
+            {
+                return "Decreased because " + GetName() + " occured recently.";
+            }
+
+            return "";
+        }
+
+        public virtual string GetIntensityTooltip()
+        {
+            if (calmCounter > 0)
+            {
+                return "No " + GetName() + " for another " + formatDate(calmCounter);
+            }
+
+            string result = "";
+
+            if (intensityWarmupCounter > 0)
+            {
+                result = "Decreased because " + GetName() + " occured recently.";
+            }
+
+            if (getPopulation() < FullIntensityPopulation)
+            {
+                if (result != "") result += Environment.NewLine;
+                result += "Decreased because of low population.";
+            }
+
+            return result;
+        }
+
 
         // Utilities
 
@@ -215,6 +253,12 @@ namespace EnhancedDisastersMod
         protected string getDebugStr()
         {
             return DType.ToString() + ", " + Singleton<SimulationManager>.instance.m_currentGameTime.ToShortDateString() + ", ";
+        }
+
+        protected string formatDate(int frames)
+        {
+            int days = (int)(frames / framesPerDay);
+            return days.ToString() + " days";
         }
 
 

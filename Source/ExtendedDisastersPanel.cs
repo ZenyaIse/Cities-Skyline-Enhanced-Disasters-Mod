@@ -187,9 +187,11 @@ namespace EnhancedDisastersMod
 
                     progressBars_probability[i].value = getProgressValueLog(p);
                     setProgressBarColor(progressBars_probability[i]);
+                    progressBars_probability[i].tooltip = d.GetProbabilityTooltip();
 
                     progressBars_maxIntensity[i].value = maxIntensity * 0.01f;
                     setProgressBarColor(progressBars_maxIntensity[i]);
+                    progressBars_maxIntensity[i].tooltip = d.GetIntensityTooltip();
                 }
                 else
                 {

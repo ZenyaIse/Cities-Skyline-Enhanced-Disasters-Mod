@@ -15,7 +15,7 @@ namespace EnhancedDisastersMod
                 EnhancedForestFire d = Singleton<EnhancedDisastersManager>.instance.container.ForestFire;
                 serializeCommonParameters(s, d);
                 s.WriteInt32(d.WarmupDays);
-                s.WriteUInt32(d.noRainFramesCount);
+                s.WriteInt32(d.noRainFramesCount);
             }
 
             public void Deserialize(DataSerializer s)
@@ -23,7 +23,7 @@ namespace EnhancedDisastersMod
                 EnhancedForestFire d = Singleton<EnhancedDisastersManager>.instance.container.ForestFire;
                 deserializeCommonParameters(s, d);
                 d.WarmupDays = s.ReadInt32();
-                d.noRainFramesCount = s.ReadUInt32();
+                d.noRainFramesCount = s.ReadInt32();
             }
 
             public void AfterDeserialize(DataSerializer s)
@@ -33,7 +33,7 @@ namespace EnhancedDisastersMod
         }
 
         public int WarmupDays = 180;
-        private uint noRainFramesCount = 0;
+        private int noRainFramesCount = 0;
 
         public EnhancedForestFire()
         {
@@ -59,6 +59,30 @@ namespace EnhancedDisastersMod
             {
                 noRainFramesCount++;
             }
+        }
+
+        public override string GetProbabilityTooltip()
+        {
+            if (calmCounter == 0)
+            {
+                if (noRainFramesCount == 0)
+                {
+                    return "No " + GetName() + " during rain.";
+                }
+                else
+                {
+                    int daysWithoutRain = (int)(noRainFramesCount / framesPerDay);
+
+                    if (daysWithoutRain >= WarmupDays)
+                    {
+                        return "Maximum because there was no rain for more than " + WarmupDays.ToString() + " days.";
+                    }
+
+                    return "Increasing because there was no rain for " + daysWithoutRain.ToString() + " days.";
+                }
+            }
+
+            return base.GetProbabilityTooltip();
         }
 
         protected override float getCurrentOccurrencePerYear_local()

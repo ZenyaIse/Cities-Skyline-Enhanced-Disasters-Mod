@@ -46,6 +46,17 @@ namespace EnhancedDisastersMod
             intensityWarmupDays = 0;
         }
 
+        public override string GetProbabilityTooltip()
+        {
+            if (calmCounter == 0)
+            {
+                int groundWaterPercent = (int)(100 * groundwaterAmount / GroundwaterCapacity);
+                return "Ground water level " + groundWaterPercent.ToString() + "%";
+            }
+
+            return base.GetProbabilityTooltip();
+        }
+
         protected override void onSimulationFrame_local()
         {
             WeatherManager wm = Singleton<WeatherManager>.instance;

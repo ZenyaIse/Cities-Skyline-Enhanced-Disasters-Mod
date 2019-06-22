@@ -48,6 +48,19 @@ namespace EnhancedDisastersMod
             intensityWarmupDays = 60;
         }
 
+        public override string GetProbabilityTooltip()
+        {
+            if (calmCounter == 0)
+            {
+                if (Singleton<WeatherManager>.instance.m_currentRain > 0 && RainFactor > 1)
+                {
+                    return "Increased because of rain.";
+                }
+            }
+
+            return base.GetProbabilityTooltip();
+        }
+
         protected override float getCurrentOccurrencePerYear_local()
         {
             DateTime dt = Singleton<SimulationManager>.instance.m_currentGameTime;

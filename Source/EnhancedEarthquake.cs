@@ -81,7 +81,19 @@ namespace EnhancedDisastersMod
             if (aftershocksCount > 0)
             {
                 calmCounter = 0;
+                probabilityWarmupCounter = 0;
+                intensityWarmupCounter = 0;
             }
+        }
+
+        public override string GetProbabilityTooltip()
+        {
+            if (aftershocksCount > 0)
+            {
+                return "Expect " + aftershocksCount.ToString() + " more aftershocks";
+            }
+
+            return base.GetProbabilityTooltip();
         }
 
         protected override float getCurrentOccurrencePerYear_local()
