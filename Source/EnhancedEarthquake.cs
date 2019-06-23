@@ -2,7 +2,6 @@
 using ColossalFramework;
 using ColossalFramework.IO;
 using UnityEngine;
-using System;
 
 namespace EnhancedDisastersMod
 {
@@ -46,6 +45,7 @@ namespace EnhancedDisastersMod
             }
         }
 
+        public bool AftershocksEnabled = true;
         private byte aftershocksCount = 0;
         private byte aftershockMaxIntensity = 0;
         private Vector3 lastTargetPosition = new Vector3();
@@ -61,6 +61,7 @@ namespace EnhancedDisastersMod
             WarmupYears = 3;
         }
 
+        [System.Xml.Serialization.XmlElement]
         public float WarmupYears
         {
             get

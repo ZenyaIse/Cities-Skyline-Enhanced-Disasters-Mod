@@ -173,6 +173,48 @@ namespace EnhancedDisastersMod
             };
         }
 
+        [System.Xml.Serialization.XmlElement]
+        public bool Meteor1Enabled
+        {
+            get
+            {
+                return GetEnabled(0);
+            }
+
+            set
+            {
+                SetEnabled(0, value);
+            }
+        }
+
+        [System.Xml.Serialization.XmlElement]
+        public bool Meteor2Enabled
+        {
+            get
+            {
+                return GetEnabled(1);
+            }
+
+            set
+            {
+                SetEnabled(1, value);
+            }
+        }
+
+        [System.Xml.Serialization.XmlElement]
+        public bool Meteor3Enabled
+        {
+            get
+            {
+                return GetEnabled(2);
+            }
+
+            set
+            {
+                SetEnabled(2, value);
+            }
+        }
+
         public bool GetEnabled(int index)
         {
             return meteorEvents[index].Enabled;

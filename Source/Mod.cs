@@ -9,6 +9,10 @@ namespace EnhancedDisastersMod
 {
     public class Mod : IUserMod
     {
+        public static string ModNameEng = "More Natural Disasters";
+        public static string LogMsgPrefix = ">>> " + ModNameEng + ": ";
+        public static string Version = "2019/6/23";
+
         private bool freezeUI = false;
 
         private UICheckBox UI_ForestFire_Enabled;
@@ -36,6 +40,7 @@ namespace EnhancedDisastersMod
         private UICheckBox UI_Earthquake_Enabled;
         private UISlider UI_Earthquake_MaxProbability;
         private UISlider UI_Earthquake_WarmupYears;
+        private UICheckBox UI_Earthquake_AftershocksEnabled;
 
         private UICheckBox UI_MeteorStrike_Enabled;
         private UISlider UI_MeteorStrike_MaxProbability;
@@ -45,12 +50,12 @@ namespace EnhancedDisastersMod
 
         public string Name
         {
-            get { return "Enhanced Disasters Mod"; }
+            get { return ModNameEng; }
         }
 
         public string Description
         {
-            get { return "More natural behavior of natural disasters. Ver. 2019/06/08"; }
+            get { return "More natural behavior of natural disasters (ver. " + Version + ")"; }
         }
 
         #region Options UI
@@ -105,6 +110,7 @@ namespace EnhancedDisastersMod
             UI_Earthquake_Enabled.isChecked = c.Earthquake.Enabled;
             UI_Earthquake_MaxProbability.value = c.Earthquake.BaseOccurrencePerYear;
             UI_Earthquake_WarmupYears.value = c.Earthquake.WarmupYears;
+            UI_Earthquake_AftershocksEnabled.isChecked = c.Earthquake.AftershocksEnabled;
 
             UI_MeteorStrike_Enabled.isChecked = c.MeteorStrike.Enabled;
             UI_MeteorStrike_MaxProbability.value = c.MeteorStrike.BaseOccurrencePerYear;
@@ -293,7 +299,7 @@ namespace EnhancedDisastersMod
 
             UI_Tsunami_WarmupYears = (UISlider)tsunamiGroup.AddSlider("Charge period", 0.5f, 20, 0.5f, c.Tsunami.WarmupYears, delegate (float val)
             {
-                if (!freezeUI) c.Tsunami.BaseOccurrencePerYear = val;
+                if (!freezeUI) c.Tsunami.WarmupYears = val;
             });
             addLabelToSlider(UI_Tsunami_WarmupYears, " years");
             UI_Tsunami_WarmupYears.tooltip = "The probability of tsunami increases to the maximum during this period";
@@ -315,10 +321,16 @@ namespace EnhancedDisastersMod
 
             UI_Earthquake_WarmupYears = (UISlider)earthquakeGroup.AddSlider("Charge period", 0.5f, 20, 0.5f, c.Earthquake.WarmupYears, delegate (float val)
             {
-                if (!freezeUI) c.Earthquake.BaseOccurrencePerYear = val;
+                if (!freezeUI) c.Earthquake.WarmupYears = val;
             });
             addLabelToSlider(UI_Earthquake_WarmupYears, " years");
             UI_Earthquake_WarmupYears.tooltip = "The probability of earthquake increases to the maximum during this period";
+
+            UI_Earthquake_AftershocksEnabled = (UICheckBox)earthquakeGroup.AddCheckbox("Enable aftershocks", c.Earthquake.AftershocksEnabled, delegate (bool isChecked)
+            {
+                if (!freezeUI) c.Earthquake.AftershocksEnabled = isChecked;
+            });
+            UI_Earthquake_AftershocksEnabled.tooltip = "Several aftershocks may occur after a big earthquake. Aftershocks strike the same place.";
 
             helper.AddSpace(20);
 
@@ -328,7 +340,7 @@ namespace EnhancedDisastersMod
 
             UIHelperBase meteorStrikeGroup = helper.AddGroup("Meteor Strike disaster");
 
-            UI_MeteorStrike_MaxProbability = (UISlider)meteorStrikeGroup.AddSlider("Max probability", 0.1f, 10, 0.1f, c.MeteorStrike.BaseOccurrencePerYear, delegate (float val)
+            UI_MeteorStrike_MaxProbability = (UISlider)meteorStrikeGroup.AddSlider("Max probability", 1f, 50, 1f, c.MeteorStrike.BaseOccurrencePerYear, delegate (float val)
             {
                 if (!freezeUI) c.MeteorStrike.BaseOccurrencePerYear = val;
             });
@@ -354,11 +366,23 @@ namespace EnhancedDisastersMod
 
             #endregion
 
-            // Save button
-            helper.AddButton("Save", delegate ()
+
+            // Save buttons
+            helper.AddButton("Save as default for new games", delegate ()
             {
                 c.Save();
             });
+            helper.AddButton("Reset to the last saved values", delegate ()
+            {
+                Singleton<EnhancedDisastersManager>.instance.ReadValuesFromFile();
+                EnhancedDisastersOptionsUpdateUI();
+            });
+            helper.AddButton("Reset to the mod default values", delegate ()
+            {
+                Singleton<EnhancedDisastersManager>.instance.ResetToDefaultValues();
+                EnhancedDisastersOptionsUpdateUI();
+            });
+            helper.AddSpace(20);
         }
 
         #endregion

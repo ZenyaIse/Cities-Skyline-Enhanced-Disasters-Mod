@@ -9,12 +9,23 @@ namespace EnhancedDisastersMod
 
         private EnhancedDisastersManager()
         {
+            ReadValuesFromFile();
+        }
+
+        public void ReadValuesFromFile()
+        {
             container = DisastersContainer.CreateFromFile();
             if (container == null)
             {
                 container = new DisastersContainer();
             }
 
+            container.CheckObjects();
+        }
+
+        public void ResetToDefaultValues()
+        {
+            container = new DisastersContainer();
             container.CheckObjects();
         }
 

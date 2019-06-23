@@ -31,7 +31,7 @@ namespace EnhancedDisastersMod
             }
         }
 
-        public float GroundwaterCapacity = 50;
+        public float GroundwaterCapacity = 40;
         private float groundwaterAmount = 0; // groundwaterAmount=1 means rain of intensity 1 during 1 day
 
         public EnhancedSinkhole()
