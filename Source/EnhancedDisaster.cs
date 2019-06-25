@@ -175,6 +175,12 @@ namespace EnhancedDisastersMod
             return result;
         }
 
+        public virtual void CopySettings(EnhancedDisaster disaster)
+        {
+            Enabled = disaster.Enabled;
+            BaseOccurrencePerYear = disaster.BaseOccurrencePerYear;
+        }
+
 
         // Utilities
 

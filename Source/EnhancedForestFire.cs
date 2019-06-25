@@ -101,5 +101,16 @@ namespace EnhancedDisastersMod
         {
             return "Forest Fire";
         }
+
+        public override void CopySettings(EnhancedDisaster disaster)
+        {
+            base.CopySettings(disaster);
+
+            EnhancedForestFire d = disaster as EnhancedForestFire;
+            if (d != null)
+            {
+                WarmupDays = d.WarmupDays;
+            }
+        }
     }
 }

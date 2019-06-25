@@ -31,14 +31,14 @@ namespace EnhancedDisastersMod
             }
         }
 
-        public float GroundwaterCapacity = 40;
+        public float GroundwaterCapacity = 50;
         private float groundwaterAmount = 0; // groundwaterAmount=1 means rain of intensity 1 during 1 day
 
         public EnhancedSinkhole()
         {
             DType = DisasterType.Sinkhole;
             OccurrenceAreaAfterUnlock = OccurrenceAreas.UnlockedAreas;
-            BaseOccurrencePerYear = 1f; // When groundwater is full
+            BaseOccurrencePerYear = 1.5f; // When groundwater is full
             ProbabilityDistribution = ProbabilityDistributions.Uniform;
 
             calmDays = 30;
@@ -86,6 +86,17 @@ namespace EnhancedDisastersMod
         public override string GetName()
         {
             return "Sinkhole";
+        }
+
+        public override void CopySettings(EnhancedDisaster disaster)
+        {
+            base.CopySettings(disaster);
+
+            EnhancedSinkhole d = disaster as EnhancedSinkhole;
+            if (d != null)
+            {
+                GroundwaterCapacity = d.GroundwaterCapacity;
+            }
         }
     }
 }

@@ -63,6 +63,11 @@ namespace EnhancedDisastersMod
         {
             return "Tsunami";
         }
+
+        public override void CopySettings(EnhancedDisaster disaster)
+        {
+            base.CopySettings(disaster);
+        }
     }
 }
 

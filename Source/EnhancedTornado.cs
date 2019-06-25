@@ -38,7 +38,7 @@ namespace EnhancedDisastersMod
         public EnhancedTornado()
         {
             DType = DisasterType.Tornado;
-            BaseOccurrencePerYear = 1.0f;
+            BaseOccurrencePerYear = 1.5f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
 
             calmDays = 360;
@@ -83,6 +83,18 @@ namespace EnhancedDisastersMod
         public override string GetName()
         {
             return "Tornado";
+        }
+
+        public override void CopySettings(EnhancedDisaster disaster)
+        {
+            base.CopySettings(disaster);
+
+            EnhancedTornado d = disaster as EnhancedTornado;
+            if (d != null)
+            {
+                MaxProbabilityMonth = d.MaxProbabilityMonth;
+                NoTornadoDuringFog = d.NoTornadoDuringFog;
+            }
         }
     }
 }

@@ -40,7 +40,7 @@ namespace EnhancedDisastersMod
             DType = DisasterType.ThunderStorm;
             OccurrenceAreaBeforeUnlock = OccurrenceAreas.LockedAreas;
             OccurrenceAreaAfterUnlock = OccurrenceAreas.Everywhere;
-            BaseOccurrencePerYear = 1.5f;
+            BaseOccurrencePerYear = 2.0f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
 
             calmDays = 30;
@@ -98,6 +98,18 @@ namespace EnhancedDisastersMod
                 uint activeDuration_new = activeDuration_original / 2 + (activeDuration_original / 2) * intensity / 100;
                 DebugLogger.Log(string.Format("Thunderstorm: m_activeDuration {0} -> {1}", ai.m_activeDuration, activeDuration_new));
                 ai.m_activeDuration = activeDuration_new;
+            }
+        }
+
+        public override void CopySettings(EnhancedDisaster disaster)
+        {
+            base.CopySettings(disaster);
+
+            EnhancedThunderstorm d = disaster as EnhancedThunderstorm;
+            if (d != null)
+            {
+                RainFactor = d.RainFactor;
+                MaxProbabilityMonth = d.MaxProbabilityMonth;
             }
         }
     }

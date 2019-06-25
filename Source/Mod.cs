@@ -239,7 +239,7 @@ namespace EnhancedDisastersMod
 
             UIHelperBase sinkholeGroup = helper.AddGroup("Sinkhole disaster");
 
-            UI_Sinkhole_MaxProbability = (UISlider)sinkholeGroup.AddSlider("Max probability", 0.2f, 5, 0.2f, c.Sinkhole.BaseOccurrencePerYear, delegate (float val)
+            UI_Sinkhole_MaxProbability = (UISlider)sinkholeGroup.AddSlider("Max probability", 0.1f, 10, 0.1f, c.Sinkhole.BaseOccurrencePerYear, delegate (float val)
             {
                 if (!freezeUI) c.Sinkhole.BaseOccurrencePerYear = val;
             });
@@ -370,7 +370,7 @@ namespace EnhancedDisastersMod
             // Save buttons
             helper.AddButton("Save as default for new games", delegate ()
             {
-                c.Save();
+                Singleton<EnhancedDisastersManager>.instance.container.Save();
             });
             helper.AddButton("Reset to the last saved values", delegate ()
             {

@@ -172,5 +172,17 @@ namespace EnhancedDisastersMod
         {
             return "Earthquake";
         }
+
+        public override void CopySettings(EnhancedDisaster disaster)
+        {
+            base.CopySettings(disaster);
+
+            EnhancedEarthquake d = disaster as EnhancedEarthquake;
+            if (d != null)
+            {
+                AftershocksEnabled = d.AftershocksEnabled;
+                WarmupYears = d.WarmupYears;
+            }
+        }
     }
 }

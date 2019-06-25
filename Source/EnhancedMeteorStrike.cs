@@ -69,11 +69,12 @@ namespace EnhancedDisastersMod
             {
                 SimulationManager sm = Singleton<SimulationManager>.instance;
 
+                float periodFrames = periodYears * framesPerYear;
                 return new MeteorEvent(
                     name,
-                    (int)(periodYears * framesPerYear + sm.m_randomizer.Int32((uint)(framesPerYear / 2))),
+                    (int)(periodFrames + sm.m_randomizer.Int32((uint)(periodFrames * 0.1f)) - periodFrames * 0.05f),
                     maxIntensity,
-                    (int)(periodYears * framesPerYear / 4 + sm.m_randomizer.Int32((uint)(periodYears * framesPerYear * 3 / 4)))
+                    (int)(periodFrames / 2 + sm.m_randomizer.Int32((uint)(periodFrames / 2)))
                     );
             }
 
@@ -120,15 +121,11 @@ namespace EnhancedDisastersMod
                 }
             }
 
-            public bool OnMeteorFallen(byte intensity)
+            public void OnMeteorFallen()
             {
-                if (intensity > MaxIntensity) return false;
-
-                if (MeteorsFallen > 0) return false;
+                if (MeteorsFallen > 0) return;
 
                 MeteorsFallen++;
-
-                return true;
             }
 
             public override string ToString()
@@ -163,7 +160,7 @@ namespace EnhancedDisastersMod
         {
             DType = DisasterType.MeteorStrike;
             OccurrenceAreaAfterUnlock = OccurrenceAreas.UnlockedAreas;
-            BaseOccurrencePerYear = 10.0f;
+            BaseOccurrencePerYear = 5.0f;
             ProbabilityDistribution = ProbabilityDistributions.Uniform;
 
             meteorEvents = new MeteorEvent[] {
@@ -225,21 +222,11 @@ namespace EnhancedDisastersMod
             meteorEvents[index].Enabled = value;
         }
 
-        private int countTmp = 0;
         protected override void onSimulationFrame_local()
         {
             for (int i = 0; i < meteorEvents.Length; i++)
             {
                 meteorEvents[i].OnSimulationFrame();
-            }
-
-            if (--countTmp <= 0)
-            {
-                countTmp = 3000;
-                for (int i = 0; i < meteorEvents.Length; i++)
-                {
-                    Debug.Log("Meteor " + i.ToString() + ". " + meteorEvents[i].ToString());
-                }
             }
         }
 
@@ -271,10 +258,26 @@ namespace EnhancedDisastersMod
 
         public override void OnDisasterCreated(byte intensity)
         {
+            int meteorIndex = -1;
+            float maxProb = 0;
+
             for (int i = 0; i < meteorEvents.Length; i++)
             {
-                if (meteorEvents[i].OnMeteorFallen(intensity)) return;
+                float prob = meteorEvents[i].GetProbabilityMultiplier();
+                if (prob > maxProb)
+                {
+                    maxProb = prob;
+                    meteorIndex = i;
+                }
             }
+
+            // Should not happen
+            if (meteorIndex == -1)
+            {
+                meteorIndex = 2;
+            }
+
+            meteorEvents[meteorIndex].OnMeteorFallen();
         }
 
         public override bool CheckDisasterAIType(object disasterAI)
@@ -297,6 +300,19 @@ namespace EnhancedDisastersMod
             }
 
             return result;
+        }
+
+        public override void CopySettings(EnhancedDisaster disaster)
+        {
+            base.CopySettings(disaster);
+
+            EnhancedMeteorStrike d = disaster as EnhancedMeteorStrike;
+            if (d != null)
+            {
+                Meteor1Enabled = d.Meteor1Enabled;
+                Meteor2Enabled = d.Meteor2Enabled;
+                Meteor3Enabled = d.Meteor3Enabled;
+            }
         }
     }
 }

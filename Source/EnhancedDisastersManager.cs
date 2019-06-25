@@ -14,19 +14,38 @@ namespace EnhancedDisastersMod
 
         public void ReadValuesFromFile()
         {
-            container = DisastersContainer.CreateFromFile();
-            if (container == null)
+            DisastersContainer newContainer = DisastersContainer.CreateFromFile();
+            if (newContainer == null)
             {
-                container = new DisastersContainer();
+                newContainer = new DisastersContainer();
             }
 
-            container.CheckObjects();
+            newContainer.CheckObjects();
+
+            copySettings(newContainer);
         }
 
         public void ResetToDefaultValues()
         {
-            container = new DisastersContainer();
-            container.CheckObjects();
+            DisastersContainer newContainer = new DisastersContainer();
+            newContainer.CheckObjects();
+
+            copySettings(newContainer);
+        }
+
+        private void copySettings(DisastersContainer fromContainer)
+        {
+            if (container == null)
+            {
+                container = fromContainer;
+            }
+            else
+            {
+                for (int i = 0; i < container.AllDisasters.Count; i++)
+                {
+                    container.AllDisasters[i].CopySettings(fromContainer.AllDisasters[i]);
+                }
+            }
         }
 
         public void OnSimulationFrame()
