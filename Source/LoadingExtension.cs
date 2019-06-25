@@ -48,7 +48,7 @@ namespace EnhancedDisastersMod
             GameObject obj = new GameObject("ExtendedDisastersPanel");
             obj.transform.parent = v.cachedTransform;
             dPanel = obj.AddComponent<ExtendedDisastersPanel>();
-            dPanel.absolutePosition = new Vector3(v.fixedWidth - 420, 110);
+            dPanel.absolutePosition = new Vector3(90, 100);
 
             GameObject toggleButtonObject = new GameObject("ExtendedDisastersPanelButton");
             toggleButtonObject.transform.parent = v.transform;
@@ -58,7 +58,7 @@ namespace EnhancedDisastersMod
             toggleButton.normalFgSprite = "InfoIconElectricity";
             toggleButton.width = 30f;
             toggleButton.height = 30f;
-            toggleButton.absolutePosition = new Vector3(v.fixedWidth - 50, 70);
+            toggleButton.absolutePosition = new Vector3(90, 62);
             toggleButton.tooltip = "Extended Disasters";
             toggleButton.eventClick += ToggleButton_eventClick;
         }
