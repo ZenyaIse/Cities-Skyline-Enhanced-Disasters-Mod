@@ -86,13 +86,27 @@ namespace EnhancedDisastersMod
 
         private void BigRedBtn_eventClick(UIComponent component, UIMouseEventParameter eventParam)
         {
-            DisasterManager dm = Singleton<DisasterManager>.instance;
             StringBuilder sb = new StringBuilder();
+
+            VehicleManager vm = Singleton<VehicleManager>.instance;
+            for (int i = 1; i < 16384; i++)
+            {
+                if ((vm.m_vehicles.m_buffer[i].m_flags & Vehicle.Flags.Created) != (Vehicle.Flags)0)
+                {
+                    if (vm.m_vehicles.m_buffer[i].Info.m_vehicleAI is MeteorAI)
+                    {
+                        vm.ReleaseVehicle((ushort)i);
+                    }
+                }
+            }
+
+            DisasterManager dm = Singleton<DisasterManager>.instance;
             for (ushort i = 0; i < dm.m_disasterCount; i++)
             {
                 sb.AppendLine(dm.m_disasters.m_buffer[i].Info.name + " flags: " + dm.m_disasters.m_buffer[i].m_flags.ToString());
                 if ((dm.m_disasters.m_buffer[i].m_flags & (DisasterData.Flags.Emerging | DisasterData.Flags.Active | DisasterData.Flags.Clearing)) != DisasterData.Flags.None)
                 {
+                    sb.AppendLine("Trying to cancel " +  dm.m_disasters.m_buffer[i].Info.name);
                     dm.m_disasters.m_buffer[i].m_flags = ((dm.m_disasters.m_buffer[i].m_flags & ~(DisasterData.Flags.Emerging | DisasterData.Flags.Active | DisasterData.Flags.Clearing)) | DisasterData.Flags.Finished);
                 }
                 //DisasterInfo info = dm.m_disasters.m_buffer[i].Info;
