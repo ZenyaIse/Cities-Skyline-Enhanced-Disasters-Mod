@@ -61,9 +61,30 @@ namespace EnhancedDisastersMod
             toggleButton.absolutePosition = new Vector3(90, 62);
             toggleButton.tooltip = "Extended Disasters";
             toggleButton.eventClick += ToggleButton_eventClick;
+
+            UIInput.eventProcessKeyEvent += UIInput_eventProcessKeyEvent;
+        }
+
+        private void UIInput_eventProcessKeyEvent(EventType eventType, KeyCode keyCode, EventModifiers modifiers)
+        {
+            if (eventType == EventType.KeyDown && keyCode == KeyCode.Escape)
+            {
+                dPanel.isVisible = false;
+                return;
+            }
+
+            if (eventType == EventType.KeyDown && modifiers == EventModifiers.Shift && keyCode == KeyCode.D)
+            {
+                toggleDisasterPanel();
+            }
         }
 
         private void ToggleButton_eventClick(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            toggleDisasterPanel();
+        }
+
+        private void toggleDisasterPanel()
         {
             dPanel.isVisible = !dPanel.isVisible;
 
