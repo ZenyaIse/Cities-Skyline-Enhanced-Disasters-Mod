@@ -109,6 +109,12 @@ namespace EnhancedDisastersMod
 
         public override void OnDisasterCreated(byte intensity)
         {
+            if (!AftershocksEnabled)
+            {
+                aftershocksCount = 0;
+                return;
+            }
+
             if (aftershocksCount == 0)
             {
                 aftershockMaxIntensity = (byte)(10 + (intensity - 10) * 3 / 4);
