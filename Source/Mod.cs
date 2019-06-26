@@ -194,7 +194,7 @@ namespace EnhancedDisastersMod
             addLabelToSlider(ForestFireMaxProbabilityUI, " times per year");
             ForestFireMaxProbabilityUI.tooltip = "Occurrence (per year) in case of a long period without rain";
 
-            UI_ForestFire_WarmupDays = (UISlider)forestFireGroup.AddSlider("Warmup period", 10, 360, 10, c.ForestFire.WarmupDays, delegate (float val)
+            UI_ForestFire_WarmupDays = (UISlider)forestFireGroup.AddSlider("Warmup period", 0, 360, 10, c.ForestFire.WarmupDays, delegate (float val)
             {
                 if (!freezeUI) c.ForestFire.WarmupDays = (int)val;
             });
@@ -209,7 +209,7 @@ namespace EnhancedDisastersMod
 
             UIHelperBase thunderstormGroup = helper.AddGroup("Thunderstorm disaster");
 
-            UI_Thunderstorm_MaxProbability = (UISlider)thunderstormGroup.AddSlider("Max probability", 0.1f, 5f, 0.1f, c.Thunderstorm.BaseOccurrencePerYear, delegate (float val)
+            UI_Thunderstorm_MaxProbability = (UISlider)thunderstormGroup.AddSlider("Max probability", 0.1f, 10f, 0.1f, c.Thunderstorm.BaseOccurrencePerYear, delegate (float val)
             {
                 if (!freezeUI) c.Thunderstorm.BaseOccurrencePerYear = val;
             });
@@ -224,7 +224,7 @@ namespace EnhancedDisastersMod
                     if (!freezeUI) c.Thunderstorm.MaxProbabilityMonth = sel + 1;
                 });
 
-            UI_Thunderstorm_RainFactor = (UISlider)thunderstormGroup.AddSlider("Rain factor", 1f, 5f, 0.2f, c.Thunderstorm.RainFactor, delegate (float val)
+            UI_Thunderstorm_RainFactor = (UISlider)thunderstormGroup.AddSlider("Rain factor", 1f, 5f, 0.1f, c.Thunderstorm.RainFactor, delegate (float val)
             {
                 if (!freezeUI) c.Thunderstorm.RainFactor = val;
             });
@@ -261,7 +261,7 @@ namespace EnhancedDisastersMod
 
             UIHelperBase tornadoGroup = helper.AddGroup("Tornado disaster");
 
-            UI_Tornado_MaxProbability = (UISlider)tornadoGroup.AddSlider("Max probability", 0.1f, 5f, 0.1f, c.Tornado.BaseOccurrencePerYear, delegate (float val)
+            UI_Tornado_MaxProbability = (UISlider)tornadoGroup.AddSlider("Max probability", 0.1f, 10f, 0.1f, c.Tornado.BaseOccurrencePerYear, delegate (float val)
             {
                 if (!freezeUI) c.Tornado.BaseOccurrencePerYear = val;
             });
@@ -297,7 +297,7 @@ namespace EnhancedDisastersMod
             addLabelToSlider(UI_Tsunami_MaxProbability, " times per year");
             UI_Tsunami_MaxProbability.tooltip = "Maximum occurrence (per year) after a long period without tsunamis";
 
-            UI_Tsunami_WarmupYears = (UISlider)tsunamiGroup.AddSlider("Charge period", 0.5f, 20, 0.5f, c.Tsunami.WarmupYears, delegate (float val)
+            UI_Tsunami_WarmupYears = (UISlider)tsunamiGroup.AddSlider("Charge period", 0, 20, 0.5f, c.Tsunami.WarmupYears, delegate (float val)
             {
                 if (!freezeUI) c.Tsunami.WarmupYears = val;
             });
@@ -319,7 +319,7 @@ namespace EnhancedDisastersMod
             addLabelToSlider(UI_Earthquake_MaxProbability, " times per year");
             UI_Earthquake_MaxProbability.tooltip = "Maximum occurrence (per year) after a long period without earthquakes";
 
-            UI_Earthquake_WarmupYears = (UISlider)earthquakeGroup.AddSlider("Charge period", 0.5f, 20, 0.5f, c.Earthquake.WarmupYears, delegate (float val)
+            UI_Earthquake_WarmupYears = (UISlider)earthquakeGroup.AddSlider("Charge period", 0, 20, 0.5f, c.Earthquake.WarmupYears, delegate (float val)
             {
                 if (!freezeUI) c.Earthquake.WarmupYears = val;
             });
@@ -347,17 +347,17 @@ namespace EnhancedDisastersMod
             addLabelToSlider(UI_MeteorStrike_MaxProbability, " times per year");
             UI_MeteorStrike_MaxProbability.tooltip = "Maximum occurrence of meteor strike per year per one meteor when it approaches the Earth";
 
-            UI_MeteorStrike_Meteor1Enabled = (UICheckBox)meteorStrikeGroup.AddCheckbox("Enable long period (10-11 years) meteor", c.MeteorStrike.GetEnabled(0), delegate (bool isChecked)
+            UI_MeteorStrike_Meteor1Enabled = (UICheckBox)meteorStrikeGroup.AddCheckbox("Enable long period (9 years) meteor", c.MeteorStrike.GetEnabled(0), delegate (bool isChecked)
             {
                 if (!freezeUI) c.MeteorStrike.SetEnabled(0, isChecked);
             });
 
-            UI_MeteorStrike_Meteor2Enabled = (UICheckBox)meteorStrikeGroup.AddCheckbox("Enable medium period (5-6 years) meteor", c.MeteorStrike.GetEnabled(1), delegate (bool isChecked)
+            UI_MeteorStrike_Meteor2Enabled = (UICheckBox)meteorStrikeGroup.AddCheckbox("Enable medium period (5 years) meteor", c.MeteorStrike.GetEnabled(1), delegate (bool isChecked)
             {
                 if (!freezeUI) c.MeteorStrike.SetEnabled(1, isChecked);
             });
 
-            UI_MeteorStrike_Meteor3Enabled = (UICheckBox)meteorStrikeGroup.AddCheckbox("Enable short period (2-3 years) meteor", c.MeteorStrike.GetEnabled(2), delegate (bool isChecked)
+            UI_MeteorStrike_Meteor3Enabled = (UICheckBox)meteorStrikeGroup.AddCheckbox("Enable short period (2 years) meteor", c.MeteorStrike.GetEnabled(2), delegate (bool isChecked)
             {
                 if (!freezeUI) c.MeteorStrike.SetEnabled(2, isChecked);
             });
