@@ -70,15 +70,26 @@ namespace EnhancedDisastersMod
             UIButton bigRedBtn = this.AddUIComponent<UIButton>();
             bigRedBtn.name = "bigRedBtn";
             bigRedBtn.position = new Vector3(10, -height + 30);
-            bigRedBtn.size = new Vector2(width - 20, 25);
-            bigRedBtn.textColor = Color.white;
+            bigRedBtn.size = new Vector2(22, 22);
+            //bigRedBtn.color = Color.red;
+            //bigRedBtn.focusedColor = Color.red;
+            bigRedBtn.textColor = Color.red;
+            bigRedBtn.focusedTextColor = Color.red;
+            bigRedBtn.text = "■";
             bigRedBtn.normalBgSprite = "ButtonMenu";
             bigRedBtn.hoveredBgSprite = "ButtonMenuHovered";
-            bigRedBtn.text = "Stop all disasters";
             bigRedBtn.eventClick += BigRedBtn_eventClick;
 
+            UILabel bigRedBtnLabel = this.AddUIComponent<UILabel>();
+            bigRedBtnLabel.name = "bigRedBtnLabel";
+            bigRedBtnLabel.position = new Vector3(40, -height + 27);
+            bigRedBtnLabel.size = new Vector2(width - 30, 20);
+            bigRedBtnLabel.textColor = Color.white;
+            //bigRedBtnLabel.textScale = 0.7f;
+            bigRedBtnLabel.text = "← Big Red Button (stop all disasters)";
+
             UIButton btn = this.AddUIComponent<UIButton>();
-            btn.position = new Vector3(370, -5);
+            btn.position = new Vector3(365, -5);
             btn.size = new Vector2(30, 30);
             btn.normalFgSprite = "buttonclose";
             btn.eventClick += Btn_eventClick;
@@ -94,6 +105,11 @@ namespace EnhancedDisastersMod
                 if ((vm.m_vehicles.m_buffer[i].m_flags & Vehicle.Flags.Created) != (Vehicle.Flags)0)
                 {
                     if (vm.m_vehicles.m_buffer[i].Info.m_vehicleAI is MeteorAI)
+                    {
+                        vm.ReleaseVehicle((ushort)i);
+                    }
+
+                    if (vm.m_vehicles.m_buffer[i].Info.m_vehicleAI is VortexAI)
                     {
                         vm.ReleaseVehicle((ushort)i);
                     }
