@@ -72,7 +72,7 @@ namespace EnhancedDisastersMod
             bigRedBtn.position = new Vector3(10, -height + 30);
             bigRedBtn.size = new Vector2(22, 22);
             //bigRedBtn.color = Color.red;
-            //bigRedBtn.focusedColor = Color.red;
+            bigRedBtn.focusedColor = Color.red;
             bigRedBtn.textColor = Color.red;
             bigRedBtn.focusedTextColor = Color.red;
             bigRedBtn.text = "■";
@@ -86,7 +86,7 @@ namespace EnhancedDisastersMod
             bigRedBtnLabel.size = new Vector2(width - 30, 20);
             bigRedBtnLabel.textColor = Color.white;
             //bigRedBtnLabel.textScale = 0.7f;
-            bigRedBtnLabel.text = "← Big Red Button (stop all disasters)";
+            bigRedBtnLabel.text = "← Emergency Button (stop all disasters)";
 
             UIButton btn = this.AddUIComponent<UIButton>();
             btn.position = new Vector3(365, -5);
@@ -116,6 +116,12 @@ namespace EnhancedDisastersMod
                 }
             }
 
+            WaterSimulation ws = Singleton<WaterSimulation>.instance;
+            for (int i = 0; i < ws.m_waterWaves.m_size; i++)
+            {
+                Singleton<TerrainManager>.instance.WaterSimulation.ReleaseWaterWave((ushort)i);
+            }
+
             DisasterManager dm = Singleton<DisasterManager>.instance;
             for (ushort i = 0; i < dm.m_disasterCount; i++)
             {
@@ -125,11 +131,6 @@ namespace EnhancedDisastersMod
                     sb.AppendLine("Trying to cancel " +  dm.m_disasters.m_buffer[i].Info.name);
                     dm.m_disasters.m_buffer[i].m_flags = ((dm.m_disasters.m_buffer[i].m_flags & ~(DisasterData.Flags.Emerging | DisasterData.Flags.Active | DisasterData.Flags.Clearing)) | DisasterData.Flags.Finished);
                 }
-                //DisasterInfo info = dm.m_disasters.m_buffer[i].Info;
-                //if (info != null)
-                //{
-                    //info.m_disasterAI.DeactivateNow(i, ref dm.m_disasters.m_buffer[i]);
-                //}
             }
             Debug.Log(sb.ToString());
         }

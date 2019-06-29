@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using ColossalFramework;
 
 namespace EnhancedDisastersMod
 {
@@ -10,6 +11,8 @@ namespace EnhancedDisastersMod
 
         public static void AddDisaster(DateTime dt, string disasterName, byte intensity)
         {
+            if (!Singleton<EnhancedDisastersManager>.instance.container.RecordDisasterEvents) return;
+
             string filePath = getDisasterListFilePath();
 
             if (!File.Exists(filePath))

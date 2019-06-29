@@ -11,7 +11,7 @@ namespace EnhancedDisastersMod
     {
         public static string ModNameEng = "More Natural Disasters";
         public static string LogMsgPrefix = ">>> " + ModNameEng + ": ";
-        public static string Version = "2019/6/23";
+        public static string Version = "2019/6/29";
 
         private bool freezeUI = false;
 
@@ -382,6 +382,13 @@ namespace EnhancedDisastersMod
                 Singleton<EnhancedDisastersManager>.instance.ResetToDefaultValues();
                 EnhancedDisastersOptionsUpdateUI();
             });
+            helper.AddSpace(20);
+
+            UICheckBox recordDisasterEventsChkBox = (UICheckBox)helper.AddCheckbox("Record disaster events", c.RecordDisasterEvents, delegate (bool isChecked)
+            {
+                if (!freezeUI) c.RecordDisasterEvents = isChecked;
+            });
+            recordDisasterEventsChkBox.tooltip = "Write out disaster name, date of occurrence, and intencity into Disasters.csv file";
             helper.AddSpace(20);
         }
 

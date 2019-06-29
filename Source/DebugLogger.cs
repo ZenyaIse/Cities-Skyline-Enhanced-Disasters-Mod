@@ -6,7 +6,7 @@ namespace EnhancedDisastersMod
     public static class DebugLogger
     {
         private static string fileName = "EnhancedDisastersMod.log";
-        public static bool IsDebug = true;
+        public static bool IsDebug = false;
 
         public static void Log(string msg)
         {

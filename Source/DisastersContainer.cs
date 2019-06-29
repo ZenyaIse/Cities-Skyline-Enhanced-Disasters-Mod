@@ -17,6 +17,8 @@ namespace EnhancedDisastersMod
         public EnhancedEarthquake Earthquake;
         public EnhancedMeteorStrike MeteorStrike;
 
+        public bool RecordDisasterEvents = false;
+
         [XmlIgnore]
         public List<EnhancedDisaster> AllDisasters = new List<EnhancedDisaster>();
 
