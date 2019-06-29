@@ -106,9 +106,9 @@ Default settings
 
 Features
 * There are three meteoroid streams periodically approaching the Earth.
-  -* Meteoroid stream 1: period 9 years, maximum size 100
-  -* Meteoroid stream 2: period 5 years, maximum size 50
-  -* Meteoroid stream 3: period 2 years, maximum size 30
+  * Meteoroid stream 1: period 9 years, maximum size 100
+  * Meteoroid stream 2: period 5 years, maximum size 50
+  * Meteoroid stream 3: period 2 years, maximum size 30
 * When a meteoroid stream approaches the Earth, there is a chance of a meteor strike.
 
 Unlocks
