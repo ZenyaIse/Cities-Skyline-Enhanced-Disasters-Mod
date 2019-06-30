@@ -207,11 +207,11 @@ namespace EnhancedDisastersMod
             }
         }
 
-        public void SetDisastersPanelBtnVisibility(bool isVisible)
+        public void UpdateDisastersPanelBtnVisibility()
         {
-            if (toggleButton != null)
+            if (toggleButton != null && container != null)
             {
-                toggleButton.isVisible = isVisible;
+                toggleButton.isVisible = container.ShowDisasterPanelButton;
             }
         }
     }

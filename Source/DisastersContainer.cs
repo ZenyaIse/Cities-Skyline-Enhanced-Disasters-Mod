@@ -2,11 +2,38 @@
 using System.IO;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using ColossalFramework;
+using ColossalFramework.IO;
 
 namespace EnhancedDisastersMod
 {
     public class DisastersContainer
     {
+        public class Data : IDataContainer
+        {
+            public void Serialize(DataSerializer s)
+            {
+                DisastersContainer c = Singleton<EnhancedDisastersManager>.instance.container;
+                s.WriteBool(c.ScaleMaxIntensityWithPopilation);
+                s.WriteBool(c.RecordDisasterEvents);
+                s.WriteBool(c.ShowDisasterPanelButton);
+            }
+
+            public void Deserialize(DataSerializer s)
+            {
+                DisastersContainer c = Singleton<EnhancedDisastersManager>.instance.container;
+                c.ScaleMaxIntensityWithPopilation = s.ReadBool();
+                c.RecordDisasterEvents = s.ReadBool();
+                c.ShowDisasterPanelButton = s.ReadBool();
+            }
+
+            public void AfterDeserialize(DataSerializer s)
+            {
+                Singleton<EnhancedDisastersManager>.instance.UpdateDisastersPanelBtnVisibility();
+            }
+        }
+
+
         private static string optionsFileName = "EnhancedDisastersModOptions.xml";
 
         public EnhancedForestFire ForestFire;
@@ -17,6 +44,7 @@ namespace EnhancedDisastersMod
         public EnhancedEarthquake Earthquake;
         public EnhancedMeteorStrike MeteorStrike;
 
+        public bool ScaleMaxIntensityWithPopilation = true;
         public bool RecordDisasterEvents = false;
         public bool ShowDisasterPanelButton = true;
 

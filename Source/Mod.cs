@@ -15,6 +15,10 @@ namespace EnhancedDisastersMod
 
         private bool freezeUI = false;
 
+        private UICheckBox UI_ScaleMaxIntensityWithPopilation;
+        private UICheckBox UI_RecordDisasterEventsChkBox;
+        private UICheckBox UI_ShowDisasterPanelButton;
+
         private UICheckBox UI_ForestFire_Enabled;
         private UISlider ForestFireMaxProbabilityUI;
         private UISlider UI_ForestFire_WarmupDays;
@@ -84,6 +88,10 @@ namespace EnhancedDisastersMod
             DisastersContainer c = Singleton<EnhancedDisastersManager>.instance.container;
 
             freezeUI = true;
+
+            UI_ScaleMaxIntensityWithPopilation.isChecked = c.ScaleMaxIntensityWithPopilation;
+            UI_RecordDisasterEventsChkBox.isChecked = c.RecordDisasterEvents;
+            UI_ShowDisasterPanelButton.isChecked = c.ShowDisasterPanelButton;
 
             UI_ForestFire_Enabled.isChecked = c.ForestFire.Enabled;
             ForestFireMaxProbabilityUI.value = c.ForestFire.BaseOccurrencePerYear;
@@ -384,17 +392,23 @@ namespace EnhancedDisastersMod
             });
             helper.AddSpace(20);
 
-            UICheckBox recordDisasterEventsChkBox = (UICheckBox)helper.AddCheckbox("Record disaster events", c.RecordDisasterEvents, delegate (bool isChecked)
+            UI_ScaleMaxIntensityWithPopilation = (UICheckBox)helper.AddCheckbox("Scale max intensity with popilation", c.ScaleMaxIntensityWithPopilation, delegate (bool isChecked)
+            {
+                if (!freezeUI) c.ScaleMaxIntensityWithPopilation = isChecked;
+            });
+            UI_ScaleMaxIntensityWithPopilation.tooltip = "Maximum intensity for all disasters is set to the minimum at the beginning of the game and gradually increases as the city grows.";
+
+            UI_RecordDisasterEventsChkBox = (UICheckBox)helper.AddCheckbox("Record disaster events", c.RecordDisasterEvents, delegate (bool isChecked)
             {
                 if (!freezeUI) c.RecordDisasterEvents = isChecked;
             });
-            recordDisasterEventsChkBox.tooltip = "Write out disaster name, date of occurrence, and intencity into Disasters.csv file";
+            UI_RecordDisasterEventsChkBox.tooltip = "Write out disaster name, date of occurrence, and intencity into Disasters.csv file";
 
-            helper.AddCheckbox("Show Disasters Panel toggle button", c.ShowDisasterPanelButton, delegate (bool isChecked)
+            UI_ShowDisasterPanelButton = (UICheckBox)helper.AddCheckbox("Show Disasters Panel toggle button", c.ShowDisasterPanelButton, delegate (bool isChecked)
             {
                 if (!freezeUI) c.ShowDisasterPanelButton = isChecked;
 
-                Singleton<EnhancedDisastersManager>.instance.SetDisastersPanelBtnVisibility(isChecked);
+                Singleton<EnhancedDisastersManager>.instance.UpdateDisastersPanelBtnVisibility();
             });
 
             helper.AddSpace(20);

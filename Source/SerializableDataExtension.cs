@@ -28,6 +28,8 @@ namespace EnhancedDisastersMod
                 {
                     EnhancedDisastersManager edm = Singleton<EnhancedDisastersManager>.instance;
 
+                    DataSerializer.Serialize(stream, DataSerializer.Mode.Memory, DataVersion, new DisastersContainer.Data());
+
                     DataSerializer.Serialize(stream, DataSerializer.Mode.Memory, DataVersion, new EnhancedForestFire.Data());
                     DataSerializer.Serialize(stream, DataSerializer.Mode.Memory, DataVersion, new EnhancedThunderstorm.Data());
                     DataSerializer.Serialize(stream, DataSerializer.Mode.Memory, DataVersion, new EnhancedSinkhole.Data());
@@ -60,6 +62,8 @@ namespace EnhancedDisastersMod
 
                 using (var stream = new MemoryStream(data))
                 {
+                    //DataSerializer.Deserialize<DisastersContainer.Data>(stream, DataSerializer.Mode.Memory);
+
                     DataSerializer.Deserialize<EnhancedForestFire.Data>(stream, DataSerializer.Mode.Memory);
                     DataSerializer.Deserialize<EnhancedThunderstorm.Data>(stream, DataSerializer.Mode.Memory);
                     DataSerializer.Deserialize<EnhancedSinkhole.Data>(stream, DataSerializer.Mode.Memory);

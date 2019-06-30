@@ -223,10 +223,13 @@ namespace EnhancedDisastersMod
             }
 
             // Scale by population
-            int population = getPopulation();
-            if (population < FullIntensityPopulation)
+            if (Singleton<EnhancedDisastersManager>.instance.container.ScaleMaxIntensityWithPopilation)
             {
-                intensity = (byte)(10 + (intensity - 10) * population / FullIntensityPopulation);
+                int population = getPopulation();
+                if (population < FullIntensityPopulation)
+                {
+                    intensity = (byte)(10 + (intensity - 10) * population / FullIntensityPopulation);
+                }
             }
 
             return intensity;
