@@ -13,7 +13,7 @@ Features
 
 Unlocks
 * From the beginning (can occur only outside of your unlocked areas)
-* From Milestone 3 (can occur everywere, both inside and outside of your unlocked areas)
+* From Milestone 3: Worthy Village (can occur everywere, both inside and outside of your unlocked areas)
 
 Default settings
 * Warmup period: 180 days without rain
@@ -28,7 +28,7 @@ Features
 
 Unlocks
 * From the beginning (can occur only outside of your unlocked areas)
-* From Milestone 3 (can occur everywere, both inside and outside of your unlocked areas)
+* From Milestone 3: Worthy Village (can occur everywere, both inside and outside of your unlocked areas)
 
 Default settings
 * Thunderstorm season peak: July
@@ -43,7 +43,7 @@ Features
 * The longer and heavier the rainfall, the higher the probability. Imagine an underground reservour which is filling up during rain and emptying after rain stops.
 
 Unlocks
-* From Milestone 4 (can occur only inside your unlocked areas)
+* From Milestone 4: Tiny Town (can occur only inside your unlocked areas)
 
 Default settings
 * Maximum probability after a long heavy rainfall: 1.5 times/year
@@ -58,7 +58,7 @@ Features
 * Small tornadoes occur more often than big ones.
 
 Unlocks
-* From Milestone 5 (can occur only inside your unlocked areas)
+* From Milestone 5: Boom Town (can occur only inside your unlocked areas)
 
 Default settings
 * Tornado season peak: May
@@ -73,7 +73,7 @@ Features
 * Small tsunamies occur more often than big ones.
 
 Unlocks
-* From Milestone 5
+* From Milestone 5: Boom Town
 
 Default settings
 * Maximum probability after a long time: 1 times/year
@@ -93,7 +93,7 @@ Features
 * No cracks appear (too destructive).
 
 Unlocks
-* From Milestone 6 (can occur only inside your unlocked areas)
+* From Milestone 6: Busy Town (can occur only inside your unlocked areas)
 
 Default settings
 * Maximum probability after a long time: 1 times/year
@@ -112,7 +112,7 @@ Features
 * When a meteoroid stream approaches the Earth, there is a chance of a meteor strike.
 
 Unlocks
-* From Milestone 6 (can occur only inside your unlocked areas)
+* From Milestone 6: Busy Town (can occur only inside your unlocked areas)
 
 Default settings
 * Peak probability when a meteoroid stream is approaching: 5 times/year (per meteoroid stream). Cumulative.
@@ -129,14 +129,14 @@ Show / hide the disasters info panel by clicking the "Lightning" button at the t
 
 ## Emergency Button
 
-One of the most annoying thing about disasters is that they soullessly destroy the world you wholeheartedly created. To save your most valuable creation from destruction, just press the Emergency Button at the bottom of the disasters info panel * this stops all currently occuring disasters, including falling meteors and approaching tsunami waves.
+One of the most annoying thing about disasters is that they soullessly destroy the world you wholeheartedly created. To save your most valuable creation from destruction, just press the Emergency Button at the bottom of the disasters info panel - this stops all currently occuring disasters, including falling meteors and approaching tsunami waves.
 
 In the current version, there are no restrictions how many times you can press the Emergency Button.
 
 
 ## Logging
 
-The mod logs out information about all occured disasters into csv file in the CS data directory (C:\Users\%Username%\AppData\Colossal Order\Cities_Skylines).
+The mod logs out information about all occured disasters into csv file in the CS data directory (C:\Users\%Username%\AppData\Colossal Order\Cities_Skylines\Disasters.csv).
 * date
 * name
 * intensity
