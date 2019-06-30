@@ -1,5 +1,4 @@
 ﻿using ColossalFramework;
-using ColossalFramework.UI;
 using ICities;
 using UnityEngine;
 
@@ -7,13 +6,11 @@ namespace EnhancedDisastersMod
 {
     public class LoadingExtension : LoadingExtensionBase
     {
-        private ExtendedDisastersPanel dPanel;
-
         public override void OnLevelLoaded(LoadMode mode)
         {
             if (mode == LoadMode.NewGame || mode == LoadMode.LoadGame || mode == LoadMode.NewGameFromScenario)
             {
-                createExtendedDisasterPanel();
+                Singleton<EnhancedDisastersManager>.instance.CreateExtendedDisasterPanel();
                 Singleton<EnhancedDisastersManager>.instance.CheckUnlocks();
 
                 setDisasterProperties();
@@ -36,61 +33,6 @@ namespace EnhancedDisastersMod
                     ((EarthquakeAI)di.m_disasterAI).m_crackLength = 0;
                     ((EarthquakeAI)di.m_disasterAI).m_crackWidth = 0;
                 }
-            }
-        }
-
-        private void createExtendedDisasterPanel()
-        {
-            if (dPanel != null) return;
-
-            UIView v = UIView.GetAView();
-
-            GameObject obj = new GameObject("ExtendedDisastersPanel");
-            obj.transform.parent = v.cachedTransform;
-            dPanel = obj.AddComponent<ExtendedDisastersPanel>();
-            dPanel.absolutePosition = new Vector3(90, 100);
-
-            GameObject toggleButtonObject = new GameObject("ExtendedDisastersPanelButton");
-            toggleButtonObject.transform.parent = v.transform;
-            toggleButtonObject.transform.localPosition = Vector3.zero;
-            UIButton toggleButton = toggleButtonObject.AddComponent<UIButton>();
-            toggleButton.normalBgSprite = "InfoIconBasePressed";
-            toggleButton.normalFgSprite = "InfoIconElectricity";
-            toggleButton.width = 30f;
-            toggleButton.height = 30f;
-            toggleButton.absolutePosition = new Vector3(90, 62);
-            toggleButton.tooltip = "Extended Disasters";
-            toggleButton.eventClick += ToggleButton_eventClick;
-
-            UIInput.eventProcessKeyEvent += UIInput_eventProcessKeyEvent;
-        }
-
-        private void UIInput_eventProcessKeyEvent(EventType eventType, KeyCode keyCode, EventModifiers modifiers)
-        {
-            if (eventType == EventType.KeyDown && keyCode == KeyCode.Escape)
-            {
-                dPanel.isVisible = false;
-                return;
-            }
-
-            if (eventType == EventType.KeyDown && modifiers == EventModifiers.Shift && keyCode == KeyCode.D)
-            {
-                toggleDisasterPanel();
-            }
-        }
-
-        private void ToggleButton_eventClick(UIComponent component, UIMouseEventParameter eventParam)
-        {
-            toggleDisasterPanel();
-        }
-
-        private void toggleDisasterPanel()
-        {
-            dPanel.isVisible = !dPanel.isVisible;
-
-            if (dPanel.isVisible)
-            {
-                dPanel.Counter = 0;
             }
         }
     }

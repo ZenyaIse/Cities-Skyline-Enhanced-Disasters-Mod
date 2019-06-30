@@ -389,6 +389,14 @@ namespace EnhancedDisastersMod
                 if (!freezeUI) c.RecordDisasterEvents = isChecked;
             });
             recordDisasterEventsChkBox.tooltip = "Write out disaster name, date of occurrence, and intencity into Disasters.csv file";
+
+            helper.AddCheckbox("Show Disasters Panel toggle button", c.ShowDisasterPanelButton, delegate (bool isChecked)
+            {
+                if (!freezeUI) c.ShowDisasterPanelButton = isChecked;
+
+                Singleton<EnhancedDisastersManager>.instance.SetDisastersPanelBtnVisibility(isChecked);
+            });
+
             helper.AddSpace(20);
         }
 

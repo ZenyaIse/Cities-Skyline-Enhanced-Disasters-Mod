@@ -18,6 +18,7 @@ namespace EnhancedDisastersMod
         public EnhancedMeteorStrike MeteorStrike;
 
         public bool RecordDisasterEvents = false;
+        public bool ShowDisasterPanelButton = true;
 
         [XmlIgnore]
         public List<EnhancedDisaster> AllDisasters = new List<EnhancedDisaster>();
