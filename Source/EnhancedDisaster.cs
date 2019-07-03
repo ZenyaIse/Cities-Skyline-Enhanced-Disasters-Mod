@@ -102,11 +102,21 @@ namespace EnhancedDisastersMod
 
             if (probabilityWarmupCounter > 0)
             {
+                if (probabilityWarmupCounter > framesPerDay * probabilityWarmupDays)
+                {
+                    probabilityWarmupCounter = (int)(framesPerDay * probabilityWarmupDays);
+                }
+
                 probabilityWarmupCounter--;
             }
 
             if (intensityWarmupCounter > 0)
             {
+                if (intensityWarmupCounter > framesPerDay * intensityWarmupDays)
+                {
+                    intensityWarmupCounter = (int)(framesPerDay * intensityWarmupDays);
+                }
+
                 intensityWarmupCounter--;
             }
 
@@ -217,9 +227,16 @@ namespace EnhancedDisastersMod
         protected byte scaleIntensity(byte intensity)
         {
             // Warmup period
-            if (intensityWarmupCounter > 0)
+            if (intensityWarmupCounter > 0 && intensityWarmupDays > 0)
             {
-                intensity = (byte)(10 + (intensity - 10) * (1 - intensityWarmupCounter / (framesPerDay * intensityWarmupDays)));
+                if (intensityWarmupCounter >= framesPerDay * intensityWarmupDays)
+                {
+                    intensity = 10;
+                }
+                else
+                {
+                    intensity = (byte)(10 + (intensity - 10) * (1 - intensityWarmupCounter / (framesPerDay * intensityWarmupDays)));
+                }
             }
 
             // Scale by population
@@ -242,9 +259,16 @@ namespace EnhancedDisastersMod
                 return 0;
             }
 
-            if (probabilityWarmupCounter > 0)
+            if (probabilityWarmupCounter > 0 && probabilityWarmupDays > 0)
             {
-                probability *= 1 - probabilityWarmupCounter / (framesPerDay * probabilityWarmupDays);
+                if (probabilityWarmupCounter >= framesPerDay * probabilityWarmupDays)
+                {
+                    probability = 0;
+                }
+                else
+                {
+                    probability *= 1 - probabilityWarmupCounter / (framesPerDay * probabilityWarmupDays);
+                }
             }
 
             return probability;

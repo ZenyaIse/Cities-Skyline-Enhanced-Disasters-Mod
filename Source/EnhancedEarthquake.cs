@@ -118,7 +118,10 @@ namespace EnhancedDisastersMod
             if (aftershocksCount == 0)
             {
                 aftershockMaxIntensity = (byte)(10 + (intensity - 10) * 3 / 4);
-                aftershocksCount = (byte)Singleton<SimulationManager>.instance.m_randomizer.Int32((uint)intensity / 25);
+                if (intensity > 20)
+                {
+                    aftershocksCount = (byte)(1 + Singleton<SimulationManager>.instance.m_randomizer.Int32((uint)intensity / 30));
+                }
             }
             else
             {

@@ -34,9 +34,9 @@ namespace EnhancedDisastersMod
         {
             DType = DisasterType.Tsunami;
             BaseOccurrencePerYear = 1.0f;
-            ProbabilityDistribution = ProbabilityDistributions.Uniform;
+            ProbabilityDistribution = ProbabilityDistributions.PowerLow;
 
-            WarmupYears = 5;
+            WarmupYears = 4;
         }
 
         public float WarmupYears

@@ -62,7 +62,7 @@ namespace EnhancedDisastersMod
 
                 using (var stream = new MemoryStream(data))
                 {
-                    //DataSerializer.Deserialize<DisastersContainer.Data>(stream, DataSerializer.Mode.Memory);
+                    DataSerializer.Deserialize<DisastersContainer.Data>(stream, DataSerializer.Mode.Memory);
 
                     DataSerializer.Deserialize<EnhancedForestFire.Data>(stream, DataSerializer.Mode.Memory);
                     DataSerializer.Deserialize<EnhancedThunderstorm.Data>(stream, DataSerializer.Mode.Memory);

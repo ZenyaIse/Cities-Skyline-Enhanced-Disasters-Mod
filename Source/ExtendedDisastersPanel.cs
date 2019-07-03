@@ -117,8 +117,9 @@ namespace EnhancedDisastersMod
             }
 
             WaterSimulation ws = Singleton<WaterSimulation>.instance;
-            for (int i = 0; i < ws.m_waterWaves.m_size; i++)
+            for (int i = ws.m_waterWaves.m_size; i >= 1; i--)
             {
+                //Debug.Log("ws.m_waterWaves.m_buffer[i-1].m_duration = " + ws.m_waterWaves.m_buffer[i - 1].m_duration.ToString());
                 Singleton<TerrainManager>.instance.WaterSimulation.ReleaseWaterWave((ushort)i);
             }
 
@@ -202,7 +203,7 @@ namespace EnhancedDisastersMod
             if (!isVisible) return;
 
             if (--Counter > 0) return;
-            Counter = 200;
+            Counter = 10;
 
             EnhancedDisastersManager edm = Singleton<EnhancedDisastersManager>.instance;
             int disasterCount = edm.container.AllDisasters.Count;
