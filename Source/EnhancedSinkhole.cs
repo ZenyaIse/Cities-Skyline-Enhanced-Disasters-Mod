@@ -41,7 +41,7 @@ namespace EnhancedDisastersMod
             BaseOccurrencePerYear = 1.5f; // When groundwater is full
             ProbabilityDistribution = ProbabilityDistributions.Uniform;
 
-            calmDays = 30;
+            calmDays = 10;
             probabilityWarmupDays = 0;
             intensityWarmupDays = 0;
         }
@@ -55,6 +55,11 @@ namespace EnhancedDisastersMod
             }
 
             return base.GetProbabilityTooltip();
+        }
+
+        public override void OnDisasterCreated(byte intensity)
+        {
+            groundwaterAmount = 0;
         }
 
         protected override void onSimulationFrame_local()

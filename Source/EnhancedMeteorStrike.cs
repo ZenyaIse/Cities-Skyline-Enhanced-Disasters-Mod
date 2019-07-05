@@ -160,7 +160,7 @@ namespace EnhancedDisastersMod
         {
             DType = DisasterType.MeteorStrike;
             OccurrenceAreaAfterUnlock = OccurrenceAreas.UnlockedAreas;
-            BaseOccurrencePerYear = 5.0f;
+            BaseOccurrencePerYear = 10.0f;
             ProbabilityDistribution = ProbabilityDistributions.Uniform;
 
             meteorEvents = new MeteorEvent[] {

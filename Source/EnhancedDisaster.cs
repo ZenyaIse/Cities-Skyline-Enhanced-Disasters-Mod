@@ -41,11 +41,11 @@ namespace EnhancedDisastersMod
         protected const uint randomizerRange = 67108864u;
 
         // Cooldown variables
-        protected int calmDays = 7;
+        protected int calmDays = 0;
         protected int calmCounter = 0;
-        protected int probabilityWarmupDays = 7;
+        protected int probabilityWarmupDays = 0;
         protected int probabilityWarmupCounter = 0;
-        protected int intensityWarmupDays = 7;
+        protected int intensityWarmupDays = 0;
         protected int intensityWarmupCounter = 0;
 
         // Disaster properties
@@ -136,7 +136,7 @@ namespace EnhancedDisastersMod
                 intensity = scaleIntensity(intensity);
                 startDisaster(intensity);
 
-                calmCounter = (int)(framesPerDay * calmDays);
+                calmCounter = (int)(framesPerDay * calmDays * intensity / 100);
                 probabilityWarmupCounter = (int)(framesPerDay * probabilityWarmupDays);
                 intensityWarmupCounter = (int)(framesPerDay * intensityWarmupDays);
             }

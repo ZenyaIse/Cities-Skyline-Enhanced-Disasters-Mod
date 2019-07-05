@@ -41,7 +41,7 @@ namespace EnhancedDisastersMod
             BaseOccurrencePerYear = 1.5f;
             ProbabilityDistribution = ProbabilityDistributions.PowerLow;
 
-            calmDays = 360;
+            calmDays = 360 * 2;
             probabilityWarmupDays = 180;
             intensityWarmupDays = 180;
         }

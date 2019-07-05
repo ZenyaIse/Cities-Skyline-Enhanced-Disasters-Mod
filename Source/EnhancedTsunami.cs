@@ -50,7 +50,7 @@ namespace EnhancedDisastersMod
             {
                 probabilityWarmupDays = (int)(360 * value);
                 intensityWarmupDays = probabilityWarmupDays / 2;
-                calmDays = probabilityWarmupDays / 5;
+                calmDays = probabilityWarmupDays / 2;
             }
         }
 
@@ -67,6 +67,12 @@ namespace EnhancedDisastersMod
         public override void CopySettings(EnhancedDisaster disaster)
         {
             base.CopySettings(disaster);
+
+            EnhancedTsunami d = disaster as EnhancedTsunami;
+            if (d != null)
+            {
+                WarmupYears = d.WarmupYears;
+            }
         }
     }
 }
