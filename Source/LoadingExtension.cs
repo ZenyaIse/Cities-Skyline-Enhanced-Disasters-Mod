@@ -20,7 +20,6 @@ namespace EnhancedDisastersMod
         private void setDisasterProperties()
         {
             int prefabsCount = PrefabCollection<DisasterInfo>.PrefabCount();
-            Debug.Log("Disaster prefabsCount = " + prefabsCount);
 
             for (uint i = 0; i < prefabsCount; i++)
             {

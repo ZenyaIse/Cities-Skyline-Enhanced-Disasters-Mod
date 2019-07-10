@@ -77,16 +77,6 @@ namespace EnhancedDisastersMod
             }
         }
 
-        protected override void onSimulationFrame_local()
-        {
-            if (aftershocksCount > 0)
-            {
-                calmCounter = 0;
-                probabilityWarmupCounter = 0;
-                intensityWarmupCounter = 0;
-            }
-        }
-
         public override string GetProbabilityTooltip()
         {
             if (aftershocksCount > 0)
@@ -120,7 +110,7 @@ namespace EnhancedDisastersMod
                 aftershockMaxIntensity = (byte)(10 + (intensity - 10) * 3 / 4);
                 if (intensity > 20)
                 {
-                    aftershocksCount = (byte)(1 + Singleton<SimulationManager>.instance.m_randomizer.Int32((uint)intensity / 30));
+                    aftershocksCount = (byte)(1 + Singleton<SimulationManager>.instance.m_randomizer.Int32(1 + (uint)intensity / 20));
                 }
             }
             else
@@ -129,7 +119,14 @@ namespace EnhancedDisastersMod
                 aftershockMaxIntensity = (byte)(10 + (aftershockMaxIntensity - 10) * 3 / 4);
             }
 
-            Debug.Log(string.Format(">>> EnhancedDisastersMod: {0} aftershocks are still going to happen.", aftershocksCount));
+            if (aftershocksCount > 0)
+            {
+                calmCounter = (int)(framesPerDay * 15);
+                probabilityWarmupCounter = 0;
+                intensityWarmupCounter = 0;
+
+                Debug.Log(string.Format(">>> EnhancedDisastersMod: {0} aftershocks are still going to happen.", aftershocksCount));
+            }
         }
 
         protected override bool findTarget(DisasterInfo disasterInfo, out Vector3 targetPosition, out float angle)

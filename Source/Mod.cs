@@ -11,7 +11,7 @@ namespace EnhancedDisastersMod
     {
         public static string ModNameEng = "More Natural Disasters";
         public static string LogMsgPrefix = ">>> " + ModNameEng + ": ";
-        public static string Version = "2019/6/29";
+        public static string Version = "2019/7/10";
 
         private bool freezeUI = false;
 

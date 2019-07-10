@@ -119,7 +119,6 @@ namespace EnhancedDisastersMod
             WaterSimulation ws = Singleton<WaterSimulation>.instance;
             for (int i = ws.m_waterWaves.m_size; i >= 1; i--)
             {
-                //Debug.Log("ws.m_waterWaves.m_buffer[i-1].m_duration = " + ws.m_waterWaves.m_buffer[i - 1].m_duration.ToString());
                 Singleton<TerrainManager>.instance.WaterSimulation.ReleaseWaterWave((ushort)i);
             }
 
@@ -129,11 +128,19 @@ namespace EnhancedDisastersMod
                 sb.AppendLine(dm.m_disasters.m_buffer[i].Info.name + " flags: " + dm.m_disasters.m_buffer[i].m_flags.ToString());
                 if ((dm.m_disasters.m_buffer[i].m_flags & (DisasterData.Flags.Emerging | DisasterData.Flags.Active | DisasterData.Flags.Clearing)) != DisasterData.Flags.None)
                 {
-                    sb.AppendLine("Trying to cancel " +  dm.m_disasters.m_buffer[i].Info.name);
-                    dm.m_disasters.m_buffer[i].m_flags = ((dm.m_disasters.m_buffer[i].m_flags & ~(DisasterData.Flags.Emerging | DisasterData.Flags.Active | DisasterData.Flags.Clearing)) | DisasterData.Flags.Finished);
+                    if (isDisasterCanBeStopped(dm.m_disasters.m_buffer[i].Info.m_disasterAI))
+                    {
+                        sb.AppendLine("Trying to cancel " + dm.m_disasters.m_buffer[i].Info.name);
+                        dm.m_disasters.m_buffer[i].m_flags = ((dm.m_disasters.m_buffer[i].m_flags & ~(DisasterData.Flags.Emerging | DisasterData.Flags.Active | DisasterData.Flags.Clearing)) | DisasterData.Flags.Finished);
+                    }
                 }
             }
             Debug.Log(sb.ToString());
+        }
+
+        private bool isDisasterCanBeStopped(DisasterAI ai)
+        {
+            return (ai as ThunderStormAI != null) || (ai as SinkholeAI != null) || (ai as TornadoAI != null) || (ai as EarthquakeAI != null) || (ai as MeteorStrikeAI != null);
         }
 
         private void Btn_eventClick(UIComponent component, UIMouseEventParameter eventParam)

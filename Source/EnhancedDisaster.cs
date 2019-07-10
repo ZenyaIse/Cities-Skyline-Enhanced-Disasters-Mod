@@ -134,11 +134,12 @@ namespace EnhancedDisastersMod
             {
                 byte intensity = getRandomIntensity();
                 intensity = scaleIntensity(intensity);
-                startDisaster(intensity);
 
                 calmCounter = (int)(framesPerDay * calmDays * intensity / 100);
                 probabilityWarmupCounter = (int)(framesPerDay * probabilityWarmupDays);
                 intensityWarmupCounter = (int)(framesPerDay * intensityWarmupDays);
+
+                startDisaster(intensity);
             }
         }
 
@@ -428,7 +429,7 @@ namespace EnhancedDisastersMod
             {
                 for (int j = 0; j < 5; j++)
                 {
-                    if (IsUnlocked(i, j))
+                    if (isUnlocked(i, j))
                     {
                         continue;
                     }
@@ -441,19 +442,19 @@ namespace EnhancedDisastersMod
                         float maxZ;
                         gam.GetAreaBounds(j, i, out minX, out minZ, out maxX, out maxZ);
                         float minimumEdgeDistance = 100f;
-                        if (IsUnlocked(j - 1, i))
+                        if (isUnlocked(j - 1, i))
                         {
                             minX += minimumEdgeDistance;
                         }
-                        if (IsUnlocked(j, i - 1))
+                        if (isUnlocked(j, i - 1))
                         {
                             minZ += minimumEdgeDistance;
                         }
-                        if (IsUnlocked(j + 1, i))
+                        if (isUnlocked(j + 1, i))
                         {
                             maxX -= minimumEdgeDistance;
                         }
-                        if (IsUnlocked(j, i + 1))
+                        if (isUnlocked(j, i + 1))
                         {
                             maxZ -= minimumEdgeDistance;
                         }
@@ -476,7 +477,7 @@ namespace EnhancedDisastersMod
             return false;
         }
 
-        public bool IsUnlocked(int x, int z)
+        private bool isUnlocked(int x, int z)
         {
             return x >= 0 && z >= 0 && x < 5 && z < 5 && Singleton<GameAreaManager>.instance.m_areaGrid[z * 5 + x] != 0;
         }
