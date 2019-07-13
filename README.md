@@ -23,7 +23,7 @@ Default settings
 ## Thunderstorm
 
 Features
-* Occurs mainly in thunderstorm season.
+* Occurs mainly in the thunderstorm season.
 * Probability is higher during rain.
 
 Unlocks
@@ -43,7 +43,7 @@ Features
 * The longer and heavier the rainfall, the higher the probability. Imagine an underground reservour which is filling up during rain and emptying after rain stops.
 
 Unlocks
-* From Milestone 4: Tiny Town (can occur only inside your unlocked areas)
+* From Milestone 4: Tiny Town (can occur only inside of your unlocked areas)
 
 Default settings
 * Maximum probability after a long heavy rainfall: 1.5 times/year
@@ -53,8 +53,9 @@ Default settings
 ## Tornado
 
 Features
-* Occurs mainly in tornado season.
+* Occurs mainly in the tornado season.
 * Do not occur during fog (when the wind is weak).
+* Cannot occur too often (there is a calm period after every tornado).
 * Small tornadoes occur more often than big ones.
 
 Unlocks
@@ -62,14 +63,15 @@ Unlocks
 
 Default settings
 * Tornado season peak: May
-* Probability in the season peak: 2 times/year
+* Probability in the season peak: 1.5 times/year
+* Calm period after a big tornado: 2 years (depends on the intensity of the last tornado)
 
 
 ## Tsunami
 
 Features
 * Probability slowly increases with time.
-* Cannot occur too often (there is long calm period after each tsunami).
+* Cannot occur too often (there is a long calm period after every tsunami).
 * Small tsunamies occur more often than big ones.
 
 Unlocks
@@ -77,28 +79,28 @@ Unlocks
 
 Default settings
 * Maximum probability after a long time: 1 times/year
-* Charge period during wich probability increases: 5 years
-* Calm period after tsunami: 1 year (automatically set as 1/5 of the charge period)
+* Charge period during wich probability increases: 4 years
+* Calm period after a big tsunami: 4 years (depends on the intensity of the last tsunami)
 
 
 ## Earthquake
 
 Features
 * Probability slowly increases with time.
-* Cannot occur too often (there is long calm period after each earthquake), excluding aftershocks.
+* Cannot occur too often (there is a long calm period after each earthquake), excluding aftershocks.
 * Small earthquakes occur more often than big ones (Gutenberg–Richter law distribution for earthquakes is used).
 * One or several aftershocks can occur after a big earthquake (may take several months to calm down).
 * Aftershocks strike the same place as the main earthquake.
-* Every following aftershock is weaker than the previous one.
+* Maximum intensity of every following aftershock is weaker than the previous one.
 * No cracks appear (too destructive).
 
 Unlocks
-* From Milestone 6: Busy Town (can occur only inside your unlocked areas)
+* From Milestone 6: Busy Town (can occur only inside of your unlocked areas)
 
 Default settings
 * Maximum probability after a long time: 1 times/year
 * Charge period during wich probability increases: 3 years
-* Calm period after earthquake: 1 year (automatically set as 1/3 of the charge period)
+* Calm period after a big earthquake: 3 years (depends on the intensity of the last earthquake)
 * Aftershocks enabled
 
 
@@ -106,21 +108,21 @@ Default settings
 
 Features
 * There are three meteoroid streams periodically approaching the Earth.
-  * Meteoroid stream 1: period 9 years, maximum size 100
-  * Meteoroid stream 2: period 5 years, maximum size 50
-  * Meteoroid stream 3: period 2 years, maximum size 30
+  * Long-periodical meteoroid stream: period 9 years, maximum size 100
+  * Medium-periodical meteoroid stream: period 5 years, maximum size 50
+  * Short-periodical meteoroid stream: period 2 years, maximum size 30
 * When a meteoroid stream approaches the Earth, there is a chance of a meteor strike.
 
 Unlocks
 * From Milestone 6: Busy Town (can occur only inside your unlocked areas)
 
 Default settings
-* Peak probability when a meteoroid stream is approaching: 5 times/year (per meteoroid stream). Cumulative.
+* Peak probability when a meteoroid stream is approaching: 10 times/year (per meteoroid stream).
 
 
 ## Disasters info panel
 
-Shows current probabilities and maximum intesity values for all disasters. Some detailed info can be seen in toolips by mouseover.
+Shows the current probabilities and maximum intesity values for all disasters. Some detailed info can be seen in toolips by mouseover.
 
 Also contains the Emergency Button (see below).
 
@@ -129,7 +131,7 @@ Show / hide the disasters info panel by clicking the "Lightning" button at the t
 
 ## Emergency Button
 
-One of the most annoying thing about disasters is that they soullessly destroy the world you wholeheartedly created. To save your most valuable creation from destruction, just press the Emergency Button at the bottom of the disasters info panel - this stops all currently occuring disasters, including falling meteors and approaching tsunami waves.
+One of the most annoying thing about disasters is that they soullessly destroy the world you wholeheartedly created. To save your most valuable creation from destruction, just press the Emergency Button at the bottom of the disasters info panel - this stops all currently occuring disasters, except tsunami waves.
 
 In the current version, there are no restrictions how many times you can press the Emergency Button.
 
@@ -146,6 +148,8 @@ Can be turned on/off in the mod options.
 
 
 ## Minor features
-* Maximum intensity for all disasters is set to the minimum (10) at the beginning of the game and gradually increases up to the maximum (100) until the city population reaches 20000.
+* Maximum intensity of all disasters is set to the minimum (10) at the beginning of the game and gradually increases up to the maximum (100) until the city population reaches 20000.
 * Duration of small intensity thunderstorms is decreased.
-* Meteoroid stream period and phase (next approaching time) are randomized at the beginning of the game.
+* Meteoroid streams period and phase (next approaching time) are randomized at the beginning of the game.
+
+All settings are stored in your game save file, so you can use different settings for each game.
