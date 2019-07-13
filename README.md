@@ -1,4 +1,4 @@
-# More Natural Disasters mod
+# Natural Disasters Overhaul mod
 
 Mod for Cities: Skylines
 

@@ -30,7 +30,7 @@ namespace EnhancedDisastersMod
 
             public void afterDeserializeLog(string className)
             {
-                Debug.Log(">>> EnhancedDisastersMod: " + className + " data loaded.");
+                Debug.Log(Mod.LogMsgPrefix + className + " data loaded.");
             }
         }
 

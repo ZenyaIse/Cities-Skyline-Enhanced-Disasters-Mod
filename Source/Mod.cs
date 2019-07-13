@@ -9,9 +9,9 @@ namespace EnhancedDisastersMod
 {
     public class Mod : IUserMod
     {
-        public static string ModNameEng = "More Natural Disasters";
+        public static string ModNameEng = "Natural Disasters Overhaul";
         public static string LogMsgPrefix = ">>> " + ModNameEng + ": ";
-        public static string Version = "2019/7/10";
+        public static string Version = "2019/7/13";
 
         private bool freezeUI = false;
 

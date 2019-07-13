@@ -44,7 +44,7 @@ namespace EnhancedDisastersMod
             }
             catch (Exception ex)
             {
-                Debug.Log(">>> EnhancedDisastersMod save error: " + ex.Message);
+                Debug.Log(Mod.LogMsgPrefix + "(save error) " + ex.Message);
             }
         }
 
@@ -56,7 +56,7 @@ namespace EnhancedDisastersMod
 
                 if (data == null)
                 {
-                    Debug.Log(">>> EnhancedDisastersMod: No saved data ");
+                    Debug.Log(Mod.LogMsgPrefix + "No saved data");
                     return;
                 }
 
@@ -75,7 +75,7 @@ namespace EnhancedDisastersMod
             }
             catch (Exception ex)
             {
-                Debug.Log(">>> EnhancedDisastersMod load error: " + ex.Message);
+                Debug.Log(Mod.LogMsgPrefix + "(load error) " + ex.Message);
             }
 
             Mod.UpdateUI();

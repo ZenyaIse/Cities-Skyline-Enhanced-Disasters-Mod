@@ -125,7 +125,7 @@ namespace EnhancedDisastersMod
                 probabilityWarmupCounter = 0;
                 intensityWarmupCounter = 0;
 
-                Debug.Log(string.Format(">>> EnhancedDisastersMod: {0} aftershocks are still going to happen.", aftershocksCount));
+                Debug.Log(string.Format(Mod.LogMsgPrefix + "{0} aftershocks are still going to happen.", aftershocksCount));
             }
         }
 
@@ -164,7 +164,7 @@ namespace EnhancedDisastersMod
 
             if (ai == null) return;
 
-            DebugLogger.Log(string.Format("EnhancedDisastersMod: m_crackLength = {0}, m_crackWidth = {1}", ai.m_crackLength, ai.m_crackWidth));
+            DebugLogger.Log(Mod.LogMsgPrefix + string.Format("m_crackLength = {0}, m_crackWidth = {1}", ai.m_crackLength, ai.m_crackWidth));
             ai.m_crackLength = 0;
             ai.m_crackWidth = 0;
         }
