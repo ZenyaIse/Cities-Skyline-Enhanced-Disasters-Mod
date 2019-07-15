@@ -133,12 +133,12 @@ namespace EnhancedDisastersMod
 
         public void CheckUnlocks()
         {
-            string currentMilestoneName = Singleton<UnlockManager>.instance.GetCurrentMilestone().name;
+            int milestoneNum = 99; // Unlock all disasters in case of error
 
-            int milestoneNum;
-            if (!int.TryParse(currentMilestoneName.Substring(9), out milestoneNum))
+            MilestoneInfo mi = Singleton<UnlockManager>.instance.GetCurrentMilestone();
+            if (mi != null)
             {
-                milestoneNum = 99; // Unlock all disasters if can not read the milestone number
+                int.TryParse(mi.name.Substring(9), out milestoneNum);
             }
 
             if (milestoneNum >= 3) container.ForestFire.Unlock();
