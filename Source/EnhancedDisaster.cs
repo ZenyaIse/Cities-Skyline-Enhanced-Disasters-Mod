@@ -150,6 +150,11 @@ namespace EnhancedDisastersMod
 
         public virtual string GetProbabilityTooltip()
         {
+            if (!unlocked)
+            {
+                return "Not unlocked yet";
+            }
+
             if (calmCounter > 0)
             {
                 return "No " + GetName() + " for another " + formatDate(calmCounter);
@@ -165,6 +170,11 @@ namespace EnhancedDisastersMod
 
         public virtual string GetIntensityTooltip()
         {
+            if (!unlocked)
+            {
+                return "Not unlocked yet";
+            }
+
             if (calmCounter > 0)
             {
                 return "No " + GetName() + " for another " + formatDate(calmCounter);

@@ -48,6 +48,11 @@ namespace EnhancedDisastersMod
 
         public override string GetProbabilityTooltip()
         {
+            if (!unlocked)
+            {
+                return "Not unlocked yet";
+            }
+
             if (calmCounter == 0)
             {
                 int groundWaterPercent = (int)(100 * groundwaterAmount / GroundwaterCapacity);

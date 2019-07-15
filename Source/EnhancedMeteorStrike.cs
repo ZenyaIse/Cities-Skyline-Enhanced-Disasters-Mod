@@ -292,6 +292,11 @@ namespace EnhancedDisastersMod
 
         public override string GetProbabilityTooltip()
         {
+            if (!unlocked)
+            {
+                return "Not unlocked yet";
+            }
+
             string result = "";
 
             for (int i = 0; i < meteorEvents.Length; i++)

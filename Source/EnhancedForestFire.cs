@@ -63,11 +63,18 @@ namespace EnhancedDisastersMod
 
         public override string GetProbabilityTooltip()
         {
+            string tooltip = "";
+
+            if (!unlocked)
+            {
+                tooltip = "Not unlocked yet (occurs only outside of your area)." + Environment.NewLine;
+            }
+
             if (calmCounter == 0)
             {
                 if (noRainFramesCount == 0)
                 {
-                    return "No " + GetName() + " during rain.";
+                    return tooltip + "No " + GetName() + " during rain.";
                 }
                 else
                 {
@@ -75,10 +82,10 @@ namespace EnhancedDisastersMod
 
                     if (daysWithoutRain >= WarmupDays)
                     {
-                        return "Maximum because there was no rain for more than " + WarmupDays.ToString() + " days.";
+                        return tooltip + "Maximum because there was no rain for more than " + WarmupDays.ToString() + " days.";
                     }
 
-                    return "Increasing because there was no rain for " + daysWithoutRain.ToString() + " days.";
+                    return tooltip + "Increasing because there was no rain for " + daysWithoutRain.ToString() + " days.";
                 }
             }
 
