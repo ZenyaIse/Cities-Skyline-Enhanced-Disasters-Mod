@@ -246,14 +246,16 @@ namespace EnhancedDisastersMod
 
         public override byte GetMaximumIntensity()
         {
-            byte result = 10;
+            byte intensity = 10;
 
             for (int i = 0; i < meteorEvents.Length; i++)
             {
-                result = Math.Max(result, meteorEvents[i].GetActualMaxIntensity());
+                intensity = Math.Max(intensity, meteorEvents[i].GetActualMaxIntensity());
             }
 
-            return scaleIntensity(result);
+            intensity = scaleByPopulation(intensity);
+
+            return intensity;
         }
 
         public override void OnDisasterCreated(byte intensity)

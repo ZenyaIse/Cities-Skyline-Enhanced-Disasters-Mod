@@ -188,7 +188,6 @@ namespace EnhancedDisastersMod
                 if (!freezeUI) c.MeteorStrike.Enabled = isChecked;
             });
 
-            //UIHelperBase advancedSettingsGroup = helper.AddGroup("Advanced settings");
             helper.AddGroup(" "); // Adds horizontal line
 
             #region ForestFire

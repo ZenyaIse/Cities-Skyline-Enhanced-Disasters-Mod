@@ -59,7 +59,7 @@ Features
 * Small tornadoes occur more often than big ones.
 
 Unlocks
-* From Milestone 5: Boom Town (can occur only inside your unlocked areas)
+* From Milestone 5: Boom Town (can occur only inside of your unlocked areas)
 
 Default settings
 * Tornado season peak: May
@@ -99,7 +99,7 @@ Unlocks
 
 Default settings
 * Maximum probability after a long time: 1 times/year
-* Charge period during wich probability increases: 3 years
+* Charge period during which probability increases: 3 years
 * Calm period after a big earthquake: 3 years (depends on the intensity of the last earthquake)
 * Aftershocks enabled
 
@@ -109,7 +109,7 @@ Default settings
 Features
 * There are three meteoroid streams periodically approaching the Earth.
   * Long-periodical meteoroid stream: period 9 years, maximum size 100
-  * Medium-periodical meteoroid stream: period 5 years, maximum size 50
+  * Medium-periodical meteoroid stream: period 5 years, maximum size 70
   * Short-periodical meteoroid stream: period 2 years, maximum size 30
 * When a meteoroid stream approaches the Earth, there is a chance of a meteor strike.
 

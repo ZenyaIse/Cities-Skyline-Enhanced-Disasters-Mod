@@ -77,7 +77,13 @@ namespace EnhancedDisastersMod
 
         public virtual byte GetMaximumIntensity()
         {
-            return scaleIntensity(100);
+            byte intensity = 100;
+
+            intensity = scaleByWarmups(intensity);
+
+            intensity = scaleByPopulation(intensity);
+
+            return intensity;
         }
 
         public void OnSimulationFrame()
@@ -120,20 +126,17 @@ namespace EnhancedDisastersMod
                 intensityWarmupCounter--;
             }
 
-            float occurrencePerYear = getCurrentOccurrencePerYear_local();
+            float occurrencePerYear = GetCurrentOccurrencePerYear();
 
             if (occurrencePerYear == 0)
             {
                 return;
             }
 
-            occurrencePerYear = scaleProbability(occurrencePerYear);
-
             SimulationManager sm = Singleton<SimulationManager>.instance;
             if (sm.m_randomizer.Int32(randomizerRange) < (uint)(randomizerRange * occurrencePerYear / framesPerYear))
             {
-                byte intensity = getRandomIntensity();
-                intensity = scaleIntensity(intensity);
+                byte intensity = getRandomIntensity(GetMaximumIntensity());
 
                 calmCounter = (int)(framesPerDay * calmDays * intensity / 100);
                 probabilityWarmupCounter = (int)(framesPerDay * probabilityWarmupDays);
@@ -210,9 +213,9 @@ namespace EnhancedDisastersMod
             return BaseOccurrencePerYear;
         }
 
-        protected virtual byte getRandomIntensity()
+        protected virtual byte getRandomIntensity(byte maxIntensity)
         {
-            int intensity;
+            byte intensity;
 
             if (ProbabilityDistribution == ProbabilityDistributions.PowerLow)
             {
@@ -220,7 +223,7 @@ namespace EnhancedDisastersMod
 
                 // See Gutenberg–Richter law.
                 // a, b = 0.11
-                intensity = (int)(10 * (0.11 - Math.Log10(randomValue)) / 0.11);
+                intensity = (byte)(10 * (0.11 - Math.Log10(randomValue)) / 0.11);
 
                 if (intensity > 100)
                 {
@@ -229,15 +232,19 @@ namespace EnhancedDisastersMod
             }
             else
             {
-                intensity = Singleton<SimulationManager>.instance.m_randomizer.Int32(10, 100);
+                intensity = (byte)Singleton<SimulationManager>.instance.m_randomizer.Int32(10, 100);
             }
 
-            return (byte)intensity;
+            if (maxIntensity < 100)
+            {
+                intensity = (byte)(10 + (intensity - 10) * maxIntensity / 100);
+            }
+
+            return intensity;
         }
 
-        protected byte scaleIntensity(byte intensity)
+        protected byte scaleByWarmups(byte intensity)
         {
-            // Warmup period
             if (intensityWarmupCounter > 0 && intensityWarmupDays > 0)
             {
                 if (intensityWarmupCounter >= framesPerDay * intensityWarmupDays)
@@ -250,7 +257,11 @@ namespace EnhancedDisastersMod
                 }
             }
 
-            // Scale by population
+            return intensity;
+        }
+
+        protected byte scaleByPopulation(byte intensity)
+        {
             if (Singleton<EnhancedDisastersManager>.instance.container.ScaleMaxIntensityWithPopilation)
             {
                 int population = getPopulation();

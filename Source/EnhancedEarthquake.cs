@@ -146,7 +146,7 @@ namespace EnhancedDisastersMod
             }
         }
 
-        protected override byte getRandomIntensity()
+        protected override byte getRandomIntensity(byte maxIntensity)
         {
             if (aftershocksCount > 0)
             {
@@ -154,7 +154,7 @@ namespace EnhancedDisastersMod
             }
             else
             {
-                return base.getRandomIntensity();
+                return base.getRandomIntensity(maxIntensity);
             }
         }
 
