@@ -4,6 +4,7 @@ using System.Xml.Serialization;
 using System.Collections.Generic;
 using ColossalFramework;
 using ColossalFramework.IO;
+using UnityEngine;
 
 namespace EnhancedDisastersMod
 {
@@ -17,6 +18,8 @@ namespace EnhancedDisastersMod
                 s.WriteBool(c.ScaleMaxIntensityWithPopilation);
                 s.WriteBool(c.RecordDisasterEvents);
                 s.WriteBool(c.ShowDisasterPanelButton);
+                s.WriteFloat(c.ToggleButtonPos.x);
+                s.WriteFloat(c.ToggleButtonPos.y);
             }
 
             public void Deserialize(DataSerializer s)
@@ -25,11 +28,16 @@ namespace EnhancedDisastersMod
                 c.ScaleMaxIntensityWithPopilation = s.ReadBool();
                 c.RecordDisasterEvents = s.ReadBool();
                 c.ShowDisasterPanelButton = s.ReadBool();
+
+                if (s.version >= 1)
+                {
+                    c.ToggleButtonPos = new Vector3(s.ReadFloat(), s.ReadFloat());
+                }
             }
 
             public void AfterDeserialize(DataSerializer s)
             {
-                Singleton<EnhancedDisastersManager>.instance.UpdateDisastersPanelBtnVisibility();
+                Singleton<EnhancedDisastersManager>.instance.UpdateDisastersPanelToggleBtn();
             }
         }
 
@@ -47,6 +55,7 @@ namespace EnhancedDisastersMod
         public bool ScaleMaxIntensityWithPopilation = true;
         public bool RecordDisasterEvents = false;
         public bool ShowDisasterPanelButton = true;
+        public Vector3 ToggleButtonPos = new Vector3(90, 62);
 
         [XmlIgnore]
         public List<EnhancedDisaster> AllDisasters = new List<EnhancedDisaster>();

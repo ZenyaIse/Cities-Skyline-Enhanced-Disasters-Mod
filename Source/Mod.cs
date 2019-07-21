@@ -11,7 +11,7 @@ namespace EnhancedDisastersMod
     {
         public static string ModNameEng = "Natural Disasters Overhaul";
         public static string LogMsgPrefix = ">>> " + ModNameEng + ": ";
-        public static string Version = "2019/7/15";
+        public static string Version = "2019/7/20";
 
         private bool freezeUI = false;
 
@@ -407,7 +407,7 @@ namespace EnhancedDisastersMod
             {
                 if (!freezeUI) c.ShowDisasterPanelButton = isChecked;
 
-                Singleton<EnhancedDisastersManager>.instance.UpdateDisastersPanelBtnVisibility();
+                Singleton<EnhancedDisastersManager>.instance.UpdateDisastersPanelToggleBtn();
             });
 
             helper.AddSpace(20);

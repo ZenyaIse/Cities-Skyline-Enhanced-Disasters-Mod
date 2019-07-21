@@ -171,11 +171,28 @@ namespace EnhancedDisastersMod
             toggleButton.width = 30f;
             toggleButton.height = 30f;
             toggleButton.absolutePosition = new Vector3(90, 62);
-            toggleButton.tooltip = "Extended Disasters";
+            toggleButton.tooltip = "Extended Disasters (drag by right-click)";
             toggleButton.eventClick += ToggleButton_eventClick;
             toggleButton.isVisible = container.ShowDisasterPanelButton;
+            toggleButton.eventMouseMove += ToggleButton_eventMouseMove;
+
+            UpdateDisastersPanelToggleBtn();
 
             UIInput.eventProcessKeyEvent += UIInput_eventProcessKeyEvent;
+        }
+
+        private void ToggleButton_eventMouseMove(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            if (eventParam.buttons.IsFlagSet(UIMouseButton.Right))
+            {
+                var ratio = UIView.GetAView().ratio;
+                toggleButton.position = new Vector3(
+                    toggleButton.position.x + (eventParam.moveDelta.x * ratio),
+                    toggleButton.position.y + (eventParam.moveDelta.y * ratio),
+                    toggleButton.position.z);
+
+                container.ToggleButtonPos = toggleButton.absolutePosition;
+            }
         }
 
         private void UIInput_eventProcessKeyEvent(EventType eventType, KeyCode keyCode, EventModifiers modifiers)
@@ -207,11 +224,16 @@ namespace EnhancedDisastersMod
             }
         }
 
-        public void UpdateDisastersPanelBtnVisibility()
+        public void UpdateDisastersPanelToggleBtn()
         {
             if (toggleButton != null && container != null)
             {
                 toggleButton.isVisible = container.ShowDisasterPanelButton;
+
+                if (container.ToggleButtonPos.x > 10 && container.ToggleButtonPos.y > 10)
+                {
+                    toggleButton.absolutePosition = container.ToggleButtonPos;
+                }
             }
         }
     }
