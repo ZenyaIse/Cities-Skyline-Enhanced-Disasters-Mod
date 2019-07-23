@@ -138,10 +138,6 @@ namespace EnhancedDisastersMod
             {
                 byte intensity = getRandomIntensity(GetMaximumIntensity());
 
-                calmCounter = (int)(framesPerDay * calmDays * intensity / 100);
-                probabilityWarmupCounter = (int)(framesPerDay * probabilityWarmupDays);
-                intensityWarmupCounter = (int)(framesPerDay * intensityWarmupDays);
-
                 startDisaster(intensity);
             }
         }
@@ -324,14 +320,16 @@ namespace EnhancedDisastersMod
 
         }
 
-        public virtual void OnDisasterCreated(byte intensity)
-        {
+        //public virtual void OnDisasterCreated(byte intensity)
+        //{
             // Empty
-        }
+        //}
 
         public virtual void OnDisasterStarted(byte intensity)
         {
-            // Empty
+            calmCounter = (int)(framesPerDay * calmDays * intensity / 100);
+            probabilityWarmupCounter = (int)(framesPerDay * probabilityWarmupDays);
+            intensityWarmupCounter = (int)(framesPerDay * intensityWarmupDays);
         }
 
         protected virtual void disasterStarting(DisasterInfo disasterInfo)

@@ -97,7 +97,7 @@ namespace EnhancedDisastersMod
             return base.getCurrentOccurrencePerYear_local();
         }
 
-        public override void OnDisasterCreated(byte intensity)
+        public override void OnDisasterStarted(byte intensity)
         {
             if (!AftershocksEnabled)
             {
@@ -127,6 +127,8 @@ namespace EnhancedDisastersMod
 
                 Debug.Log(string.Format(Mod.LogMsgPrefix + "{0} aftershocks are still going to happen.", aftershocksCount));
             }
+
+            base.OnDisasterStarted(intensity);
         }
 
         protected override bool findTarget(DisasterInfo disasterInfo, out Vector3 targetPosition, out float angle)

@@ -62,17 +62,17 @@ namespace EnhancedDisastersMod
             }
         }
 
-        public void OnDisasterCreated(DisasterAI dai, byte intensity)
-        {
-            foreach (EnhancedDisaster ed in container.AllDisasters)
-            {
-                if (ed.CheckDisasterAIType(dai))
-                {
-                    ed.OnDisasterCreated(intensity);
-                    return;
-                }
-            }
-        }
+        //public void OnDisasterCreated(DisasterAI dai, byte intensity)
+        //{
+        //    foreach (EnhancedDisaster ed in container.AllDisasters)
+        //    {
+        //        if (ed.CheckDisasterAIType(dai))
+        //        {
+        //            ed.OnDisasterCreated(intensity);
+        //            return;
+        //        }
+        //    }
+        //}
 
         public void OnDisasterStarted(DisasterAI dai, byte intensity)
         {

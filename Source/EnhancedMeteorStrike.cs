@@ -258,7 +258,7 @@ namespace EnhancedDisastersMod
             return intensity;
         }
 
-        public override void OnDisasterCreated(byte intensity)
+        public override void OnDisasterStarted(byte intensity)
         {
             int meteorIndex = -1;
             float maxProb = 0;
@@ -280,6 +280,8 @@ namespace EnhancedDisastersMod
             }
 
             meteorEvents[meteorIndex].OnMeteorFallen();
+
+            base.OnDisasterStarted(intensity);
         }
 
         public override bool CheckDisasterAIType(object disasterAI)

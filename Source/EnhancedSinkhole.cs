@@ -62,9 +62,11 @@ namespace EnhancedDisastersMod
             return base.GetProbabilityTooltip();
         }
 
-        public override void OnDisasterCreated(byte intensity)
+        public override void OnDisasterStarted(byte intensity)
         {
             groundwaterAmount = 0;
+
+            base.OnDisasterStarted(intensity);
         }
 
         protected override void onSimulationFrame_local()

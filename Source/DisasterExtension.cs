@@ -8,8 +8,8 @@ namespace EnhancedDisastersMod
     {
         public override void OnDisasterCreated(ushort disasterID)
         {
-            DisasterData disasterData = Singleton<DisasterManager>.instance.m_disasters.m_buffer[disasterID];
-            Singleton<EnhancedDisastersManager>.instance.OnDisasterCreated(disasterData.Info.m_disasterAI, disasterData.m_intensity);
+            //DisasterData disasterData = Singleton<DisasterManager>.instance.m_disasters.m_buffer[disasterID];
+            //Singleton<EnhancedDisastersManager>.instance.OnDisasterCreated(disasterData.Info.m_disasterAI, disasterData.m_intensity);
         }
 
         public override void OnDisasterStarted(ushort disasterID)
