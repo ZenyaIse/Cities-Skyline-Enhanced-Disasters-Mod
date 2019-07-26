@@ -50,7 +50,7 @@ namespace EnhancedDisastersMod
             {
                 probabilityWarmupDays = (int)(360 * value);
                 intensityWarmupDays = probabilityWarmupDays / 2;
-                calmDays = probabilityWarmupDays / 2;
+                calmDays = probabilityWarmupDays;
             }
         }
 
