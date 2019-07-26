@@ -11,7 +11,7 @@ namespace EnhancedDisastersMod
     {
         public static string ModNameEng = "Natural Disasters Overhaul";
         public static string LogMsgPrefix = ">>> " + ModNameEng + ": ";
-        public static string Version = "2019/7/23";
+        public static string Version = "2019/7/26";
 
         private bool freezeUI = false;
 
@@ -391,7 +391,7 @@ namespace EnhancedDisastersMod
             });
             helper.AddSpace(20);
 
-            UI_ScaleMaxIntensityWithPopilation = (UICheckBox)helper.AddCheckbox("Scale max intensity with popilation", c.ScaleMaxIntensityWithPopilation, delegate (bool isChecked)
+            UI_ScaleMaxIntensityWithPopilation = (UICheckBox)helper.AddCheckbox("Scale max intensity with population", c.ScaleMaxIntensityWithPopilation, delegate (bool isChecked)
             {
                 if (!freezeUI) c.ScaleMaxIntensityWithPopilation = isChecked;
             });
