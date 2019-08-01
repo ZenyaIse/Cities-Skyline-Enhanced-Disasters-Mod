@@ -127,8 +127,10 @@ namespace EnhancedDisastersMod
 
                 Debug.Log(string.Format(Mod.LogMsgPrefix + "{0} aftershocks are still going to happen.", aftershocksCount));
             }
-
-            base.OnDisasterStarted(intensity);
+            else
+            {
+                base.OnDisasterStarted(intensity);
+            }
         }
 
         protected override bool findTarget(DisasterInfo disasterInfo, out Vector3 targetPosition, out float angle)
