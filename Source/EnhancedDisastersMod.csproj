@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>..\..\..\Harmony\net35\0Harmony.dll</HintPath>
+    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
@@ -53,6 +56,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DebugLogger.cs" />
+    <Compile Include="Patches\DestroyBuildings1Patch.cs" />
+    <Compile Include="Patches\DestroyBuildings2Patch.cs" />
     <Compile Include="DisasterExtension.cs" />
     <Compile Include="DisasterLogger.cs" />
     <Compile Include="DisastersContainer.cs" />
@@ -75,6 +80,7 @@
     <Compile Include="Mod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)"
