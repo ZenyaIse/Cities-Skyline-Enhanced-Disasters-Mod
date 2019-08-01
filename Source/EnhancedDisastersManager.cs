@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using System.Reflection;
+using UnityEngine;
 using ICities;
 using ColossalFramework;
 using ColossalFramework.UI;
+using Harmony;
 
 namespace EnhancedDisastersMod
 {
@@ -10,10 +12,12 @@ namespace EnhancedDisastersMod
         public DisastersContainer container;
         private ExtendedDisastersPanel dPanel;
         private UIButton toggleButton;
+        private HarmonyInstance harmony = HarmonyInstance.Create("EnhancedDisastersManager");
 
         private EnhancedDisastersManager()
         {
             ReadValuesFromFile();
+            harmony.PatchAll(Assembly.GetExecutingAssembly());
         }
 
         public void ReadValuesFromFile()
