@@ -74,6 +74,7 @@
     <Compile Include="Helper.cs" />
     <Compile Include="LoadingExtension.cs" />
     <Compile Include="OccurrenceAreas.cs" />
+    <Compile Include="Patches\DisasterHelpersModified.cs" />
     <Compile Include="ProbabilityDistributions.cs" />
     <Compile Include="SerializableDataExtension.cs" />
     <Compile Include="Threading.cs" />
