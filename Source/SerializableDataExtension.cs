@@ -10,7 +10,7 @@ namespace EnhancedDisastersMod
     public class SerializableDataExtension : ISerializableDataExtension
     {
         public const string DataID = "EnhancedDisastersMod";
-        public const uint DataVersion = 1;
+        public const uint DataVersion = 2;
         private ISerializableData serializableData;
 
         public void OnCreated(ISerializableData serializedData)

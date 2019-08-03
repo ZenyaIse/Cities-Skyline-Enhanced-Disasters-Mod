@@ -18,6 +18,7 @@ namespace EnhancedDisastersMod
 
                 s.WriteInt8(d.aftershocksCount);
                 s.WriteInt8(d.aftershockMaxIntensity);
+                s.WriteInt8(d.mainStrikeIntensity);
 
                 s.WriteFloat(d.lastTargetPosition.x);
                 s.WriteFloat(d.lastTargetPosition.y);
@@ -34,6 +35,10 @@ namespace EnhancedDisastersMod
 
                 d.aftershocksCount = (byte)s.ReadInt8();
                 d.aftershockMaxIntensity = (byte)s.ReadInt8();
+                if (s.version >= 2)
+                {
+                    d.mainStrikeIntensity = (byte)s.ReadInt8();
+                }
 
                 d.lastTargetPosition = new Vector3(s.ReadFloat(), s.ReadFloat(), s.ReadFloat());
                 d.lastAngle = s.ReadFloat();
@@ -48,6 +53,7 @@ namespace EnhancedDisastersMod
         public bool AftershocksEnabled = true;
         private byte aftershocksCount = 0;
         private byte aftershockMaxIntensity = 0;
+        private byte mainStrikeIntensity = 0;
         private Vector3 lastTargetPosition = new Vector3();
         private float lastAngle = 0;
 
@@ -102,11 +108,13 @@ namespace EnhancedDisastersMod
             if (!AftershocksEnabled)
             {
                 aftershocksCount = 0;
+                base.OnDisasterStarted(intensity);
                 return;
             }
 
             if (aftershocksCount == 0)
             {
+                mainStrikeIntensity = intensity;
                 aftershockMaxIntensity = (byte)(10 + (intensity - 10) * 3 / 4);
                 if (intensity > 20)
                 {
@@ -129,7 +137,7 @@ namespace EnhancedDisastersMod
             }
             else
             {
-                base.OnDisasterStarted(intensity);
+                base.OnDisasterStarted(mainStrikeIntensity);
             }
         }
 
