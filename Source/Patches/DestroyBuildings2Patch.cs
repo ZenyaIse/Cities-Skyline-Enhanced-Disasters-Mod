@@ -1,6 +1,7 @@
 ﻿using System;
 using Harmony;
 using UnityEngine;
+using ICities;
 
 namespace EnhancedDisastersMod.Patches
 {
@@ -12,10 +13,33 @@ namespace EnhancedDisastersMod.Patches
         static bool Prefix(int seed, InstanceManager.Group group, Vector3 position, float preRadius, float removeRadius,
             float destructionRadiusMin, float destructionRadiusMax, float burnRadiusMin, float burnRadiusMax, float probability)
         {
-            DisasterHelpersModified.DestroyBuildings(seed, group, position, preRadius, removeRadius, destructionRadiusMin,
-                destructionRadiusMax, burnRadiusMin, burnRadiusMax, probability);
+            DisasterType dt = DisasterType.Empty;
 
-            return false;
+            if (probability == 0.02f)
+            {
+                dt = DisasterType.Earthquake;
+            }
+            else if (burnRadiusMin == 0 && burnRadiusMax == 0)
+            {
+                dt = DisasterType.Tornado;
+            }
+
+            if (dt == DisasterType.Earthquake)
+            {
+                DisasterHelpersModified.DestroyBuildings(seed, group, position, preRadius, removeRadius, destructionRadiusMin,
+                    destructionRadiusMax, burnRadiusMin, burnRadiusMax, 0.04f); // Orig = 0.02f
+
+                return false;
+            }
+            else if (dt == DisasterType.Tornado)
+            {
+                DisasterHelpersModified.DestroyBuildings(seed, group, position, preRadius, removeRadius, destructionRadiusMin,
+                    destructionRadiusMax, burnRadiusMin, burnRadiusMax, probability);
+
+                return false;
+            }
+
+            return true;
         }
     }
 }

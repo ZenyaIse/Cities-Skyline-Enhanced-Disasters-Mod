@@ -72,8 +72,58 @@ namespace EnhancedDisastersMod.Patches
                                 }
                                 else if (flag2)
                                 {
-                                    //BuildingInfo info3 = buildings.m_buffer[(int)num5].Info;
-                                    //info3.m_buildingAI.CollapseBuilding(num5, ref buildings.m_buffer[(int)num5], group, false, false, Mathf.RoundToInt(num9 * 255f));
+                                    BuildingInfo info3 = buildings.m_buffer[(int)num5].Info;
+                                    ItemClass.Level lvl = (ItemClass.Level)buildings.m_buffer[(int)num5].m_level;
+
+                                    float p = 0.5f;
+
+                                    if (info3.m_buildingAI as OfficeBuildingAI != null || info3.m_buildingAI as CommercialBuildingAI != null || info3.m_buildingAI as IndustrialBuildingAI != null)
+                                    {
+                                        switch (lvl)
+                                        {
+                                            case ItemClass.Level.Level1:
+                                                p = 1f;
+                                                break;
+                                            case ItemClass.Level.Level2:
+                                                p = 0.6f;
+                                                break;
+                                            case ItemClass.Level.Level3:
+                                                p = 0.2f;
+                                                break;
+                                        }
+                                    }
+                                    else if (info3.m_buildingAI as ResidentialBuildingAI != null)
+                                    {
+                                        switch (lvl)
+                                        {
+                                            case ItemClass.Level.Level1:
+                                                p = 1f;
+                                                break;
+                                            case ItemClass.Level.Level2:
+                                                p = 0.8f;
+                                                break;
+                                            case ItemClass.Level.Level3:
+                                                p = 0.6f;
+                                                break;
+                                            case ItemClass.Level.Level4:
+                                                p = 0.4f;
+                                                break;
+                                            case ItemClass.Level.Level5:
+                                                p = 0.2f;
+                                                break;
+                                        }
+                                    }
+
+                                    if ((flags & Building.Flags.Evacuating) == Building.Flags.Evacuating)
+                                    {
+                                        p -= 0.2f;
+                                    }
+
+                                    if ((float)randomizer.Int32(10000u) < p * 10000f)
+                                    {
+                                        Debug.Log("Destroyed: " + info3.name + " (" + info3.m_buildingAI.name + "), level: " + lvl.ToString());
+                                        info3.m_buildingAI.CollapseBuilding(num5, ref buildings.m_buffer[(int)num5], group, false, false, Mathf.RoundToInt(num9 * 255f));
+                                    }
                                 }
                                 else if (flag3 && (flags & Building.Flags.Collapsed) == Building.Flags.None && buildings.m_buffer[(int)num5].m_fireIntensity == 0)
                                 {
