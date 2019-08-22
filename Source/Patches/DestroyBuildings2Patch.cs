@@ -34,7 +34,7 @@ namespace EnhancedDisastersMod.Patches
             else if (dt == DisasterType.Tornado)
             {
                 DisasterHelpersModified.DestroyBuildings(seed, group, position, preRadius, removeRadius, destructionRadiusMin,
-                    destructionRadiusMax, burnRadiusMin, burnRadiusMax, probability);
+                    destructionRadiusMax, burnRadiusMin, burnRadiusMax, 0.5f); // Orig = 1.0f
 
                 return false;
             }

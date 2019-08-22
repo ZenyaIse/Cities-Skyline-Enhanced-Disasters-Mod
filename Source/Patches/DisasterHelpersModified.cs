@@ -7,7 +7,8 @@ namespace EnhancedDisastersMod.Patches
 {
     static class DisasterHelpersModified
     {
-        public static void DestroyBuildings(int seed, InstanceManager.Group group, Vector3 position, float preRadius, float removeRadius, float destructionRadiusMin, float destructionRadiusMax, float burnRadiusMin, float burnRadiusMax, float probability)
+        public static void DestroyBuildings(int seed, InstanceManager.Group group, Vector3 position, float preRadius, float removeRadius,
+            float destructionRadiusMin, float destructionRadiusMax, float burnRadiusMin, float burnRadiusMax, float probability)
         {
             int num = Mathf.Max((int)((position.x - preRadius - 72f) / 64f + 135f), 0);
             int num2 = Mathf.Max((int)((position.z - preRadius - 72f) / 64f + 135f), 0);
@@ -114,14 +115,22 @@ namespace EnhancedDisastersMod.Patches
                                         }
                                     }
 
+                                    // Large buildings are tougher
+                                    float s = Mathf.Sqrt(buildings.m_buffer[(int)num5].Length * buildings.m_buffer[(int)num5].Width);
+                                    if (s > 4)
+                                    {
+                                        p -= s / 16;
+                                    }
+
+                                    // Make shelters a little more useful
                                     if ((flags & Building.Flags.Evacuating) == Building.Flags.Evacuating)
                                     {
                                         p -= 0.2f;
                                     }
 
-                                    if ((float)randomizer.Int32(10000u) < p * 10000f)
+                                    if (p > 0 && (float)randomizer.Int32(10000u) < p * 10000f)
                                     {
-                                        Debug.Log("Destroyed: " + info3.name + " (" + info3.m_buildingAI.name + "), level: " + lvl.ToString());
+                                        //Debug.Log("Destroyed: " + info3.name + " (" + info3.m_buildingAI.name + "), level: " + lvl.ToString());
                                         info3.m_buildingAI.CollapseBuilding(num5, ref buildings.m_buffer[(int)num5], group, false, false, Mathf.RoundToInt(num9 * 255f));
                                     }
                                 }

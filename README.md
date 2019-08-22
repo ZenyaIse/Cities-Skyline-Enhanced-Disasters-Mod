@@ -57,6 +57,7 @@ Features
 * Do not occur during fog (when the wind is weak).
 * Cannot occur too often (there is a calm period after every tornado).
 * Small tornadoes occur more often than big ones.
+* New destruction system (see below).
 
 Unlocks
 * From Milestone 5: Boom Town (can occur only inside of your unlocked areas)
@@ -93,6 +94,7 @@ Features
 * Aftershocks strike the same place as the main earthquake.
 * Maximum intensity of every following aftershock is weaker than the previous one.
 * No cracks appear (too destructive).
+* New destruction system (see below).
 
 Unlocks
 * From Milestone 6: Busy Town (can occur only inside of your unlocked areas)
@@ -118,6 +120,16 @@ Unlocks
 
 Default settings
 * Peak probability when a meteoroid stream is approaching: 10 times/year (per meteoroid stream).
+
+
+## About new destruction system
+
+(Implemented for Earthquake and Tornado disasters)
+
+* Buildings of high levels or big size are more robust and have less probability to collapse.
+* Very large buildings do not collapse ever.
+* Evacuating buildings makes collapse probability even less (this makes shelters a little more useful).
+* Evacuated residential buildings of level 5 or commercial/industry buildings of level 3 do not collapse ever.
 
 
 ## Disasters info panel
