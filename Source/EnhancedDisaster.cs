@@ -36,8 +36,6 @@ namespace EnhancedDisastersMod
 
 
         // Constants
-        protected const float framesPerDay = 585.142f; // See m_timePerFrame from SimulationManager.Awake()
-        protected const float framesPerYear = framesPerDay * 365f;
         protected const uint randomizerRange = 67108864u;
 
         // Cooldown variables
@@ -106,6 +104,8 @@ namespace EnhancedDisastersMod
                 return;
             }
 
+            float framesPerDay = Helper.FramesPerDay;
+
             if (probabilityWarmupCounter > 0)
             {
                 if (probabilityWarmupCounter > framesPerDay * probabilityWarmupDays)
@@ -134,7 +134,7 @@ namespace EnhancedDisastersMod
             }
 
             SimulationManager sm = Singleton<SimulationManager>.instance;
-            if (sm.m_randomizer.Int32(randomizerRange) < (uint)(randomizerRange * occurrencePerYear / framesPerYear))
+            if (sm.m_randomizer.Int32(randomizerRange) < (uint)(randomizerRange * occurrencePerYear / (framesPerDay * 365)))
             {
                 byte intensity = getRandomIntensity(GetMaximumIntensity());
 
@@ -241,6 +241,8 @@ namespace EnhancedDisastersMod
 
         protected byte scaleByWarmups(byte intensity)
         {
+            float framesPerDay = Helper.FramesPerDay;
+
             if (intensityWarmupCounter > 0 && intensityWarmupDays > 0)
             {
                 if (intensityWarmupCounter >= framesPerDay * intensityWarmupDays)
@@ -272,6 +274,8 @@ namespace EnhancedDisastersMod
 
         private float scaleProbability(float probability)
         {
+            float framesPerDay = Helper.FramesPerDay;
+
             if (!unlocked && OccurrenceAreaBeforeUnlock == OccurrenceAreas.Nowhere)
             {
                 return 0;
@@ -308,7 +312,7 @@ namespace EnhancedDisastersMod
 
         protected string formatDate(int frames)
         {
-            int days = (int)(frames / framesPerDay);
+            int days = (int)(frames / Helper.FramesPerDay);
             return days.ToString() + " days";
         }
 
@@ -327,6 +331,8 @@ namespace EnhancedDisastersMod
 
         public virtual void OnDisasterStarted(byte intensity)
         {
+            float framesPerDay = Helper.FramesPerDay;
+
             calmCounter = (int)(framesPerDay * calmDays * intensity / 100);
             probabilityWarmupCounter = (int)(framesPerDay * probabilityWarmupDays);
             intensityWarmupCounter = (int)(framesPerDay * intensityWarmupDays);

@@ -69,7 +69,7 @@ namespace EnhancedDisastersMod
             {
                 SimulationManager sm = Singleton<SimulationManager>.instance;
 
-                float periodFrames = periodYears * framesPerYear;
+                float periodFrames = periodYears * Helper.FramesPerYear;
                 return new MeteorEvent(
                     name,
                     (int)(periodFrames + sm.m_randomizer.Int32((uint)(periodFrames * 0.1f)) - periodFrames * 0.05f),
@@ -87,7 +87,7 @@ namespace EnhancedDisastersMod
                     return 0;
                 }
 
-                float fallPeriod_half = framesPerDay * 30;
+                float fallPeriod_half = Helper.FramesPerDay * 30;
 
                 float framesDiffFromPeak = Mathf.Abs(FramesUntilNextEvent - fallPeriod_half);
 
@@ -100,7 +100,7 @@ namespace EnhancedDisastersMod
             {
                 if (!Enabled) return 1;
 
-                if (FramesUntilNextEvent < framesPerDay * 60)
+                if (FramesUntilNextEvent < Helper.FramesPerDay * 60)
                 {
                     return MaxIntensity;
                 }
@@ -130,6 +130,7 @@ namespace EnhancedDisastersMod
 
             public override string ToString()
             {
+                float framesPerYear = Helper.FramesPerYear;
                 return string.Format("Period {0} years, max intensity {1}, next meteor after {2} years",
                     PeriodFrames / framesPerYear, MaxIntensity, FramesUntilNextEvent / framesPerYear);
             }
@@ -142,6 +143,8 @@ namespace EnhancedDisastersMod
                 {
                     return Name + " already fallen.";
                 }
+
+                float framesPerDay = Helper.FramesPerDay;
 
                 if (FramesUntilNextEvent <= framesPerDay * 60)
                 {

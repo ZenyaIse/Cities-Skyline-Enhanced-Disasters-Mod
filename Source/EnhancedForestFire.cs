@@ -78,7 +78,7 @@ namespace EnhancedDisastersMod
                 }
                 else
                 {
-                    int daysWithoutRain = (int)(noRainFramesCount / framesPerDay);
+                    int daysWithoutRain = (int)(noRainFramesCount / Helper.FramesPerDay);
 
                     if (daysWithoutRain >= WarmupDays)
                     {
@@ -94,7 +94,7 @@ namespace EnhancedDisastersMod
 
         protected override float getCurrentOccurrencePerYear_local()
         {
-            float daysWithoutRain = noRainFramesCount / framesPerDay;
+            float daysWithoutRain = noRainFramesCount / Helper.FramesPerDay;
 
             return base.getCurrentOccurrencePerYear_local() * Math.Min(1f, daysWithoutRain / WarmupDays);
         }

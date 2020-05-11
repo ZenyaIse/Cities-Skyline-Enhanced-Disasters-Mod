@@ -71,6 +71,8 @@ namespace EnhancedDisastersMod
 
         protected override void onSimulationFrame_local()
         {
+            float framesPerDay = Helper.FramesPerDay;
+
             WeatherManager wm = Singleton<WeatherManager>.instance;
             if (wm.m_currentRain > 0)
             {

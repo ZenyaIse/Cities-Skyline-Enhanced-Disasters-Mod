@@ -129,7 +129,7 @@ namespace EnhancedDisastersMod
 
             if (aftershocksCount > 0)
             {
-                calmCounter = (int)(framesPerDay * 15);
+                calmCounter = (int)(Helper.FramesPerDay * 15);
                 probabilityWarmupCounter = 0;
                 intensityWarmupCounter = 0;
 
