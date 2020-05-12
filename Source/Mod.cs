@@ -44,6 +44,7 @@ namespace EnhancedDisastersMod
         private UISlider UI_Earthquake_MaxProbability;
         private UISlider UI_Earthquake_WarmupYears;
         private UICheckBox UI_Earthquake_AftershocksEnabled;
+        private UICheckBox UI_Earthquake_NoCrack;
 
         private UICheckBox UI_MeteorStrike_Enabled;
         private UISlider UI_MeteorStrike_MaxProbability;
@@ -118,6 +119,7 @@ namespace EnhancedDisastersMod
             UI_Earthquake_MaxProbability.value = c.Earthquake.BaseOccurrencePerYear;
             UI_Earthquake_WarmupYears.value = c.Earthquake.WarmupYears;
             UI_Earthquake_AftershocksEnabled.isChecked = c.Earthquake.AftershocksEnabled;
+            UI_Earthquake_NoCrack.isChecked = c.Earthquake.NoCracks;
 
             UI_MeteorStrike_Enabled.isChecked = c.MeteorStrike.Enabled;
             UI_MeteorStrike_MaxProbability.value = c.MeteorStrike.BaseOccurrencePerYear;
@@ -337,6 +339,13 @@ namespace EnhancedDisastersMod
                 if (!freezeUI) c.Earthquake.AftershocksEnabled = isChecked;
             });
             UI_Earthquake_AftershocksEnabled.tooltip = "Several aftershocks may occur after a big earthquake. Aftershocks strike the same place.";
+
+            UI_Earthquake_NoCrack = (UICheckBox)earthquakeGroup.AddCheckbox("No cracks in the ground", c.Earthquake.NoCracks, delegate (bool isChecked)
+            {
+                if (!freezeUI) c.Earthquake.NoCracks = isChecked;
+                c.Earthquake.UpdateDisasterProperties(true);
+            });
+            UI_Earthquake_NoCrack.tooltip = "If checked, the earthquake does not put a crack in the ground.";
 
             helper.AddSpace(20);
 

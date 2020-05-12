@@ -93,19 +93,6 @@ namespace EnhancedDisastersMod
             return "Thunderstorm";
         }
 
-        protected override void setDisasterAIParameters(DisasterAI dai, byte intensity)
-        {
-            ThunderStormAI ai = dai as ThunderStormAI;
-
-            if (ai != null)
-            {
-                uint activeDuration_original = 8192; // ai.m_activeDuration;
-                uint activeDuration_new = activeDuration_original / 2 + (activeDuration_original / 2) * intensity / 100;
-                DebugLogger.Log(string.Format("Thunderstorm: m_activeDuration {0} -> {1}", ai.m_activeDuration, activeDuration_new));
-                ai.m_activeDuration = activeDuration_new;
-            }
-        }
-
         public override void CopySettings(EnhancedDisaster disaster)
         {
             base.CopySettings(disaster);

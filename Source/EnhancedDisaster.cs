@@ -376,8 +376,6 @@ namespace EnhancedDisastersMod
 
             DisasterLogger.StartedByMod = true;
 
-            setDisasterAIParameters(disasterInfo.m_disasterAI, intensity);
-
             disasterStarting(disasterInfo);
 
             dm.m_disasters.m_buffer[(int)disasterIndex].m_targetPosition = targetPosition;
@@ -407,11 +405,6 @@ namespace EnhancedDisastersMod
                     angle = 0;
                     return false;
             }
-        }
-
-        protected virtual void setDisasterAIParameters(DisasterAI dai, byte intensity)
-        {
-
         }
 
         private bool findRandomTargetEverywhere(out Vector3 target, out float angle)

@@ -51,6 +51,7 @@ namespace EnhancedDisastersMod
         }
 
         public bool AftershocksEnabled = true;
+        public bool NoCracks = true;
         private byte aftershocksCount = 0;
         private byte aftershockMaxIntensity = 0;
         private byte mainStrikeIntensity = 0;
@@ -170,17 +171,6 @@ namespace EnhancedDisastersMod
             }
         }
 
-        protected override void setDisasterAIParameters(DisasterAI dai, byte intensity)
-        {
-            EarthquakeAI ai = dai as EarthquakeAI;
-
-            if (ai == null) return;
-
-            DebugLogger.Log(Mod.LogMsgPrefix + string.Format("m_crackLength = {0}, m_crackWidth = {1}", ai.m_crackLength, ai.m_crackWidth));
-            ai.m_crackLength = 0;
-            ai.m_crackWidth = 0;
-        }
-
         public override bool CheckDisasterAIType(object disasterAI)
         {
             return disasterAI as EarthquakeAI != null;
@@ -200,6 +190,32 @@ namespace EnhancedDisastersMod
             {
                 AftershocksEnabled = d.AftershocksEnabled;
                 WarmupYears = d.WarmupYears;
+            }
+        }
+
+        public void UpdateDisasterProperties(bool isSet)
+        {
+            int prefabsCount = PrefabCollection<DisasterInfo>.PrefabCount();
+
+            for (uint i = 0; i < prefabsCount; i++)
+            {
+                DisasterInfo di = PrefabCollection<DisasterInfo>.GetPrefab(i);
+                if (di == null) continue;
+
+                if (di.m_disasterAI as EarthquakeAI != null)
+                {
+                    if (isSet && NoCracks)
+                    {
+                        //Debug.Log(string.Format("m_crackLength = {0}, m_crackWidth = {1}", ((EarthquakeAI)di.m_disasterAI).m_crackLength, ((EarthquakeAI)di.m_disasterAI).m_crackWidth));
+                        ((EarthquakeAI)di.m_disasterAI).m_crackLength = 0;
+                        ((EarthquakeAI)di.m_disasterAI).m_crackWidth = 0;
+                    }
+                    else
+                    {
+                        ((EarthquakeAI)di.m_disasterAI).m_crackLength = 1000;
+                        ((EarthquakeAI)di.m_disasterAI).m_crackWidth = 100;
+                    }
+                }
             }
         }
     }
