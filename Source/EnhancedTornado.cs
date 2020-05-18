@@ -14,7 +14,7 @@ namespace EnhancedDisastersMod
             {
                 EnhancedTornado d = Singleton<EnhancedDisastersManager>.instance.container.Tornado;
                 serializeCommonParameters(s, d);
-
+                s.WriteInt32(d.MaxProbabilityMonth);
                 s.WriteBool(d.NoTornadoDuringFog);
             }
 
@@ -23,6 +23,10 @@ namespace EnhancedDisastersMod
                 EnhancedTornado d = Singleton<EnhancedDisastersManager>.instance.container.Tornado;
                 deserializeCommonParameters(s, d);
 
+                if (s.version >= 3)
+                {
+                    d.MaxProbabilityMonth = s.ReadInt32();
+                }
                 d.NoTornadoDuringFog = s.ReadBool();
             }
 
@@ -64,7 +68,7 @@ namespace EnhancedDisastersMod
 
         public override string GetProbabilityTooltip()
         {
-            if (calmCounter == 0)
+            if (calmDaysLeft <= 0)
             {
                 if (NoTornadoDuringFog && Singleton<WeatherManager>.instance.m_currentFog > 0)
                 {

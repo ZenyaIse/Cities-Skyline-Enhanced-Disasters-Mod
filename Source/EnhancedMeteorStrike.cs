@@ -18,9 +18,9 @@ namespace EnhancedDisastersMod
                 for (int i = 0; i < d.meteorEvents.Length; i++)
                 {
                     s.WriteBool(d.meteorEvents[i].Enabled);
-                    s.WriteInt32(d.meteorEvents[i].PeriodFrames);
+                    s.WriteFloat(d.meteorEvents[i].PeriodDays);
                     s.WriteInt8(d.meteorEvents[i].MaxIntensity);
-                    s.WriteInt32(d.meteorEvents[i].FramesUntilNextEvent);
+                    s.WriteFloat(d.meteorEvents[i].DaysUntilNextEvent);
                     s.WriteInt32(d.meteorEvents[i].MeteorsFallen);
                 }
             }
@@ -30,13 +30,28 @@ namespace EnhancedDisastersMod
                 EnhancedMeteorStrike d = Singleton<EnhancedDisastersManager>.instance.container.MeteorStrike;
                 deserializeCommonParameters(s, d);
 
-                for (int i = 0; i < d.meteorEvents.Length; i++)
+                if (s.version <= 2)
                 {
-                    d.meteorEvents[i].Enabled = s.ReadBool();
-                    d.meteorEvents[i].PeriodFrames = s.ReadInt32();
-                    d.meteorEvents[i].MaxIntensity = (byte)s.ReadInt8();
-                    d.meteorEvents[i].FramesUntilNextEvent = s.ReadInt32();
-                    d.meteorEvents[i].MeteorsFallen = s.ReadInt32();
+                    float daysPerFrame = Helper.DaysPerFrame;
+                    for (int i = 0; i < d.meteorEvents.Length; i++)
+                    {
+                        d.meteorEvents[i].Enabled = s.ReadBool();
+                        d.meteorEvents[i].PeriodDays = s.ReadInt32() * daysPerFrame;
+                        d.meteorEvents[i].MaxIntensity = (byte)s.ReadInt8();
+                        d.meteorEvents[i].DaysUntilNextEvent = s.ReadInt32() * daysPerFrame;
+                        d.meteorEvents[i].MeteorsFallen = s.ReadInt32();
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < d.meteorEvents.Length; i++)
+                    {
+                        d.meteorEvents[i].Enabled = s.ReadBool();
+                        d.meteorEvents[i].PeriodDays = s.ReadFloat();
+                        d.meteorEvents[i].MaxIntensity = (byte)s.ReadInt8();
+                        d.meteorEvents[i].DaysUntilNextEvent = s.ReadFloat();
+                        d.meteorEvents[i].MeteorsFallen = s.ReadInt32();
+                    }
                 }
             }
 
@@ -49,18 +64,18 @@ namespace EnhancedDisastersMod
         private struct MeteorEvent
         {
             public string Name;
-            public int PeriodFrames;
+            public float PeriodDays;
             public byte MaxIntensity;
-            public int FramesUntilNextEvent;
+            public float DaysUntilNextEvent;
             public int MeteorsFallen;
             public bool Enabled;
 
-            public MeteorEvent(string name, int periodFrames, byte maxIntensity, int framesUntilNextEvent)
+            public MeteorEvent(string name, float periodDays, byte maxIntensity, float daysUntilNextEvent)
             {
                 Name = name;
-                PeriodFrames = periodFrames;
+                PeriodDays = periodDays;
                 MaxIntensity = maxIntensity;
-                FramesUntilNextEvent = framesUntilNextEvent;
+                DaysUntilNextEvent = daysUntilNextEvent;
                 MeteorsFallen = 0;
                 Enabled = true;
             }
@@ -69,12 +84,12 @@ namespace EnhancedDisastersMod
             {
                 SimulationManager sm = Singleton<SimulationManager>.instance;
 
-                float periodFrames = periodYears * Helper.FramesPerYear;
+                float periodDays = periodYears * 365;
                 return new MeteorEvent(
                     name,
-                    (int)(periodFrames + sm.m_randomizer.Int32((uint)(periodFrames * 0.1f)) - periodFrames * 0.05f),
+                    periodDays * 0.95f + sm.m_randomizer.Int32((uint)(periodDays * 0.1f)),
                     maxIntensity,
-                    (int)(periodFrames / 2 + sm.m_randomizer.Int32((uint)(periodFrames / 2)))
+                    periodDays / 2 + sm.m_randomizer.Int32((uint)(periodDays / 2))
                     );
             }
 
@@ -87,11 +102,9 @@ namespace EnhancedDisastersMod
                     return 0;
                 }
 
-                float fallPeriod_half = Helper.FramesPerDay * 30;
-
-                float framesDiffFromPeak = Mathf.Abs(FramesUntilNextEvent - fallPeriod_half);
-
-                float multiplier = Mathf.Max(0, 1f - framesDiffFromPeak / fallPeriod_half);
+                float fallPeriod_half = 30; // Days
+                float daysDiffFromPeak = Mathf.Abs(DaysUntilNextEvent - fallPeriod_half);
+                float multiplier = Mathf.Max(0, 1f - daysDiffFromPeak / fallPeriod_half);
 
                 return multiplier;
             }
@@ -100,7 +113,7 @@ namespace EnhancedDisastersMod
             {
                 if (!Enabled) return 1;
 
-                if (FramesUntilNextEvent < Helper.FramesPerDay * 60)
+                if (DaysUntilNextEvent < 60)
                 {
                     return MaxIntensity;
                 }
@@ -112,11 +125,11 @@ namespace EnhancedDisastersMod
             {
                 if (!Enabled) return;
 
-                FramesUntilNextEvent--;
+                DaysUntilNextEvent -= Helper.DaysPerFrame;
 
-                if (FramesUntilNextEvent == 0)
+                if (DaysUntilNextEvent <= 0)
                 {
-                    FramesUntilNextEvent = PeriodFrames;
+                    DaysUntilNextEvent = PeriodDays;
                     MeteorsFallen = 0;
                 }
             }
@@ -130,9 +143,8 @@ namespace EnhancedDisastersMod
 
             public override string ToString()
             {
-                float framesPerYear = Helper.FramesPerYear;
-                return string.Format("Period {0} years, max intensity {1}, next meteor after {2} years",
-                    PeriodFrames / framesPerYear, MaxIntensity, FramesUntilNextEvent / framesPerYear);
+                return string.Format("Period {0} years, max intensity {1}, next meteor in {2}",
+                    PeriodDays / 365, MaxIntensity, Helper.FormatTimeSpan(DaysUntilNextEvent));
             }
 
             public string GetStateDescription()
@@ -144,15 +156,13 @@ namespace EnhancedDisastersMod
                     return Name + " already fallen.";
                 }
 
-                float framesPerDay = Helper.FramesPerDay;
-
-                if (FramesUntilNextEvent <= framesPerDay * 60)
+                if (DaysUntilNextEvent <= 60)
                 {
                     return Name + " is approaching.";
                 }
                 else
                 {
-                    return Name + " will be close in " + ((int)(FramesUntilNextEvent / framesPerDay / 30) - 1).ToString() + " months.";
+                    return Name + " will be close in " + Helper.FormatTimeSpan(DaysUntilNextEvent);
                 }
             }
         }
@@ -256,7 +266,7 @@ namespace EnhancedDisastersMod
                 intensity = Math.Max(intensity, meteorEvents[i].GetActualMaxIntensity());
             }
 
-            intensity = scaleByPopulation(intensity);
+            intensity = scaleIntensityByPopulation(intensity);
 
             return intensity;
         }
@@ -264,14 +274,14 @@ namespace EnhancedDisastersMod
         public override void OnDisasterStarted(byte intensity)
         {
             int meteorIndex = -1;
-            float maxProb = 0;
+            float maxProbability = 0;
 
             for (int i = 0; i < meteorEvents.Length; i++)
             {
                 float prob = meteorEvents[i].GetProbabilityMultiplier();
-                if (prob > maxProb)
+                if (prob > maxProbability)
                 {
-                    maxProb = prob;
+                    maxProbability = prob;
                     meteorIndex = i;
                 }
             }

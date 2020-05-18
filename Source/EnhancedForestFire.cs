@@ -15,7 +15,7 @@ namespace EnhancedDisastersMod
                 EnhancedForestFire d = Singleton<EnhancedDisastersManager>.instance.container.ForestFire;
                 serializeCommonParameters(s, d);
                 s.WriteInt32(d.WarmupDays);
-                s.WriteInt32(d.noRainFramesCount);
+                s.WriteFloat(d.noRainDays);
             }
 
             public void Deserialize(DataSerializer s)
@@ -23,7 +23,15 @@ namespace EnhancedDisastersMod
                 EnhancedForestFire d = Singleton<EnhancedDisastersManager>.instance.container.ForestFire;
                 deserializeCommonParameters(s, d);
                 d.WarmupDays = s.ReadInt32();
-                d.noRainFramesCount = s.ReadInt32();
+                if (s.version <= 2)
+                {
+                    float daysPerFrame = Helper.DaysPerFrame;
+                    d.noRainDays = s.ReadInt32() * daysPerFrame;
+                }
+                else
+                {
+                    d.noRainDays = s.ReadFloat();
+                }
             }
 
             public void AfterDeserialize(DataSerializer s)
@@ -33,7 +41,7 @@ namespace EnhancedDisastersMod
         }
 
         public int WarmupDays = 180;
-        private int noRainFramesCount = 0;
+        private float noRainDays = 0;
 
         public EnhancedForestFire()
         {
@@ -53,11 +61,11 @@ namespace EnhancedDisastersMod
             WeatherManager wm = Singleton<WeatherManager>.instance;
             if (wm.m_currentRain > 0)
             {
-                noRainFramesCount = 0;
+                noRainDays = 0;
             }
             else
             {
-                noRainFramesCount++;
+                noRainDays += Helper.DaysPerFrame;
             }
         }
 
@@ -70,22 +78,20 @@ namespace EnhancedDisastersMod
                 tooltip = "Not unlocked yet (occurs only outside of your area)." + Environment.NewLine;
             }
 
-            if (calmCounter == 0)
+            if (calmDaysLeft == 0)
             {
-                if (noRainFramesCount == 0)
+                if (noRainDays <= 0)
                 {
                     return tooltip + "No " + GetName() + " during rain.";
                 }
                 else
                 {
-                    int daysWithoutRain = (int)(noRainFramesCount / Helper.FramesPerDay);
-
-                    if (daysWithoutRain >= WarmupDays)
+                    if (noRainDays >= WarmupDays)
                     {
                         return tooltip + "Maximum because there was no rain for more than " + WarmupDays.ToString() + " days.";
                     }
 
-                    return tooltip + "Increasing because there was no rain for " + daysWithoutRain.ToString() + " days.";
+                    return tooltip + "Increasing because there was no rain for " + Helper.FormatTimeSpan(noRainDays);
                 }
             }
 
@@ -94,9 +100,7 @@ namespace EnhancedDisastersMod
 
         protected override float getCurrentOccurrencePerYear_local()
         {
-            float daysWithoutRain = noRainFramesCount / Helper.FramesPerDay;
-
-            return base.getCurrentOccurrencePerYear_local() * Math.Min(1f, daysWithoutRain / WarmupDays);
+            return base.getCurrentOccurrencePerYear_local() * Math.Min(1f, noRainDays / WarmupDays);
         }
 
         public override bool CheckDisasterAIType(object disasterAI)

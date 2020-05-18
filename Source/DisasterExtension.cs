@@ -1,17 +1,10 @@
-﻿using UnityEngine;
-using ColossalFramework;
+﻿using ColossalFramework;
 using ICities;
 
 namespace EnhancedDisastersMod
 {
     public class DisasterExtension : IDisasterBase
     {
-        public override void OnDisasterCreated(ushort disasterID)
-        {
-            //DisasterData disasterData = Singleton<DisasterManager>.instance.m_disasters.m_buffer[disasterID];
-            //Singleton<EnhancedDisastersManager>.instance.OnDisasterCreated(disasterData.Info.m_disasterAI, disasterData.m_intensity);
-        }
-
         public override void OnDisasterStarted(ushort disasterID)
         {
             DisasterData disasterData = Singleton<DisasterManager>.instance.m_disasters.m_buffer[disasterID];

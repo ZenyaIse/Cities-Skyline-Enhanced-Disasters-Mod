@@ -53,7 +53,7 @@ namespace EnhancedDisastersMod
                 return "Not unlocked yet";
             }
 
-            if (calmCounter == 0)
+            if (calmDaysLeft <= 0)
             {
                 int groundWaterPercent = (int)(100 * groundwaterAmount / GroundwaterCapacity);
                 return "Ground water level " + groundWaterPercent.ToString() + "%";
@@ -71,15 +71,15 @@ namespace EnhancedDisastersMod
 
         protected override void onSimulationFrame_local()
         {
-            float framesPerDay = Helper.FramesPerDay;
+            float daysPerFrame = Helper.DaysPerFrame;
 
             WeatherManager wm = Singleton<WeatherManager>.instance;
             if (wm.m_currentRain > 0)
             {
-                groundwaterAmount += wm.m_currentRain / framesPerDay;
+                groundwaterAmount += wm.m_currentRain * daysPerFrame;
             }
 
-            groundwaterAmount -= groundwaterAmount / GroundwaterCapacity / framesPerDay;
+            groundwaterAmount -= (groundwaterAmount / GroundwaterCapacity) * daysPerFrame;
 
             if (groundwaterAmount < 0)
             {

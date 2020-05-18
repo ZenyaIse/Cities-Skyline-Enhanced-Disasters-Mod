@@ -55,7 +55,7 @@ namespace EnhancedDisastersMod
                 return "Not unlocked yet (occurs only outside of your area).";
             }
 
-            if (calmCounter == 0)
+            if (calmDaysLeft <= 0)
             {
                 if (Singleton<WeatherManager>.instance.m_currentRain > 0 && RainFactor > 1)
                 {

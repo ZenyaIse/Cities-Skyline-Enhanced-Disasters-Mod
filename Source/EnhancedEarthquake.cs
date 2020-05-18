@@ -15,6 +15,7 @@ namespace EnhancedDisastersMod
                 serializeCommonParameters(s, d);
 
                 s.WriteFloat(d.WarmupYears);
+                s.WriteBool(d.NoCracks);
 
                 s.WriteInt8(d.aftershocksCount);
                 s.WriteInt8(d.aftershockMaxIntensity);
@@ -32,6 +33,10 @@ namespace EnhancedDisastersMod
                 deserializeCommonParameters(s, d);
 
                 d.WarmupYears = s.ReadFloat();
+                if (s.version >= 3)
+                {
+                    d.NoCracks = s.ReadBool();
+                }
 
                 d.aftershocksCount = (byte)s.ReadInt8();
                 d.aftershockMaxIntensity = (byte)s.ReadInt8();
@@ -130,9 +135,9 @@ namespace EnhancedDisastersMod
 
             if (aftershocksCount > 0)
             {
-                calmCounter = (int)(Helper.FramesPerDay * 15);
-                probabilityWarmupCounter = 0;
-                intensityWarmupCounter = 0;
+                calmDays = 15;
+                probabilityWarmupDaysLeft = 0;
+                intensityWarmupDaysLeft = 0;
 
                 Debug.Log(string.Format(Mod.LogMsgPrefix + "{0} aftershocks are still going to happen.", aftershocksCount));
             }
@@ -206,7 +211,6 @@ namespace EnhancedDisastersMod
                 {
                     if (isSet && NoCracks)
                     {
-                        //Debug.Log(string.Format("m_crackLength = {0}, m_crackWidth = {1}", ((EarthquakeAI)di.m_disasterAI).m_crackLength, ((EarthquakeAI)di.m_disasterAI).m_crackWidth));
                         ((EarthquakeAI)di.m_disasterAI).m_crackLength = 0;
                         ((EarthquakeAI)di.m_disasterAI).m_crackWidth = 0;
                     }
